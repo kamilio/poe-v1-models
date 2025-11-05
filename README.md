@@ -17,3 +17,12 @@ python3 -m pip install -r requirements.txt
 python3 -m pytest
 python3 scripts/update_models.py
 ```
+
+## Explore unmapped models
+Run the interactive explorer to see which Poe models lack mappings and optionally append them to `config/model_mapping.yml`:
+
+```bash
+python3 scripts/explore_models.py --dry-run
+```
+
+Omit `--dry-run` when you are ready to write confirmed mappings. Use `--provider <name>` to limit the review to a single provider (e.g. `openai`).
