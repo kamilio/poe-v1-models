@@ -4,17 +4,41 @@ from typing import Any, Dict, Iterable, Mapping, Optional
 from urllib.request import urlopen
 
 from poe_v1_models.pricing import PricingSnapshot, decimal_or_none
-from poe_v1_models.providers.base import PricingProvider
+from poe_v1_models.providers.base import PricingProvider, ProviderReportColumn
 
 
 OPENROUTER_MODELS_URL = "https://openrouter.ai/api/v1/models"
+
+
+OPENROUTER_REPORT_COLUMNS = (
+    ProviderReportColumn(key="status", label="Status", path="status"),
+    ProviderReportColumn(key="reasons", label="Reasons", path="reasons"),
+    ProviderReportColumn(
+        key="prompt_mtok",
+        label="Prompt / MTok",
+        path="pricing.prompt_mtok",
+        numeric=True,
+    ),
+    ProviderReportColumn(
+        key="completion_mtok",
+        label="Completion / MTok",
+        path="pricing.completion_mtok",
+        numeric=True,
+    ),
+    ProviderReportColumn(
+        key="request",
+        label="Request",
+        path="pricing.request",
+        numeric=True,
+    ),
+)
 
 
 class OpenRouterProvider(PricingProvider):
     """Pricing provider backed by the OpenRouter public model catalog."""
 
     def __init__(self, url: str = OPENROUTER_MODELS_URL) -> None:
-        super().__init__(name="openrouter")
+        super().__init__(name="openrouter", report_columns=OPENROUTER_REPORT_COLUMNS)
         self._url = url
         self._index: Dict[str, Mapping[str, Any]] = {}
 
@@ -61,7 +85,7 @@ class OpenRouterProvider(PricingProvider):
         completion = decimal_or_none(pricing.get("completion"))
         request = decimal_or_none(pricing.get("request"))
         image = decimal_or_none(pricing.get("image"))
-        return PricingSnapshot(prompt=prompt, completion=completion, request=request, image=image)
+        return self.build_snapshot(prompt=prompt, completion=completion, request=request, image=image)
 
     def default_key(self, poe_model: Mapping[str, object]) -> Optional[str]:
         owned_by = poe_model.get("owned_by")

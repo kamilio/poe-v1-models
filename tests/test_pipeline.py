@@ -76,13 +76,13 @@ def test_checks_report_includes_exclusions_and_providers():
     report = build_checks_report(result)
 
     assert "generated_at" in report
-    assert isinstance(report.get("models"), list)
-    assert any(entry.get("excluded") for entry in report["models"]), "Expected excluded models in report"
-    # Ensure at least one provider entry is present for mapped models
-    provider_entries = [
-        provider
-        for model in report["models"]
-        if not model.get("excluded")
-        for provider in model.get("providers", [])
-    ]
-    assert provider_entries, "Expected provider entries in checks report"
+    assert isinstance(report.get("models"), list) and report["models"], "Expected populated models list"
+    assert isinstance(report.get("providers"), list) and report["providers"], "Expected providers metadata"
+    assert isinstance(report.get("excluded_models"), list) and report["excluded_models"], "Expected excluded models list"
+
+    sample_provider = report["providers"][0]
+    assert {"name", "columns"}.issubset(sample_provider.keys())
+    sample_model = report["models"][0]
+    assert isinstance(sample_model.get("providers"), dict) and sample_model["providers"], "Expected provider data per model"
+    provider_payload = next(iter(sample_model["providers"].values()))
+    assert {"values", "severity", "status"}.issubset(provider_payload.keys())

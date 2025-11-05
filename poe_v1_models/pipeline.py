@@ -39,6 +39,7 @@ class PipelineResult:
     aggregates: Dict[str, ModelAggregate]
     excluded_models: Dict[str, Mapping[str, Any]]
     config: GeneralConfig
+    providers: Dict[str, PricingProvider]
 
 
 def run_pipeline() -> PipelineResult:
@@ -126,7 +127,13 @@ def run_pipeline() -> PipelineResult:
         "object": poe_payload.get("object"),
         "data": enriched_models,
     }
-    return PipelineResult(payload=payload, aggregates=aggregates, excluded_models=excluded, config=config)
+    return PipelineResult(
+        payload=payload,
+        aggregates=aggregates,
+        excluded_models=excluded,
+        config=config,
+        providers=providers,
+    )
 
 
 def prepare_providers(priority: Sequence[str], mapping_entries: Iterable[ModelMappingEntry]) -> Dict[str, PricingProvider]:

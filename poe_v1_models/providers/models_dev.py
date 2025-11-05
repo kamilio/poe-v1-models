@@ -4,17 +4,39 @@ from typing import Any, Dict, Mapping, Optional
 from urllib.request import urlopen
 
 from poe_v1_models.pricing import PricingSnapshot, decimal_or_none
-from poe_v1_models.providers.base import PricingProvider
+from poe_v1_models.providers.base import PricingProvider, ProviderReportColumn
 
 
 MODELS_DEV_API_URL = "https://models.dev/api.json"
+
+
+MODELS_DEV_REPORT_COLUMNS = (
+    ProviderReportColumn(key="status", label="Status", path="status"),
+    ProviderReportColumn(key="reasons", label="Reasons", path="reasons"),
+    ProviderReportColumn(
+        key="prompt_mtok",
+        label="Prompt / MTok",
+        path="pricing.prompt_mtok",
+        numeric=True,
+    ),
+    ProviderReportColumn(
+        key="completion_mtok",
+        label="Completion / MTok",
+        path="pricing.completion_mtok",
+        numeric=True,
+    ),
+)
 
 
 class ModelsDevProvider(PricingProvider):
     """Pricing provider reading MSRP data from models.dev."""
 
     def __init__(self, url: str = MODELS_DEV_API_URL) -> None:
-        super().__init__(name="models.dev")
+        super().__init__(
+            name="models.dev",
+            token_unit="per_million",
+            report_columns=MODELS_DEV_REPORT_COLUMNS,
+        )
         self._url = url
         self._catalog: Dict[str, Any] = {}
 
@@ -39,7 +61,7 @@ class ModelsDevProvider(PricingProvider):
         completion = decimal_or_none(cost.get("output"))
         request = decimal_or_none(cost.get("request"))
         image = decimal_or_none(cost.get("image"))
-        return PricingSnapshot(prompt=prompt, completion=completion, request=request, image=image)
+        return self.build_snapshot(prompt=prompt, completion=completion, request=request, image=image)
 
 
 def json_load(response) -> Dict[str, Any]:
