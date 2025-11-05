@@ -10,6 +10,10 @@ exclusions:
     reason: we are not model providers
   - owner: opentools
     reason: just tools, not models
+  - Claude-Opus-4-Search
+  - Claude-Sonnet-4-Search
+  - Claude-Sonnet-3.7-Search
+  - Claude-Haiku-3.5-Search
 overrides:
   ChatGPT-4o-Latest:
     metadata:
