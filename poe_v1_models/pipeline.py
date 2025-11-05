@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from typing import Any, Dict, Iterable, List, Mapping, Optional, Sequence
 from urllib.request import urlopen
 
+from poe_v1_models.checks import ProviderDecision, evaluate_provider_decisions
 from poe_v1_models.config import GeneralConfig, load_general_config
 from poe_v1_models.mapping import ModelMappingEntry, load_model_mapping, mapping_index
 from poe_v1_models.pricing import (
@@ -27,6 +28,7 @@ class ModelAggregate:
     poe_id: str
     normalized_pricing: PricingWithMtok
     provider_pricing: Dict[str, Optional[PricingSnapshot]]
+    decisions: Dict[str, ProviderDecision]
     selected_provider: Optional[str]
     overrides_applied: bool = False
 
@@ -72,6 +74,7 @@ def run_pipeline() -> PipelineResult:
         }
 
         provider_pricing: Dict[str, Optional[PricingSnapshot]] = {}
+        decisions: Dict[str, ProviderDecision] = {}
         selected_provider: Optional[str] = None
 
         mapping_entry = mapping_by_id.get(model_id)
@@ -88,11 +91,16 @@ def run_pipeline() -> PipelineResult:
                     continue
                 pricing = provider.find(key, model)
                 provider_pricing[provider_name] = pricing
-                if selected_provider is None and has_values(pricing):
-                    selected_provider = provider_name
+            decisions, selected_provider = evaluate_provider_decisions(
+                config.providers.priority,
+                provider_pricing,
+                normalized_pricing,
+            )
 
             if selected_provider:
-                msrp_fields.update(as_msrp_fields(provider_pricing[selected_provider]))
+                chosen_pricing = provider_pricing.get(selected_provider)
+                if chosen_pricing:
+                    msrp_fields.update(as_msrp_fields(chosen_pricing))
 
         pricing_dict.update(msrp_fields)
         model["pricing"] = pricing_dict
@@ -109,6 +117,7 @@ def run_pipeline() -> PipelineResult:
             poe_id=model_id,
             normalized_pricing=normalized_pricing,
             provider_pricing=provider_pricing,
+            decisions=decisions,
             selected_provider=selected_provider,
             overrides_applied=overrides_applied,
         )
@@ -162,15 +171,6 @@ def ordered_unique(values: Iterable[str]) -> List[str]:
             ordered.append(value)
             seen.add(value)
     return ordered
-
-
-def has_values(pricing: Optional[PricingSnapshot]) -> bool:
-    if pricing is None:
-        return False
-    return any(
-        value is not None
-        for value in (pricing.prompt, pricing.completion, pricing.image, pricing.request)
-    )
 
 
 def deep_merge(target: Dict[str, Any], override: Mapping[str, Any]) -> Dict[str, Any]:

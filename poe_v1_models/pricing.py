@@ -94,3 +94,12 @@ def as_msrp_fields(pricing: PricingSnapshot) -> Dict[str, Optional[str]]:
         "msrp_prompt_mtok": decimal_to_string(enriched.prompt_mtok) if enriched.prompt_mtok is not None else None,
         "msrp_completion_mtok": decimal_to_string(enriched.completion_mtok) if enriched.completion_mtok is not None else None,
     }
+
+
+def has_values(pricing: Optional[PricingSnapshot]) -> bool:
+    if pricing is None:
+        return False
+    return any(
+        value is not None
+        for value in (pricing.prompt, pricing.completion, pricing.image, pricing.request)
+    )

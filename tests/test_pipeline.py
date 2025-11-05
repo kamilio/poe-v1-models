@@ -10,6 +10,7 @@ from poe_v1_models.config import load_general_config
 from poe_v1_models.mapping import load_model_mapping
 from poe_v1_models.pipeline import run_pipeline
 from poe_v1_models.pricing import MTOK_MULTIPLIER
+from poe_v1_models.reporting import build_checks_report
 
 
 def to_decimal(value):
@@ -61,10 +62,27 @@ def test_overrides_applied_and_exclusions_respected():
 
 def test_provider_priority_reflected_in_aggregates():
     result = run_pipeline()
-    config = load_general_config()
-    if not config.providers.priority:
-        return
-
+    priority = result.config.providers.priority
     for aggregate in result.aggregates.values():
         if aggregate.selected_provider:
-            assert aggregate.selected_provider in config.providers.priority
+            assert aggregate.selected_provider in priority
+            decision = aggregate.decisions.get(aggregate.selected_provider)
+            assert decision is not None
+            assert decision.status == "accepted"
+
+
+def test_checks_report_includes_exclusions_and_providers():
+    result = run_pipeline()
+    report = build_checks_report(result)
+
+    assert "generated_at" in report
+    assert isinstance(report.get("models"), list)
+    assert any(entry.get("excluded") for entry in report["models"]), "Expected excluded models in report"
+    # Ensure at least one provider entry is present for mapped models
+    provider_entries = [
+        provider
+        for model in report["models"]
+        if not model.get("excluded")
+        for provider in model.get("providers", [])
+    ]
+    assert provider_entries, "Expected provider entries in checks report"
