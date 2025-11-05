@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Poe Models Changelog</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; margin: 2rem; background: #0f172a; color: #e2e8f0; }
+    h1 { margin-bottom: 1rem; }
+    .subtitle { color: #94a3b8; margin-bottom: 1.5rem; }
+    ul { list-style: none; padding: 0; margin: 0; }
+    li.entry { padding-bottom: 1.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid rgba(148, 163, 184, 0.2); }
+    li.entry:last-child { border-bottom: none; }
+    .entry-title { font-weight: 600; font-size: 1rem; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+    .entry-meta { color: #94a3b8; font-size: 0.9rem; margin-top: 0.25rem; }
+    .status { margin-top: 0.75rem; line-height: 1.5; }
+    .status strong { color: #38bdf8; font-weight: 600; }
+    code { background: rgba(15, 23, 42, 0.6); padding: 0.125rem 0.35rem; border-radius: 0.35rem; font-size: 0.85rem; }
+    .badge { display: inline-block; padding: 0.125rem 0.5rem; border-radius: 999px; font-size: 0.7rem; background: rgba(96, 165, 250, 0.2); color: #93c5fd; }
+    .muted { color: #94a3b8; }
+  </style>
+</head>
+<body>
+  <h1>Poe Models Changelog</h1>
+  <p class="subtitle muted">Latest changes to published Poe v1 model metadata.</p>
+  <ul id="changelog-list">
+    <li class="muted">Loading…</li>
+  </ul>
+  <script>
+    function renderNames(items) {
+      if (!Array.isArray(items) || !items.length) {
+        const span = document.createElement('span');
+        span.className = 'muted';
+        span.textContent = 'none';
+        return span;
+      }
+      const fragment = document.createDocumentFragment();
+      items.forEach((item, index) => {
+        if (index) {
+          fragment.appendChild(document.createTextNode(', '));
+        }
+        const code = document.createElement('code');
+        code.textContent = item;
+        fragment.appendChild(code);
+      });
+      return fragment;
+    }
+
+    function appendStatus(container, label, items) {
+      const paragraph = document.createElement('p');
+      paragraph.className = 'status';
+      const heading = document.createElement('strong');
+      heading.textContent = label + ': ';
+      paragraph.appendChild(heading);
+      paragraph.appendChild(renderNames(items));
+      container.appendChild(paragraph);
+    }
+
+    async function loadChangelog() {
+      const list = document.getElementById('changelog-list');
+      try {
+        const response = await fetch('changelog.json');
+        if (!response.ok) {
+          throw new Error('HTTP ' + response.status);
+        }
+        const data = await response.json();
+        const entries = Array.isArray(data) ? data.slice() : [];
+        if (!entries.length) {
+          list.innerHTML = '';
+          const empty = document.createElement('li');
+          empty.className = 'muted';
+          empty.textContent = 'No changelog entries yet.';
+          list.appendChild(empty);
+          return;
+        }
+        entries.sort((a, b) => {
+          const aDate = Date.parse(a.date || '');
+          const bDate = Date.parse(b.date || '');
+          return bDate - aDate;
+        });
+        list.innerHTML = '';
+        entries.forEach(entry => {
+          const item = document.createElement('li');
+          item.className = 'entry';
+
+          const title = document.createElement('div');
+          title.className = 'entry-title';
+          if (entry.date) {
+            title.textContent = new Date(entry.date).toLocaleString();
+          } else {
+            title.textContent = 'Date unavailable';
+            title.classList.add('muted');
+          }
+          if (entry.initial_snapshot) {
+            const badge = document.createElement('span');
+            badge.className = 'badge';
+            badge.textContent = 'initial snapshot';
+            title.appendChild(badge);
+          }
+          item.appendChild(title);
+
+          const meta = document.createElement('div');
+          meta.className = 'entry-meta';
+          if (typeof entry.total_models === 'number') {
+            meta.textContent = entry.total_models + ' total models';
+          } else {
+            meta.textContent = 'Total models unavailable';
+          }
+          item.appendChild(meta);
+
+          appendStatus(item, 'Added', entry.added);
+          appendStatus(item, 'Removed', entry.removed);
+
+          list.appendChild(item);
+        });
+      } catch (error) {
+        list.innerHTML = '';
+        const failure = document.createElement('li');
+        failure.className = 'muted';
+        failure.textContent = 'Failed to load changelog: ' + error;
+        list.appendChild(failure);
+      }
+    }
+
+    loadChangelog();
+  </script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Poe Pricing Checks</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; margin: 2rem; background: #0f172a; color: #e2e8f0; }
+    h1 { margin-bottom: 0.5rem; }
+    .timestamp { color: #94a3b8; margin-bottom: 1.5rem; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 2rem; font-size: 0.9rem; }
+    th, td { border: 1px solid rgba(148, 163, 184, 0.3); padding: 0.5rem; text-align: left; }
+    th { background: rgba(30, 41, 59, 0.8); position: sticky; top: 0; }
+    tr:nth-child(even) { background: rgba(15, 23, 42, 0.4); }
+    tr.status-accepted { background: rgba(34, 197, 94, 0.12); }
+    tr.status-missing { color: #94a3b8; }
+    tr.severity-yellow { background: rgba(234, 179, 8, 0.2); }
+    tr.severity-red { background: rgba(220, 38, 38, 0.3); }
+    .tag { display: inline-block; padding: 0.125rem 0.5rem; border-radius: 999px; font-size: 0.75rem; margin-right: 0.25rem; }
+    .tag.accepted { background: rgba(34, 197, 94, 0.2); color: #4ade80; }
+    .tag.rejected { background: rgba(248, 113, 113, 0.2); color: #fca5a5; }
+    .tag.missing { background: rgba(148, 163, 184, 0.2); color: #cbd5f5; }
+    .warning { color: #fbbf24; }
+    .error { color: #f87171; }
+  </style>
+</head>
+<body>
+  <h1>Poe Pricing Checks</h1>
+  <div class="timestamp" id="timestamp">Loading…</div>
+  <table id="checks-table">
+    <thead>
+      <tr>
+        <th>Model</th>
+        <th>Provider</th>
+        <th>Status</th>
+        <th>Reasons</th>
+        <th>Prompt / MTok</th>
+        <th>Completion / MTok</th>
+        <th>Poe Prompt / MTok</th>
+        <th>Poe Completion / MTok</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+  <script>
+    async function loadChecks() {
+      const response = await fetch('checks.json');
+      const data = await response.json();
+      const tbody = document.querySelector('#checks-table tbody');
+      tbody.innerHTML = '';
+      document.getElementById('timestamp').textContent = `Generated at ${new Date(data.generated_at).toLocaleString()}`;
+      data.models
+        .filter(model => !model.excluded)
+        .forEach(model => {
+          const poePrompt = model.poe_pricing ? model.poe_pricing.prompt_mtok : null;
+          const poeCompletion = model.poe_pricing ? model.poe_pricing.completion_mtok : null;
+          model.providers.forEach(provider => {
+            const row = document.createElement('tr');
+            row.classList.add(`status-${provider.status}`);
+            if (provider.severity && provider.severity !== 'ok') {
+              row.classList.add(`severity-${provider.severity}`);
+            }
+            const prompt = provider.pricing ? provider.pricing.prompt_mtok || provider.pricing.prompt || '—' : '—';
+            const completion = provider.pricing ? provider.pricing.completion_mtok || provider.pricing.completion || '—' : '—';
+            row.innerHTML = `
+              <td>${model.id}${model.selected_provider === provider.name ? ' ★' : ''}</td>
+              <td>${provider.name}</td>
+              <td><span class="tag ${provider.status}">${provider.status}</span></td>
+              <td>${provider.reasons.length ? provider.reasons.join(', ') : '—'}</td>
+              <td>${prompt}</td>
+              <td>${completion}</td>
+              <td>${poePrompt ?? '—'}</td>
+              <td>${poeCompletion ?? '—'}</td>
+            `;
+            tbody.appendChild(row);
+          });
+        });
+
+      const excludedModels = data.models.filter(model => model.excluded);
+      if (excludedModels.length) {
+        const separator = document.createElement('tr');
+        separator.innerHTML = '<td colspan="8"><strong>Excluded models</strong></td>';
+        tbody.appendChild(separator);
+        excludedModels.forEach(model => {
+          const row = document.createElement('tr');
+          row.classList.add('status-missing');
+          row.innerHTML = `
+            <td>${model.id}</td>
+            <td>—</td>
+            <td><span class="tag missing">excluded</span></td>
+            <td>${model.exclusion_reason || 'config rule'}</td>
+            <td colspan="4">Owned by: ${model.owned_by || 'unknown'}</td>
+          `;
+          tbody.appendChild(row);
+        });
+      }
+    }
+
+    loadChecks().catch(error => {
+      const tbody = document.querySelector('#checks-table tbody');
+      tbody.innerHTML = `<tr><td colspan="8" class="error">Failed to load checks: ${error}</td></tr>`;
+    });
+  </script>
+</body>
+</html>

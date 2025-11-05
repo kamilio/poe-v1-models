@@ -1,11 +1,21 @@
 from __future__ import annotations
 
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from poe_v1_models.checks import ProviderDecision
 from poe_v1_models.pipeline import PipelineResult
 from poe_v1_models.pricing import PricingSnapshot
+
+
+TEMPLATES_DIR = Path(__file__).resolve().parents[1] / "src"
+
+
+def _read_html_template(filename: str) -> str:
+    """Load an HTML template from the src directory."""
+    path = TEMPLATES_DIR / filename
+    return path.read_text(encoding="utf-8")
 
 
 def build_checks_report(result: PipelineResult) -> Dict[str, Any]:
@@ -83,272 +93,12 @@ def _snapshot_dict(pricing: PricingSnapshot) -> Dict[str, Any]:
 
 
 def render_checks_html() -> str:
-    return """<!DOCTYPE html>
-<html lang=\"en\">
-<head>
-  <meta charset=\"utf-8\" />
-  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />
-  <title>Poe Pricing Checks</title>
-  <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; margin: 2rem; background: #0f172a; color: #e2e8f0; }
-    h1 { margin-bottom: 0.5rem; }
-    .timestamp { color: #94a3b8; margin-bottom: 1.5rem; }
-    table { width: 100%; border-collapse: collapse; margin-bottom: 2rem; font-size: 0.9rem; }
-    th, td { border: 1px solid rgba(148, 163, 184, 0.3); padding: 0.5rem; text-align: left; }
-    th { background: rgba(30, 41, 59, 0.8); position: sticky; top: 0; }
-    tr:nth-child(even) { background: rgba(15, 23, 42, 0.4); }
-    tr.status-accepted { background: rgba(34, 197, 94, 0.12); }
-    tr.status-missing { color: #94a3b8; }
-    tr.severity-yellow { background: rgba(234, 179, 8, 0.2); }
-    tr.severity-red { background: rgba(220, 38, 38, 0.3); }
-    .tag { display: inline-block; padding: 0.125rem 0.5rem; border-radius: 999px; font-size: 0.75rem; margin-right: 0.25rem; }
-    .tag.accepted { background: rgba(34, 197, 94, 0.2); color: #4ade80; }
-    .tag.rejected { background: rgba(248, 113, 113, 0.2); color: #fca5a5; }
-    .tag.missing { background: rgba(148, 163, 184, 0.2); color: #cbd5f5; }
-    .warning { color: #fbbf24; }
-    .error { color: #f87171; }
-  </style>
-</head>
-<body>
-  <h1>Poe Pricing Checks</h1>
-  <div class=\"timestamp\" id=\"timestamp\">Loading…</div>
-  <table id=\"checks-table\">
-    <thead>
-      <tr>
-        <th>Model</th>
-        <th>Provider</th>
-        <th>Status</th>
-        <th>Reasons</th>
-        <th>Prompt / MTok</th>
-        <th>Completion / MTok</th>
-        <th>Poe Prompt / MTok</th>
-        <th>Poe Completion / MTok</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
-  <script>
-    async function loadChecks() {
-      const response = await fetch('checks.json');
-      const data = await response.json();
-      const tbody = document.querySelector('#checks-table tbody');
-      tbody.innerHTML = '';
-      document.getElementById('timestamp').textContent = `Generated at ${new Date(data.generated_at).toLocaleString()}`;
-      data.models
-        .filter(model => !model.excluded)
-        .forEach(model => {
-          const poePrompt = model.poe_pricing ? model.poe_pricing.prompt_mtok : null;
-          const poeCompletion = model.poe_pricing ? model.poe_pricing.completion_mtok : null;
-          model.providers.forEach(provider => {
-            const row = document.createElement('tr');
-            row.classList.add(`status-${provider.status}`);
-            if (provider.severity && provider.severity !== 'ok') {
-              row.classList.add(`severity-${provider.severity}`);
-            }
-            const prompt = provider.pricing ? provider.pricing.prompt_mtok || provider.pricing.prompt || '—' : '—';
-            const completion = provider.pricing ? provider.pricing.completion_mtok || provider.pricing.completion || '—' : '—';
-            row.innerHTML = `
-              <td>${model.id}${model.selected_provider === provider.name ? ' ★' : ''}</td>
-              <td>${provider.name}</td>
-              <td><span class="tag ${provider.status}">${provider.status}</span></td>
-              <td>${provider.reasons.length ? provider.reasons.join(', ') : '—'}</td>
-              <td>${prompt}</td>
-              <td>${completion}</td>
-              <td>${poePrompt ?? '—'}</td>
-              <td>${poeCompletion ?? '—'}</td>
-            `;
-            tbody.appendChild(row);
-          });
-        });
-
-      const excludedModels = data.models.filter(model => model.excluded);
-      if (excludedModels.length) {
-        const separator = document.createElement('tr');
-        separator.innerHTML = '<td colspan="8"><strong>Excluded models</strong></td>';
-        tbody.appendChild(separator);
-        excludedModels.forEach(model => {
-          const row = document.createElement('tr');
-          row.classList.add('status-missing');
-          row.innerHTML = `
-            <td>${model.id}</td>
-            <td>—</td>
-            <td><span class="tag missing">excluded</span></td>
-            <td>${model.exclusion_reason || 'config rule'}</td>
-            <td colspan="4">Owned by: ${model.owned_by || 'unknown'}</td>
-          `;
-          tbody.appendChild(row);
-        });
-      }
-    }
-
-    loadChecks().catch(error => {
-      const tbody = document.querySelector('#checks-table tbody');
-      tbody.innerHTML = `<tr><td colspan="8" class="error">Failed to load checks: ${error}</td></tr>`;
-    });
-  </script>
-</body>
-</html>
-"""
+    return _read_html_template("checks.html")
 
 
 def render_index_html() -> str:
-    return """<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Poe Models Reports</title>
-  <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; margin: 2rem; background: #0f172a; color: #e2e8f0; }
-    h1 { margin-bottom: 1rem; }
-    ul { list-style: none; padding: 0; margin: 0; }
-    li { margin-bottom: 0.75rem; }
-    a { color: #38bdf8; text-decoration: none; }
-    a:hover { text-decoration: underline; }
-    .muted { color: #94a3b8; font-size: 0.9rem; }
-  </style>
-</head>
-<body>
-  <h1>Poe Models Reports</h1>
-  <p class="muted">Artifacts generated by the nightly pipeline.</p>
-  <ul>
-    <li><a href="models.json">models.json</a> &ndash; latest Poe v1 models with MSRP enrichment.</li>
-    <li><a href="checks.json">checks.json</a> &ndash; machine-readable pricing audit.</li>
-    <li><a href="checks.html">checks.html</a> &ndash; visual checks dashboard.</li>
-    <li><a href="changelog.json">changelog.json</a> &ndash; append-only change log of model IDs.</li>
-    <li><a href="changelog.html">changelog.html</a> &ndash; rendered changelog view.</li>
-  </ul>
-</body>
-</html>
-"""
+    return _read_html_template("index.html")
 
 
 def render_changelog_html() -> str:
-    return """<!DOCTYPE html>
-<html lang=\"en\">
-<head>
-  <meta charset=\"utf-8\" />
-  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />
-  <title>Poe Models Changelog</title>
-  <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; margin: 2rem; background: #0f172a; color: #e2e8f0; }
-    h1 { margin-bottom: 0.5rem; }
-    .subtitle { color: #94a3b8; margin-bottom: 1.5rem; }
-    table { width: 100%; border-collapse: collapse; margin-bottom: 2rem; font-size: 0.9rem; }
-    th, td { border: 1px solid rgba(148, 163, 184, 0.3); padding: 0.5rem; text-align: left; vertical-align: top; }
-    th { background: rgba(30, 41, 59, 0.8); position: sticky; top: 0; }
-    tr:nth-child(even) { background: rgba(15, 23, 42, 0.4); }
-    .tag { display: inline-block; padding: 0.125rem 0.5rem; border-radius: 999px; font-size: 0.75rem; margin-right: 0.25rem; margin-bottom: 0.25rem; }
-    .tag.added { background: rgba(34, 197, 94, 0.2); color: #4ade80; }
-    .tag.removed { background: rgba(248, 113, 113, 0.2); color: #fca5a5; }
-    .tag.initial { background: rgba(96, 165, 250, 0.2); color: #93c5fd; }
-    .muted { color: #94a3b8; }
-    .empty { font-style: italic; color: #94a3b8; }
-  </style>
-</head>
-<body>
-  <h1>Poe Models Changelog</h1>
-  <div class=\"subtitle muted\">Latest changes to published Poe v1 model metadata</div>
-  <table id=\"changelog-table\">
-    <thead>
-      <tr>
-        <th>Date</th>
-        <th>Total Models</th>
-        <th>Added</th>
-        <th>Removed</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr><td colspan=\"4\" class=\"muted\">Loading…</td></tr>
-    </tbody>
-  </table>
-  <script>
-    function renderModelList(cell, items, cssClass) {
-      cell.innerHTML = '';
-      if (!Array.isArray(items) || !items.length) {
-        const empty = document.createElement('span');
-        empty.textContent = '—';
-        empty.classList.add('empty');
-        cell.appendChild(empty);
-        return;
-      }
-      items.forEach(item => {
-        const tag = document.createElement('span');
-        tag.className = `tag ${cssClass}`;
-        tag.textContent = item;
-        cell.appendChild(tag);
-      });
-    }
-
-    function appendTag(cell, text, cssClass) {
-      const tag = document.createElement('span');
-      tag.className = `tag ${cssClass}`;
-      tag.textContent = text;
-      cell.appendChild(document.createTextNode(' '));
-      cell.appendChild(tag);
-    }
-
-    async function loadChangelog() {
-      const tbody = document.querySelector('#changelog-table tbody');
-      try {
-        const response = await fetch('changelog.json');
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}`);
-        }
-        const data = await response.json();
-        const entries = Array.isArray(data) ? data.slice() : [];
-        if (!entries.length) {
-          tbody.innerHTML = '<tr><td colspan="4" class="muted">No changelog entries yet.</td></tr>';
-          return;
-        }
-        entries.sort((a, b) => {
-          const aDate = Date.parse(a.date || '');
-          const bDate = Date.parse(b.date || '');
-          return bDate - aDate;
-        });
-        tbody.innerHTML = '';
-        entries.forEach(entry => {
-          const row = document.createElement('tr');
-          const dateCell = document.createElement('td');
-          const totalCell = document.createElement('td');
-          const addedCell = document.createElement('td');
-          const removedCell = document.createElement('td');
-
-          const dateText = document.createElement('span');
-          if (entry.date) {
-            dateText.textContent = new Date(entry.date).toLocaleString();
-          } else {
-            dateText.textContent = '—';
-            dateText.classList.add('empty');
-          }
-          dateCell.appendChild(dateText);
-          if (entry.initial_snapshot) {
-            appendTag(dateCell, 'initial snapshot', 'initial');
-          }
-
-          if (typeof entry.total_models === 'number') {
-            totalCell.textContent = entry.total_models.toString();
-          } else {
-            totalCell.textContent = '—';
-            totalCell.classList.add('empty');
-          }
-
-          renderModelList(addedCell, entry.added, 'added');
-          renderModelList(removedCell, entry.removed, 'removed');
-
-          row.appendChild(dateCell);
-          row.appendChild(totalCell);
-          row.appendChild(addedCell);
-          row.appendChild(removedCell);
-          tbody.appendChild(row);
-        });
-      } catch (error) {
-        tbody.innerHTML = `<tr><td colspan="4" class="muted">Failed to load changelog: ${error}</td></tr>`;
-      }
-    }
-
-    loadChangelog();
-  </script>
-</body>
-</html>
-"""
+    return _read_html_template("changelog.html")
