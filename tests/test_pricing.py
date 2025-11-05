@@ -14,17 +14,11 @@ from scripts.update_models import (
     load_poe_models,
 )
 
-# ANSI color codes
-class Colors:
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKCYAN = '\033[96m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
+from rich.console import Console
+from rich.table import Table
+from rich.panel import Panel
+
+console = Console()
 
 
 def to_decimal(value):
@@ -41,13 +35,15 @@ def test_all_mapped_models_have_msrp_values():
     poe_models = load_poe_models()
     poe_model_ids = {model.get("id") for model in poe_models.get("data", [])}
 
-    print(f"\n{Colors.BOLD}{Colors.HEADER}{'='*110}{Colors.ENDC}")
-    print(f"{Colors.BOLD}{Colors.HEADER}MSRP PRICING TABLE{Colors.ENDC}")
-    print(f"{Colors.BOLD}{Colors.HEADER}{'='*110}{Colors.ENDC}")
-    print(f"{Colors.BOLD}{'Model Name':<30} {'In Poe V1':<12} {'In models.dev':<15} {'Prompt/MTok':<20} {'Completion/MTok':<20}{Colors.ENDC}")
-    print(f"{Colors.BOLD}{'-'*110}{Colors.ENDC}")
-
     assert len(lookup) == len(mapping), "Each mapping entry should produce MSRP data"
+    
+    # Create a rich table for MSRP pricing
+    table = Table(title="MSRP Pricing Table", show_header=True, header_style="bold magenta")
+    table.add_column("Model Name", style="cyan", no_wrap=False, width=30)
+    table.add_column("In Poe V1", justify="center", style="green")
+    table.add_column("In models.dev", justify="center", style="green")
+    table.add_column("Prompt/MTok", justify="right")
+    table.add_column("Completion/MTok", justify="right")
     
     models_not_in_poe = []
 
@@ -58,37 +54,37 @@ def test_all_mapped_models_have_msrp_values():
         
         # Check if model is in Poe v1 models
         is_in_poe = entry.output_name in poe_model_ids
-        in_poe_v1 = f"{Colors.OKGREEN}✓{Colors.ENDC}" if is_in_poe else f"{Colors.FAIL}✗{Colors.ENDC}"
+        in_poe_v1 = "[green]✓[/green]" if is_in_poe else "[red]✗[/red]"
         
         if not is_in_poe:
             models_not_in_poe.append(entry.output_name)
         
         # Check if model is in models.dev catalog
-        in_models_dev = f"{Colors.OKGREEN}✓{Colors.ENDC}" if entry.output_name in lookup else f"{Colors.FAIL}✗{Colors.ENDC}"
+        in_models_dev = "[green]✓[/green]" if entry.output_name in lookup else "[red]✗[/red]"
         
         # Format pricing values with colors
         if prompt_mtok:
             # Check if price is 0 (red flag)
             if prompt_mtok == "0":
-                prompt_price = f"{Colors.FAIL}${prompt_mtok}{Colors.ENDC}"
+                prompt_price = f"[red]${prompt_mtok}[/red]"
             else:
-                prompt_price = f"{Colors.OKCYAN}${prompt_mtok}{Colors.ENDC}"
+                prompt_price = f"[cyan]${prompt_mtok}[/cyan]"
         else:
-            prompt_price = f"{Colors.WARNING}N/A{Colors.ENDC}"
+            prompt_price = "[yellow]N/A[/yellow]"
             
         if completion_mtok:
             # Check if price is 0 (red flag)
             if completion_mtok == "0":
-                completion_price = f"{Colors.FAIL}${completion_mtok}{Colors.ENDC}"
+                completion_price = f"[red]${completion_mtok}[/red]"
             else:
-                completion_price = f"{Colors.OKCYAN}${completion_mtok}{Colors.ENDC}"
+                completion_price = f"[cyan]${completion_mtok}[/cyan]"
         else:
-            completion_price = f"{Colors.WARNING}N/A{Colors.ENDC}"
+            completion_price = "[yellow]N/A[/yellow]"
         
         # Color the model name based on Poe v1 status
-        model_name_colored = entry.output_name if is_in_poe else f"{Colors.FAIL}{entry.output_name}{Colors.ENDC}"
+        model_name_colored = entry.output_name if is_in_poe else f"[red]{entry.output_name}[/red]"
         
-        print(f"{model_name_colored:<30} {in_poe_v1:<12} {in_models_dev:<15} {prompt_price:<20} {completion_price:<20}")
+        table.add_row(model_name_colored, in_poe_v1, in_models_dev, prompt_price, completion_price)
         
         assert prompt_mtok is not None or completion_mtok is not None, f"No MSRP pricing for {entry.output_name}"
 
@@ -108,14 +104,22 @@ def test_all_mapped_models_have_msrp_values():
                 decimal_value = to_decimal(value)
                 assert decimal_value >= 0, f"{field} for {entry.output_name} must be non-negative"
     
-    print(f"{Colors.BOLD}{Colors.HEADER}{'='*110}{Colors.ENDC}")
-    print(f"{Colors.BOLD}Total models in mapping: {Colors.OKBLUE}{len(mapping)}{Colors.ENDC}")
-    print(f"{Colors.BOLD}Models found in Poe v1: {Colors.OKGREEN}{sum(1 for e in mapping if e.output_name in poe_model_ids)}{Colors.ENDC}")
-    print(f"{Colors.BOLD}Models found in models.dev: {Colors.OKGREEN}{len(lookup)}{Colors.ENDC}")
+    console.print()
+    console.print(table)
+    console.print()
+    
+    # Summary statistics
+    console.print(f"[bold]Total models in mapping:[/bold] [blue]{len(mapping)}[/blue]")
+    console.print(f"[bold]Models found in Poe v1:[/bold] [green]{sum(1 for e in mapping if e.output_name in poe_model_ids)}[/green]")
+    console.print(f"[bold]Models found in models.dev:[/bold] [green]{len(lookup)}[/green]")
     
     if models_not_in_poe:
-        print(f"\n{Colors.BOLD}{Colors.FAIL}Models NOT in Poe v1 (should be removed):{Colors.ENDC}")
-        for model in models_not_in_poe:
-            print(f"  {Colors.FAIL}• {model}{Colors.ENDC}")
+        console.print()
+        warning_text = "\n".join([f"• {model}" for model in models_not_in_poe])
+        console.print(Panel(
+            warning_text,
+            title="[bold red]Models NOT in Poe v1 (should be removed)[/bold red]",
+            border_style="red"
+        ))
     
-    print(f"{Colors.BOLD}{Colors.HEADER}{'='*110}{Colors.ENDC}\n")
+    console.print()
