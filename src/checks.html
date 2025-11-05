@@ -1,45 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Poe Pricing Checks</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Model Pricing Checks</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#5D5CDE'
+          }
+        }
+      }
+    };
+  </script>
   <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; margin: 2rem; background: #0f172a; color: #e2e8f0; }
-    h1 { margin-bottom: 0.5rem; }
-    .timestamp { color: #94a3b8; margin-bottom: 1.5rem; }
-    table { width: 100%; border-collapse: collapse; margin-bottom: 2rem; font-size: 0.9rem; }
-    th, td { border: 1px solid rgba(148, 163, 184, 0.3); padding: 0.5rem; text-align: left; vertical-align: top; }
-    thead tr:first-child th { background: rgba(30, 41, 59, 0.85); position: sticky; top: 0; z-index: 3; }
-    thead tr:nth-child(2) th { background: rgba(22, 33, 55, 0.85); position: sticky; top: 2.5rem; z-index: 2; font-size: 0.8rem; }
-    tr:nth-child(even) { background: rgba(15, 23, 42, 0.35); }
-    .numeric { text-align: right; font-family: 'SFMono-Regular', SFMono, Menlo, Consolas, monospace; }
-    .center { text-align: center; }
-    .provider-header { text-align: center; font-weight: 600; letter-spacing: 0.02em; }
-    .provider-cell { background: rgba(15, 23, 42, 0.25); }
-    .provider-cell.severity-yellow { background: rgba(234, 179, 8, 0.22); }
-    .provider-cell.severity-red { background: rgba(220, 38, 38, 0.28); }
-    .provider-cell.severity-muted { color: #94a3b8; }
-    .provider-cell.selected-provider { box-shadow: inset 0 0 0 1px rgba(93, 92, 222, 0.6); }
-    .tag { display: inline-block; padding: 0.125rem 0.5rem; border-radius: 999px; font-size: 0.75rem; margin-right: 0.25rem; text-transform: lowercase; }
-    .tag.accepted { background: rgba(34, 197, 94, 0.2); color: #4ade80; }
-    .tag.rejected { background: rgba(248, 113, 113, 0.2); color: #fca5a5; }
-    .tag.missing { background: rgba(148, 163, 184, 0.2); color: #cbd5f5; }
-    .tag.ok { background: rgba(59, 130, 246, 0.15); color: #93c5fd; }
-    .model-link { color: #60a5fa; text-decoration: none; font-weight: 500; }
-    .model-link:hover { text-decoration: underline; }
-    .excluded td { color: #94a3b8; }
-    .error { color: #f87171; }
+    @media (max-width: 1024px) {
+      .table-container {
+        overflow-x: auto;
+      }
+      table {
+        min-width: 960px;
+      }
+    }
   </style>
 </head>
-<body>
-  <h1>Poe Pricing Checks</h1>
-  <div class="timestamp" id="timestamp">Loading…</div>
-  <table id="checks-table">
-    <thead></thead>
-    <tbody></tbody>
-  </table>
+<body class="bg-white dark:bg-[#181818] text-gray-900 dark:text-gray-100 transition-colors min-h-screen">
+  <div class="container mx-auto px-4 py-8 max-w-7xl">
+    <div class="mb-8">
+      <h1 class="text-3xl md:text-4xl font-bold mb-2">Model Pricing Checks</h1>
+      <p class="text-gray-600 dark:text-gray-400">Audit pricing consistency across providers and Poe overrides</p>
+    </div>
+
+    <div id="loadingState" class="text-center py-12">
+      <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-gray-300 border-t-primary"></div>
+      <p class="mt-4 text-gray-600 dark:text-gray-400">Loading pricing checks...</p>
+    </div>
+
+    <div id="errorState" class="hidden bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6 text-center">
+      <p class="text-red-800 dark:text-red-300" id="errorMessage"></p>
+      <button
+        onclick="loadChecks()"
+        class="mt-4 px-6 py-2 bg-primary text-white rounded-lg hover:bg-opacity-90 transition-all"
+      >
+        Retry
+      </button>
+    </div>
+
+    <div id="tableContainer" class="hidden space-y-4">
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Pricing Detail by Provider</h2>
+          <p id="timestamp" class="text-sm text-gray-500 dark:text-gray-400"></p>
+        </div>
+        <div class="table-container">
+          <div class="overflow-x-auto">
+            <table id="checks-table" class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+              <thead class="bg-gray-50 dark:bg-gray-900"></thead>
+              <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
+    // Respect system dark mode preference
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.classList.add('dark');
+    }
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+      document.documentElement.classList.toggle('dark', event.matches);
+    });
+
     const BASE_COLUMNS = [
       { key: 'model', label: 'Model', rowSpan: 2 },
       { key: 'selected', label: 'Selected Provider', rowSpan: 2 },
@@ -48,16 +85,45 @@
       { key: 'poe_completion', label: 'Poe Completion / MTok', rowSpan: 2, numeric: true }
     ];
 
+    const providerSeverityClasses = {
+      yellow: ['bg-yellow-50', 'dark:bg-yellow-900/30'],
+      red: ['bg-red-50', 'dark:bg-red-900/30'],
+      muted: ['bg-gray-50', 'dark:bg-gray-900/30', 'text-gray-400', 'dark:text-gray-500']
+    };
+
+    const providerSelectedClasses = ['ring-1', 'ring-primary/60', 'dark:ring-primary/40'];
+
     function sanitizeValue(value) {
       if (value === null || value === undefined) return '—';
       if (typeof value === 'string' && (value.trim() === '' || value.trim().toLowerCase() === 'null')) return '—';
       return value;
     }
 
+    function applyClasses(element, classes) {
+      if (!classes) return;
+      const list = Array.isArray(classes) ? classes : String(classes).split(/\s+/);
+      list.filter(Boolean).forEach(cls => element.classList.add(cls));
+    }
+
+    function createBadge(text, variant) {
+      const span = document.createElement('span');
+      const base = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium';
+      const variants = {
+        accepted: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300',
+        rejected: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300',
+        missing: 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300',
+        ok: 'bg-primary/10 text-primary'
+      };
+      span.className = `${base} ${variants[variant] || variants.ok}`;
+      span.textContent = text;
+      return span;
+    }
+
     function createCell({ text = '—', html = null, numeric = false, classes = [] }) {
       const td = document.createElement('td');
-      if (numeric) td.classList.add('numeric');
-      classes.forEach(cls => td.classList.add(cls));
+      td.className = 'px-6 py-4 text-sm text-gray-700 dark:text-gray-200 align-top';
+      if (numeric) td.classList.add('text-right', 'font-mono');
+      applyClasses(td, classes);
       if (html) {
         td.innerHTML = html;
       } else {
@@ -67,14 +133,18 @@
     }
 
     function buildHeaders(thead, providers) {
+      thead.innerHTML = '';
       const primaryRow = document.createElement('tr');
+      primaryRow.className = 'bg-gray-50 dark:bg-gray-900';
       const secondaryRow = document.createElement('tr');
+      secondaryRow.className = 'bg-gray-100 dark:bg-gray-900/80';
 
       BASE_COLUMNS.forEach(column => {
         const th = document.createElement('th');
+        th.className = 'px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-gray-300';
         th.textContent = column.label;
         th.rowSpan = column.rowSpan || 1;
-        if (column.numeric) th.classList.add('numeric');
+        if (column.numeric) th.classList.add('text-right');
         primaryRow.appendChild(th);
       });
 
@@ -85,13 +155,14 @@
         const th = document.createElement('th');
         th.textContent = provider.label || provider.name;
         th.colSpan = provider.columns.length;
-        th.classList.add('provider-header');
+        th.className = 'px-6 py-3 text-center text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-gray-300';
         primaryRow.appendChild(th);
 
         provider.columns.forEach(column => {
           const subTh = document.createElement('th');
           subTh.textContent = column.label;
-          if (column.numeric) subTh.classList.add('numeric');
+          subTh.className = 'px-4 py-2 text-left text-xs font-semibold text-gray-600 dark:text-gray-300';
+          if (column.numeric) subTh.classList.add('text-right');
           secondaryRow.appendChild(subTh);
         });
       });
@@ -104,20 +175,23 @@
 
     function buildModelRow(model, providersMeta) {
       const row = document.createElement('tr');
+      row.className = 'hover:bg-gray-50 dark:hover:bg-gray-700/40 transition-colors';
 
       const modelCell = document.createElement('td');
+      modelCell.className = 'px-6 py-4 text-sm';
       const link = document.createElement('a');
       link.href = `https://poe.com/${model.id}`;
       link.target = '_blank';
       link.rel = 'noopener noreferrer';
       link.textContent = model.id;
-      link.className = 'model-link';
+      link.className = 'font-medium text-primary hover:text-primary/80 hover:underline transition-colors';
       modelCell.appendChild(link);
       row.appendChild(modelCell);
 
       const selectedCell = document.createElement('td');
+      selectedCell.className = 'px-6 py-4 text-sm text-gray-700 dark:text-gray-200';
       if (model.selected_provider) {
-        selectedCell.innerHTML = `<span class="tag accepted">${model.selected_provider}</span>`;
+        selectedCell.appendChild(createBadge(model.selected_provider, 'accepted'));
       } else {
         selectedCell.textContent = '—';
       }
@@ -126,7 +200,7 @@
       row.appendChild(
         createCell({
           text: model.overrides_applied ? 'yes' : 'no',
-          classes: ['center']
+          classes: ['text-center', 'capitalize']
         })
       );
 
@@ -138,13 +212,13 @@
       providersMeta.forEach(provider => {
         const providerData = model.providers?.[provider.name];
         provider.columns.forEach(column => {
-          const classes = ['provider-cell'];
+          const classes = ['bg-white', 'dark:bg-gray-800'];
           if (providerData) {
             if (providerData.severity && providerData.severity !== 'ok') {
-              classes.push(`severity-${providerData.severity}`);
+              classes.push(...(providerSeverityClasses[providerData.severity] || []));
             }
             if (providerData.selected) {
-              classes.push('selected-provider');
+              classes.push(...providerSelectedClasses);
             }
             const value = providerData.values?.[column.key];
             row.appendChild(
@@ -156,7 +230,7 @@
               })
             );
           } else {
-            classes.push('severity-muted');
+            classes.push(...providerSeverityClasses.muted);
             row.appendChild(
               createCell({
                 text: '—',
@@ -172,76 +246,85 @@
     }
 
     async function loadChecks() {
-      const response = await fetch('checks.json');
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`);
-      }
-      const data = await response.json();
+      const loadingState = document.getElementById('loadingState');
+      const errorState = document.getElementById('errorState');
+      const errorMessage = document.getElementById('errorMessage');
+      const tableContainer = document.getElementById('tableContainer');
       const table = document.getElementById('checks-table');
       const thead = table.querySelector('thead');
       const tbody = table.querySelector('tbody');
-      thead.innerHTML = '';
+
+      loadingState.classList.remove('hidden');
+      errorState.classList.add('hidden');
+      tableContainer.classList.add('hidden');
       tbody.innerHTML = '';
+      thead.innerHTML = '';
 
-      document.getElementById('timestamp').textContent = `Generated at ${new Date(data.generated_at).toLocaleString()}`;
+      try {
+        const response = await fetch('checks.json', { cache: 'no-store' });
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+        const data = await response.json();
+        document.getElementById('timestamp').textContent = `Generated at ${new Date(data.generated_at).toLocaleString()}`;
 
-      const providersMeta = data.providers || [];
-      buildHeaders(thead, providersMeta);
+        const providersMeta = data.providers || [];
+        buildHeaders(thead, providersMeta);
 
-      const totalColumns =
-        BASE_COLUMNS.length +
-        providersMeta.reduce((count, provider) => count + (provider.columns?.length || 0), 0);
+        const totalColumns =
+          BASE_COLUMNS.length +
+          providersMeta.reduce((count, provider) => count + (provider.columns?.length || 0), 0);
 
-      (data.models || []).forEach(model => {
-        tbody.appendChild(buildModelRow(model, providersMeta));
-      });
-
-      const excluded = data.excluded_models || [];
-      if (excluded.length) {
-        const separator = document.createElement('tr');
-        const separatorCell = document.createElement('td');
-        separatorCell.colSpan = totalColumns;
-        separatorCell.innerHTML = '<strong>Excluded models</strong>';
-        separator.appendChild(separatorCell);
-        separator.classList.add('excluded');
-        tbody.appendChild(separator);
-
-        excluded.forEach(entry => {
-          const row = document.createElement('tr');
-          row.classList.add('excluded');
-
-          const idCell = document.createElement('td');
-          idCell.textContent = entry.id;
-          row.appendChild(idCell);
-
-          const statusCell = document.createElement('td');
-          statusCell.innerHTML = '<span class="tag missing">excluded</span>';
-          row.appendChild(statusCell);
-
-          const detailCell = document.createElement('td');
-          detailCell.colSpan = totalColumns - 2;
-          detailCell.textContent = `Owned by: ${entry.owned_by || 'unknown'} (${entry.reason || 'config rule'})`;
-          row.appendChild(detailCell);
-
-          tbody.appendChild(row);
+        (data.models || []).forEach(model => {
+          tbody.appendChild(buildModelRow(model, providersMeta));
         });
+
+        const excluded = data.excluded_models || [];
+        if (excluded.length) {
+          const separator = document.createElement('tr');
+          separator.className = 'bg-gray-50 dark:bg-gray-900/60 text-sm text-gray-600 dark:text-gray-300';
+          const separatorCell = document.createElement('td');
+          separatorCell.colSpan = totalColumns;
+          separatorCell.className = 'px-6 py-3 font-semibold';
+          separatorCell.textContent = 'Excluded models';
+          separator.appendChild(separatorCell);
+          tbody.appendChild(separator);
+
+          excluded.forEach(entry => {
+            const row = document.createElement('tr');
+            row.className = 'text-sm text-gray-500 dark:text-gray-400';
+
+            const idCell = document.createElement('td');
+            idCell.className = 'px-6 py-4';
+            idCell.textContent = entry.id;
+            row.appendChild(idCell);
+
+            const statusCell = document.createElement('td');
+            statusCell.className = 'px-6 py-4';
+            statusCell.appendChild(createBadge('excluded', 'missing'));
+            row.appendChild(statusCell);
+
+            const detailCell = document.createElement('td');
+            detailCell.colSpan = totalColumns - 2;
+            detailCell.className = 'px-6 py-4';
+            detailCell.textContent = `Owned by: ${entry.owned_by || 'unknown'} (${entry.reason || 'config rule'})`;
+            row.appendChild(detailCell);
+
+            tbody.appendChild(row);
+          });
+        }
+
+        loadingState.classList.add('hidden');
+        tableContainer.classList.remove('hidden');
+      } catch (error) {
+        console.error('Failed to load checks:', error);
+        errorMessage.textContent = `Failed to load pricing checks: ${error.message}`;
+        loadingState.classList.add('hidden');
+        errorState.classList.remove('hidden');
       }
     }
 
-    loadChecks().catch(error => {
-      const table = document.getElementById('checks-table');
-      const tbody = table.querySelector('tbody');
-      const thead = table.querySelector('thead');
-      thead.innerHTML = '';
-      const errorRow = document.createElement('tr');
-      const cell = document.createElement('td');
-      cell.colSpan = BASE_COLUMNS.length;
-      cell.classList.add('error');
-      cell.textContent = `Failed to load checks: ${error.message}`;
-      errorRow.appendChild(cell);
-      tbody.innerHTML = '';
-      tbody.appendChild(errorRow);
-    });
+    loadChecks();
   </script>
 </body>
 </html>

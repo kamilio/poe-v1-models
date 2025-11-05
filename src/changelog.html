@@ -1,45 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Poe Models Changelog</title>
-  <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; margin: 2rem; background: #0f172a; color: #e2e8f0; }
-    h1 { margin-bottom: 1rem; }
-    .subtitle { color: #94a3b8; margin-bottom: 1.5rem; }
-    ul { list-style: none; padding: 0; margin: 0; }
-    li.entry { padding-bottom: 1.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid rgba(148, 163, 184, 0.2); }
-    li.entry:last-child { border-bottom: none; }
-    .entry-title { font-weight: 600; font-size: 1rem; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
-    .entry-meta { color: #94a3b8; font-size: 0.9rem; margin-top: 0.25rem; }
-    .status { margin-top: 0.75rem; line-height: 1.5; }
-    .status strong { color: #38bdf8; font-weight: 600; }
-    code { background: rgba(15, 23, 42, 0.6); padding: 0.125rem 0.35rem; border-radius: 0.35rem; font-size: 0.85rem; }
-    .badge { display: inline-block; padding: 0.125rem 0.5rem; border-radius: 999px; font-size: 0.7rem; background: rgba(96, 165, 250, 0.2); color: #93c5fd; }
-    .muted { color: #94a3b8; }
-  </style>
-</head>
-<body>
-  <h1>Poe Models Changelog</h1>
-  <p class="subtitle muted">Latest changes to published Poe v1 model metadata.</p>
-  <ul id="changelog-list">
-    <li class="muted">Loading…</li>
-  </ul>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Model Metadata Changelog</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#5D5CDE'
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-white dark:bg-[#181818] text-gray-900 dark:text-gray-100 transition-colors min-h-screen">
+  <div class="container mx-auto px-4 py-8 max-w-3xl">
+    <div class="mb-8">
+      <h1 class="text-3xl md:text-4xl font-bold mb-2">Model Metadata Changelog</h1>
+      <p class="text-gray-600 dark:text-gray-400">Latest updates to the Poe v1 model catalogue</p>
+    </div>
+
+    <div id="loadingState" class="text-center py-12">
+      <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-gray-300 border-t-primary"></div>
+      <p class="mt-4 text-gray-600 dark:text-gray-400">Loading changelog...</p>
+    </div>
+
+    <div id="errorState" class="hidden bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6 text-center">
+      <p class="text-red-800 dark:text-red-300" id="errorMessage"></p>
+      <button
+        onclick="loadChangelog()"
+        class="mt-4 px-6 py-2 bg-primary text-white rounded-lg hover:bg-opacity-90 transition-all"
+      >
+        Retry
+      </button>
+    </div>
+
+    <div id="changelogContainer" class="hidden">
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
+        <ul id="changelogList" class="list-none divide-y divide-gray-200 dark:divide-gray-700">
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Respect system dark mode preference
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      document.documentElement.classList.add('dark');
+    }
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+      document.documentElement.classList.toggle('dark', event.matches);
+    });
+
+    function createBadge(text) {
+      const badge = document.createElement('span');
+      badge.className = 'inline-flex items-center rounded-full bg-primary/10 text-primary px-2.5 py-0.5 text-xs font-medium';
+      badge.textContent = text;
+      return badge;
+    }
+
     function renderNames(items) {
+      const fragment = document.createDocumentFragment();
       if (!Array.isArray(items) || !items.length) {
         const span = document.createElement('span');
-        span.className = 'muted';
+        span.className = 'text-gray-500 dark:text-gray-400';
         span.textContent = 'none';
-        return span;
+        fragment.appendChild(span);
+        return fragment;
       }
-      const fragment = document.createDocumentFragment();
+
       items.forEach((item, index) => {
         if (index) {
           fragment.appendChild(document.createTextNode(', '));
         }
         const code = document.createElement('code');
+        code.className = 'font-mono text-xs bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 px-1.5 py-0.5 rounded';
         code.textContent = item;
         fragment.appendChild(code);
       });
@@ -47,78 +87,95 @@
     }
 
     function appendStatus(container, label, items) {
-      const paragraph = document.createElement('p');
-      paragraph.className = 'status';
-      const heading = document.createElement('strong');
-      heading.textContent = label + ': ';
-      paragraph.appendChild(heading);
-      paragraph.appendChild(renderNames(items));
-      container.appendChild(paragraph);
+      const wrapper = document.createElement('div');
+      wrapper.className = 'mt-3 text-sm text-gray-700 dark:text-gray-200';
+
+      const heading = document.createElement('span');
+      heading.className = 'font-semibold text-gray-900 dark:text-gray-100';
+      heading.textContent = `${label}: `;
+      wrapper.appendChild(heading);
+
+      wrapper.appendChild(renderNames(items));
+      container.appendChild(wrapper);
     }
 
     async function loadChangelog() {
-      const list = document.getElementById('changelog-list');
+      const loadingState = document.getElementById('loadingState');
+      const errorState = document.getElementById('errorState');
+      const errorMessage = document.getElementById('errorMessage');
+      const changelogContainer = document.getElementById('changelogContainer');
+      const list = document.getElementById('changelogList');
+
+      loadingState.classList.remove('hidden');
+      errorState.classList.add('hidden');
+      changelogContainer.classList.add('hidden');
+      list.innerHTML = '';
+
       try {
-        const response = await fetch('changelog.json');
+        const response = await fetch('changelog.json', { cache: 'no-store' });
         if (!response.ok) {
           throw new Error('HTTP ' + response.status);
         }
         const data = await response.json();
         const entries = Array.isArray(data) ? data.slice() : [];
+
+        entries.sort((a, b) => {
+          const aDate = Date.parse(a?.date || '');
+          const bDate = Date.parse(b?.date || '');
+          return (Number.isNaN(bDate) ? 0 : bDate) - (Number.isNaN(aDate) ? 0 : aDate);
+        });
+
         if (!entries.length) {
-          list.innerHTML = '';
           const empty = document.createElement('li');
-          empty.className = 'muted';
+          empty.className = 'px-6 py-6 text-sm text-gray-500 dark:text-gray-400';
           empty.textContent = 'No changelog entries yet.';
           list.appendChild(empty);
-          return;
+        } else {
+          entries.forEach(entry => {
+            const item = document.createElement('li');
+            item.className = 'px-6 py-5';
+
+            const titleRow = document.createElement('div');
+            titleRow.className = 'flex flex-wrap items-center gap-2';
+
+            const title = document.createElement('span');
+            title.className = 'text-base font-semibold text-gray-900 dark:text-gray-100';
+            if (entry.date) {
+              title.textContent = new Date(entry.date).toLocaleString();
+            } else {
+              title.textContent = 'Date unavailable';
+              title.classList.add('text-gray-500', 'dark:text-gray-400');
+            }
+            titleRow.appendChild(title);
+
+            if (entry.initial_snapshot) {
+              titleRow.appendChild(createBadge('initial snapshot'));
+            }
+            item.appendChild(titleRow);
+
+            const meta = document.createElement('div');
+            meta.className = 'mt-1 text-sm text-gray-500 dark:text-gray-400';
+            if (typeof entry.total_models === 'number') {
+              meta.textContent = `${entry.total_models} total models`;
+            } else {
+              meta.textContent = 'Total models unavailable';
+            }
+            item.appendChild(meta);
+
+            appendStatus(item, 'Added', entry.added);
+            appendStatus(item, 'Removed', entry.removed);
+
+            list.appendChild(item);
+          });
         }
-        entries.sort((a, b) => {
-          const aDate = Date.parse(a.date || '');
-          const bDate = Date.parse(b.date || '');
-          return bDate - aDate;
-        });
-        list.innerHTML = '';
-        entries.forEach(entry => {
-          const item = document.createElement('li');
-          item.className = 'entry';
 
-          const title = document.createElement('div');
-          title.className = 'entry-title';
-          if (entry.date) {
-            title.textContent = new Date(entry.date).toLocaleString();
-          } else {
-            title.textContent = 'Date unavailable';
-            title.classList.add('muted');
-          }
-          if (entry.initial_snapshot) {
-            const badge = document.createElement('span');
-            badge.className = 'badge';
-            badge.textContent = 'initial snapshot';
-            title.appendChild(badge);
-          }
-          item.appendChild(title);
-
-          const meta = document.createElement('div');
-          meta.className = 'entry-meta';
-          if (typeof entry.total_models === 'number') {
-            meta.textContent = entry.total_models + ' total models';
-          } else {
-            meta.textContent = 'Total models unavailable';
-          }
-          item.appendChild(meta);
-
-          appendStatus(item, 'Added', entry.added);
-          appendStatus(item, 'Removed', entry.removed);
-
-          list.appendChild(item);
-        });
+        loadingState.classList.add('hidden');
+        changelogContainer.classList.remove('hidden');
       } catch (error) {
-        list.innerHTML = '';
-        const failure = document.createElement('li');
-        failure.className = 'muted';
-        failure.textContent = 'Failed to load changelog: ' + error;
-        list.appendChild(failure);
+        console.error('Failed to load changelog:', error);
+        errorMessage.textContent = 'Failed to load changelog: ' + error.message;
+        loadingState.classList.add('hidden');
+        errorState.classList.remove('hidden');
       }
     }
 
