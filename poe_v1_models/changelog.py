@@ -22,9 +22,11 @@ def build_changelog_entry(
     entry: Dict[str, Any] = {
         "date": _resolve_timestamp(timestamp),
         "total_models": len(current_ids),
-        "added": added,
-        "removed": removed,
     }
+    if added:
+        entry["added"] = added
+    if removed:
+        entry["removed"] = removed
     if previous_payload is None:
         entry["initial_snapshot"] = True
     return entry
@@ -76,7 +78,14 @@ def build_changelog_from_snapshots(
                 if value is not None and key not in entry:
                     entry[key] = value
 
-        entries.append(entry)
+        should_include = (
+            previous_payload is None
+            or entry.get("added")
+            or entry.get("removed")
+        )
+        if should_include:
+            entries.append(entry)
+
         previous_payload = payload
 
     return entries
