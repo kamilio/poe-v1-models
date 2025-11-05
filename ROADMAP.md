@@ -14,9 +14,14 @@
         - [x] `checks.html` visualises the JSON (yellow for blocked prices, red where Poe exceeds MSRP).
 - [x] GH Pages publishing
     - Outputs generated on CI only; `dist/` is no longer tracked on `main`.
-- [ ] add ability to run the script locally, maybe via make
-    - make install 
-    - make start (or something better) - it should execute and run mini webserver with direct links to open the pages
+- [x] add ability to run the script locally, maybe via make
+    - `make install` provisions a local virtualenv and installs runtime dependencies.
+    - `make start` regenerates pricing assets and serves `dist/` via a lightweight HTTP server with direct links to key pages.
+- [x] index.html
+    - removed the provider dropdown in favour of an output modality filter sourced from model metadata.
+- [x] report should not add new row for each provider, it should be a new columns (colspan), bascially the header is two rows. The regular things and then also the provider with subitems for all attributes.
+    - models.dev pricing now respects its per-million-token units through provider-specific scaling.
+    - provider columns and attribute metadata are defined in each provider, so the HTML renders columns directly from `checks.json`.
 
 ## Changelog
 - [x] Generate changelog json, keep reading and appending to it
