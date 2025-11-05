@@ -22,9 +22,14 @@
 - [x] report should not add new row for each provider, it should be a new columns (colspan), bascially the header is two rows. The regular things and then also the provider with subitems for all attributes.
     - models.dev pricing now respects its per-million-token units through provider-specific scaling.
     - provider columns and attribute metadata are defined in each provider, so the HTML renders columns directly from `checks.json`.
+    
 
 ## Changelog
 - [x] Generate changelog json, keep reading and appending to it
     - [x] Store a single snapshot of the prior run in `dist/models_previous.json` for GH Pages publication.
     - [x] Compare with the previous snapshot to append `{"date", "added", "removed", "total_models"}` entries in `dist/changelog.json`.
     - [x] Publish `dist/changelog.html` to render the changelog feed.
+- [ ] Changelog inner workings
+    - every `models.json` is published to GitHub Releases (timestamped version) and becomes the single source of truth; tooling only reads the most recent 30 releases.
+    - the changelog generator consumes those releases via the GitHub REST API and diffs models added / removed for `dist/changelog.json`.
+    - local runs hit the GitHub API (unauthenticated for public repos, optional token support if needed) so the flow can be exercised outside CI.

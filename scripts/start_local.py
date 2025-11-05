@@ -12,6 +12,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 DIST_DIR = ROOT / "dist"
 
+# Ensure project root is on sys.path so absolute imports find sibling scripts.
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Build pricing artifacts and serve them locally.")

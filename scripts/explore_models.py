@@ -64,15 +64,24 @@ def load_poe_models(force_remote: bool = False) -> List[PoeModel]:
     return models
 
 
-def load_model_mapping(path: Path = MAPPING_PATH) -> Dict[str, str]:
-    """Load existing Poe -> models.dev mappings."""
+def load_model_mapping(path: Path = MAPPING_PATH) -> Dict[str, Dict[str, str]]:
+    """Load existing Poe -> provider mappings."""
     if not path.exists():
         return {}
     data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
     mapping = data.get("model_mapping", {}) if isinstance(data, dict) else {}
     if not isinstance(mapping, dict):
         raise ValueError("model_mapping config must be a mapping")
-    return {str(key): str(value) for key, value in mapping.items()}
+    
+    # Convert to dict of dicts for multi-provider support
+    result: Dict[str, Dict[str, str]] = {}
+    for poe_id, providers in mapping.items():
+        if isinstance(providers, dict):
+            result[str(poe_id)] = {str(k): str(v) for k, v in providers.items()}
+        elif isinstance(providers, str):
+            # Legacy format: single string value assumed to be models.dev
+            result[str(poe_id)] = {"models.dev": str(providers)}
+    return result
 
 
 def load_models_dev_catalog(force_remote: bool = False) -> Dict[str, Any]:
@@ -134,6 +143,33 @@ def suggest_models(provider: str, poe_model_id: str, catalog: Dict[str, Any]) ->
     return [norm_lookup[match] for match in matches]
 
 
+def should_use_auto(poe_model: PoeModel, provider_key: str) -> bool:
+    """Determine if 'auto' should be used instead of explicit mapping."""
+    if "/" not in provider_key:
+        return False
+    
+    provider, model_name = provider_key.split("/", 1)
+    
+    # Normalize for comparison
+    poe_owned_by = poe_model.owned_by.lower()
+    poe_id = poe_model.id.lower()
+    provider_lower = provider.lower()
+    model_name_lower = model_name.lower()
+    
+    # Check if owner matches provider
+    owner_matches = poe_owned_by == provider_lower
+    
+    # Check if model name matches (allowing for variations)
+    name_matches = (
+        poe_id == model_name_lower or
+        poe_id.replace("-", "") == model_name_lower.replace("-", "") or
+        model_name_lower in poe_id or
+        poe_id in model_name_lower
+    )
+    
+    return owner_matches and name_matches
+
+
 def prompt_for_mapping(
     provider: str,
     poe_model: PoeModel,
@@ -149,9 +185,16 @@ def prompt_for_mapping(
     if suggestions:
         console.print("  [bold]Suggested models.dev entries:[/bold]")
         for index, suggestion in enumerate(suggestions, start=1):
-            console.print(f"    [green][{index}][/green] [cyan]{provider}/{suggestion}[/cyan]")
+            full_key = f"{provider}/{suggestion}"
+            # Check if we should recommend 'auto'
+            if should_use_auto(poe_model, full_key):
+                console.print(f"    [green][{index}][/green] [cyan]{full_key}[/cyan] [bold green](→ auto)[/bold green]")
+            else:
+                console.print(f"    [green][{index}][/green] [cyan]{full_key}[/cyan]")
     else:
         console.print("  [yellow]No models.dev suggestions were found.[/yellow]")
+
+    console.print("  [dim]Options: [1-9] select, [m] manual entry, [a] use 'auto', [Enter] skip[/dim]")
 
     while True:
         try:
@@ -169,46 +212,72 @@ def prompt_for_mapping(
         if raw == "":
             console.print("  [dim]Skipping.[/dim]")
             return None
+        if raw.lower() == "a":
+            console.print(f"  [green]✓[/green] Selected [cyan]auto[/cyan]")
+            return "auto"
         if raw.isdigit():
             index = int(raw)
             if 1 <= index <= len(suggestions):
                 choice = f"{provider}/{suggestions[index - 1]}"
-                console.print(f"  [green]✓[/green] Selected [cyan]{choice}[/cyan]")
-                return choice
+                # Automatically use 'auto' if it matches
+                if should_use_auto(poe_model, choice):
+                    console.print(f"  [green]✓[/green] Selected [cyan]auto[/cyan] [dim](matches {choice})[/dim]")
+                    return "auto"
+                else:
+                    console.print(f"  [green]✓[/green] Selected [cyan]{choice}[/cyan]")
+                    return choice
             console.print("  [red]Invalid selection.[/red]")
             continue
         if raw.lower() == "m":
-            manual = Prompt.ask("  Enter provider/model", console=console).strip()
+            manual = Prompt.ask("  Enter provider/model or 'auto'", console=console).strip()
             if not manual:
                 continue
+            if manual.lower() == "auto":
+                console.print(f"  [green]✓[/green] Selected [cyan]auto[/cyan]")
+                return "auto"
             if "/" not in manual:
-                console.print("  [red]Expected format 'provider/model'.[/red]")
+                console.print("  [red]Expected format 'provider/model' or 'auto'.[/red]")
                 continue
+            # Check if we should recommend auto
+            if should_use_auto(poe_model, manual):
+                use_auto = Prompt.ask(
+                    f"  [yellow]This matches the pattern for 'auto'. Use 'auto' instead?[/yellow]",
+                    choices=["Y", "n"],
+                    default="Y",
+                    console=console
+                ).strip().lower()
+                if use_auto != "n":
+                    console.print(f"  [green]✓[/green] Selected [cyan]auto[/cyan]")
+                    return "auto"
             console.print(f"  [green]✓[/green] Selected [cyan]{manual}[/cyan]")
             return manual
         console.print("  [red]Unrecognised input.[/red]")
 
 
-def append_to_mapping(entries: Sequence[Tuple[str, str]], path: Path = MAPPING_PATH) -> None:
-    """Append new mapping entries to the YAML config while preserving existing content."""
-    if not entries:
-        return
-
-    existing_text = path.read_text(encoding="utf-8") if path.exists() else ""
-    with path.open("a", encoding="utf-8") as handle:
-        if existing_text and not existing_text.endswith("\n"):
-            handle.write("\n")
-        for poe_id, target in entries:
-            handle.write(f"  {poe_id}: {target}\n")
-
-
-def append_single_mapping(poe_id: str, target: str, path: Path = MAPPING_PATH) -> None:
+def append_single_mapping(poe_id: str, provider: str, target: str, path: Path = MAPPING_PATH) -> None:
     """Append a single mapping entry to the YAML config immediately."""
-    existing_text = path.read_text(encoding="utf-8") if path.exists() else ""
-    with path.open("a", encoding="utf-8") as handle:
-        if existing_text and not existing_text.endswith("\n"):
-            handle.write("\n")
-        handle.write(f"  {poe_id}: {target}\n")
+    # Load existing mapping to update properly
+    if path.exists():
+        data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    else:
+        data = {}
+    
+    if "model_mapping" not in data:
+        data["model_mapping"] = {}
+    
+    # Add or update the mapping
+    if poe_id not in data["model_mapping"]:
+        data["model_mapping"][poe_id] = {}
+    
+    if not isinstance(data["model_mapping"][poe_id], dict):
+        # Convert legacy format
+        old_value = data["model_mapping"][poe_id]
+        data["model_mapping"][poe_id] = {"models.dev": old_value}
+    
+    data["model_mapping"][poe_id][provider] = target
+    
+    # Write back the entire file
+    path.write_text(yaml.dump(data, default_flow_style=False, sort_keys=False, allow_unicode=True), encoding="utf-8")
 
 
 def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
@@ -241,18 +310,26 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         models = load_poe_models(force_remote=args.remote)
         catalog = load_models_dev_catalog()
     except (OSError, URLError, RuntimeError, yaml.YAMLError, json.JSONDecodeError) as exc:
-        console.print(f"[bold red]Error:[/bold red] {exc}", file=sys.stderr)
+        console.print(f"[bold red]Error:[/bold red] {exc}")
         return 1
 
-    providers_in_mapping = sorted(
-        {entry.split("/", 1)[0] for entry in mapping.values() if isinstance(entry, str) and "/" in entry}
-    )
+    # Extract all unique providers from models.dev values (e.g., "openai" from "openai/gpt-4o")
+    providers_in_mapping_set: set[str] = set()
+    for provider_dict in mapping.values():
+        if isinstance(provider_dict, dict):
+            for provider_key, value in provider_dict.items():
+                if provider_key == "models.dev" and isinstance(value, str) and "/" in value and value != "auto":
+                    # Extract provider from "provider/model" format
+                    provider = value.split("/", 1)[0]
+                    providers_in_mapping_set.add(provider)
+    providers_in_mapping: List[str] = sorted(providers_in_mapping_set)
 
     if args.providers:
         requested = {normalize_provider(provider) for provider in args.providers}
-        providers_in_mapping = [
+        providers_in_mapping_filtered: List[str] = [
             provider for provider in providers_in_mapping if normalize_provider(provider) in requested
         ]
+        providers_in_mapping = providers_in_mapping_filtered
         if not providers_in_mapping:
             console.print("[yellow]No providers from the request are present in the mapping configuration.[/yellow]")
             return 0
@@ -265,7 +342,13 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         console.print("[yellow]No overlapping providers found between Poe models and the existing mapping.[/yellow]")
         return 0
 
-    existing_ids = set(mapping.keys())
+    # Track which models have mappings for which providers
+    existing_mappings: Dict[str, set] = {}
+    for poe_id, provider_dict in mapping.items():
+        if isinstance(provider_dict, dict):
+            existing_mappings[poe_id] = set(provider_dict.keys())
+        else:
+            existing_mappings[poe_id] = {"models.dev"}
     
     # Create a table for matched providers
     table = Table(title="Matched Providers", show_header=True, header_style="bold magenta")
@@ -276,7 +359,10 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     
     for provider, provider_models in sorted(grouped_models.items()):
         owners = sorted({model.owned_by for model in provider_models})
-        mapped_count = sum(1 for model in provider_models if model.id in existing_ids)
+        mapped_count = sum(
+            1 for model in provider_models
+            if model.id in existing_mappings and provider in existing_mappings.get(model.id, set())
+        )
         table.add_row(
             provider,
             str(len(provider_models)),
@@ -288,8 +374,12 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
 
     additions_count = 0
     for provider, provider_models in sorted(grouped_models.items()):
+        # Find candidates that don't have this provider mapped yet
         candidates = sorted(
-            (model for model in provider_models if model.id not in existing_ids),
+            (
+                model for model in provider_models
+                if model.id not in existing_mappings or provider not in existing_mappings.get(model.id, set())
+            ),
             key=lambda model: model.id.lower(),
         )
         if not candidates:
@@ -301,31 +391,36 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             if not choice:
                 continue
 
-            if candidate.id in existing_ids:
-                console.print("  [yellow]This model already has a mapping; skipping duplicate.[/yellow]")
+            # Check if this specific provider mapping already exists
+            if candidate.id in existing_mappings and provider in existing_mappings.get(candidate.id, set()):
+                console.print(f"  [yellow]This model already has a {provider} mapping; skipping duplicate.[/yellow]")
                 continue
 
-            choice_provider = choice.split("/", 1)[0]
-            if choice_provider != provider:
-                confirm = Prompt.ask(
-                    f"  [yellow]Provider differs from Poe owner ({provider}). Add anyway?[/yellow]",
-                    choices=["y", "N"],
-                    default="N",
-                    console=console
-                ).strip().lower()
-                if confirm != "y":
-                    console.print("  [dim]Skipped due to provider mismatch.[/dim]")
-                    continue
+            # Validate provider if not using 'auto'
+            if choice != "auto" and "/" in choice:
+                choice_provider = choice.split("/", 1)[0]
+                if choice_provider != provider:
+                    confirm = Prompt.ask(
+                        f"  [yellow]Provider differs from Poe owner ({provider}). Add anyway?[/yellow]",
+                        choices=["y", "N"],
+                        default="N",
+                        console=console
+                    ).strip().lower()
+                    if confirm != "y":
+                        console.print("  [dim]Skipped due to provider mismatch.[/dim]")
+                        continue
 
             # Write immediately to file (unless dry-run)
             if args.dry_run:
-                console.print(f"  [yellow][DRY RUN][/yellow] Would add: [cyan]{candidate.id}[/cyan] → [green]{choice}[/green]")
+                console.print(f"  [yellow][DRY RUN][/yellow] Would add: [cyan]{candidate.id}[/cyan] [{provider}] → [green]{choice}[/green]")
             else:
-                append_single_mapping(candidate.id, choice)
-                console.print(f"  [bold green]✓ Saved:[/bold green] [cyan]{candidate.id}[/cyan] → [green]{choice}[/green]")
+                append_single_mapping(candidate.id, provider, choice)
+                console.print(f"  [bold green]✓ Saved:[/bold green] [cyan]{candidate.id}[/cyan] [{provider}] → [green]{choice}[/green]")
             
-            # Update existing_ids to prevent duplicates in the same session
-            existing_ids.add(candidate.id)
+            # Update existing_mappings to prevent duplicates in the same session
+            if candidate.id not in existing_mappings:
+                existing_mappings[candidate.id] = set()
+            existing_mappings[candidate.id].add(provider)
             additions_count += 1
 
     if additions_count == 0:
