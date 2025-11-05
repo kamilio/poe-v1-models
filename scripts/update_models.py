@@ -20,6 +20,7 @@ from poe_v1_models.pipeline import PipelineResult, run_pipeline
 from poe_v1_models.reporting import (
     build_checks_report,
     render_changelog_html,
+    render_index_html,
     render_checks_html,
 )
 
@@ -30,6 +31,7 @@ CHECKS_JSON_PATH = Path("dist/checks.json")
 CHECKS_HTML_PATH = Path("dist/checks.html")
 CHANGELOG_JSON_PATH = Path("dist/changelog.json")
 CHANGELOG_HTML_PATH = Path("dist/changelog.html")
+INDEX_HTML_PATH = Path("dist/index.html")
 REMOTE_TIMEOUT = 10
 
 
@@ -40,6 +42,7 @@ def main() -> None:
     write_models(result)
     write_checks(result)
     write_checks_html()
+    write_index_html()
     update_changelog(result.payload, previous_payload)
     write_changelog_html()
 
@@ -64,6 +67,11 @@ def write_checks(result: PipelineResult) -> None:
 def write_checks_html() -> None:
     CHECKS_HTML_PATH.parent.mkdir(parents=True, exist_ok=True)
     CHECKS_HTML_PATH.write_text(render_checks_html(), encoding="utf-8")
+
+
+def write_index_html() -> None:
+    INDEX_HTML_PATH.parent.mkdir(parents=True, exist_ok=True)
+    INDEX_HTML_PATH.write_text(render_index_html(), encoding="utf-8")
 
 
 def write_changelog_html() -> None:
