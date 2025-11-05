@@ -217,13 +217,25 @@
       const cells = [];
       const modelCell = document.createElement('td');
       modelCell.className = 'px-6 py-4 text-sm';
+      const modelContent = document.createElement('div');
+      modelContent.className = 'flex flex-wrap items-center gap-3';
       const link = document.createElement('a');
       link.href = `https://poe.com/${model.id}`;
       link.target = '_blank';
       link.rel = 'noopener noreferrer';
       link.textContent = model.id;
       link.className = 'font-medium text-primary hover:text-primary/80 hover:underline transition-colors';
-      modelCell.appendChild(link);
+      modelContent.appendChild(link);
+      const ownerValue = sanitizeValue(model.owned_by);
+      const ownerBadge = document.createElement('span');
+      const ownerClasses =
+        ownerValue === '—'
+          ? 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300'
+          : 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary';
+      ownerBadge.className = ownerClasses;
+      ownerBadge.textContent = ownerValue === '—' ? 'Owned by —' : `Owned by ${ownerValue}`;
+      modelContent.appendChild(ownerBadge);
+      modelCell.appendChild(modelContent);
       cells.push({ element: modelCell });
 
       const selectedCell = document.createElement('td');
