@@ -1,6 +1,9 @@
 name: Update Poe Models
 
 on:
+  push:
+    branches:
+      - main
   schedule:
     - cron: "0 1 * * *"
   workflow_dispatch:
