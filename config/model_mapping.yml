@@ -1,65 +1,57 @@
-# Model mapping - maps Poe IDs to provider/model paths in models.dev
 model_mapping:
-  # OpenAI Models
+  Claude-Haiku-3.5: anthropic/claude-3-5-haiku-latest
+  Claude-Haiku-3.5-Search: anthropic/claude-3-5-haiku-latest
+  Claude-Sonnet-3.5-June: anthropic/claude-3-5-sonnet-20240620
+  Claude-Sonnet-3.5: anthropic/claude-3-5-sonnet-20241022
+  Claude-Sonnet-3.7: anthropic/claude-3-7-sonnet-latest
+  Claude-Sonnet-3.7-Reasoning: anthropic/claude-3-7-sonnet-latest
+  Claude-Sonnet-3.7-Search: anthropic/claude-3-7-sonnet-latest
+  Claude-Haiku-3: anthropic/claude-3-haiku-20240307
+  Claude-Opus-3: anthropic/claude-3-opus-20240229
+  Claude-Haiku-4.5: anthropic/claude-haiku-4-5
+  Claude-Opus-4-Search: anthropic/claude-opus-4-0
+  Claude-Opus-4.1: anthropic/claude-opus-4-1
+  Claude-Opus-4: anthropic/claude-opus-4-20250514
+  Claude-Opus-4-Reasoning: anthropic/claude-opus-4-20250514
+  Claude-Sonnet-4-Reasoning: anthropic/claude-sonnet-4-0
+  Claude-Sonnet-4-Search: anthropic/claude-sonnet-4-0
+  Claude-Sonnet-4: anthropic/claude-sonnet-4-20250514
+  Claude-Sonnet-4.5: anthropic/claude-sonnet-4-5
+  Gemini-2.0-Flash: google/gemini-2.0-flash
+  Gemini-2.0-Flash-Lite: google/gemini-2.0-flash-lite
+  Gemini-2.5-Flash: google/gemini-2.5-flash
+  Nano-Banana: google/gemini-2.5-flash-image
+  Gemini-2.5-Flash-Lite: google/gemini-2.5-flash-lite
+  Gemini-2.0-Flash-Preview: google/gemini-2.5-flash-preview-05-20
+  Gemini-2.5-Flash-TTS: google/gemini-2.5-flash-preview-tts
+  Gemini-2.5-Pro: google/gemini-2.5-pro
+  Gemini-2.5-Pro-TTS: google/gemini-2.5-pro-preview-tts
+  Mistral-Large-2: mistral/mistral-large-latest
+  Mistral-Medium-3: mistral/mistral-medium-2505
+  Mistral-Medium-3.1: mistral/mistral-medium-2508
+  Mistral-Medium: mistral/mistral-medium-latest
+  GPT-3.5-Turbo: openai/gpt-3.5-turbo
+  GPT-4-Classic: openai/gpt-4
+  GPT-4-Turbo: openai/gpt-4-turbo
+  GPT-4.1: openai/gpt-4.1
+  GPT-4.1-mini: openai/gpt-4.1-mini
+  GPT-4.1-nano: openai/gpt-4.1-nano
+  GPT-4o: openai/gpt-4o
+  GPT-4o-Aug: openai/gpt-4o-2024-08-06
+  ChatGPT-4o-Latest: openai/gpt-4o-2024-11-20
+  GPT-4o-mini: openai/gpt-4o-mini
   GPT-5: openai/gpt-5
   GPT-5-Chat: openai/gpt-5-chat-latest
   GPT-5-Codex: openai/gpt-5-codex
   GPT-5-mini: openai/gpt-5-mini
   GPT-5-nano: openai/gpt-5-nano
-  GPT-4o: openai/gpt-4o
-  ChatGPT-4o-Latest: openai/gpt-4o-2024-11-20
-  GPT-4o-Aug: openai/gpt-4o-2024-08-06
-  GPT-4o-mini: openai/gpt-4o-mini
-  GPT-4.1: openai/gpt-4.1
-  GPT-4.1-mini: openai/gpt-4.1-mini
-  GPT-4.1-nano: openai/gpt-4.1-nano
-  GPT-4-Classic: openai/gpt-4
-  GPT-4-Turbo: openai/gpt-4-turbo
-  GPT-3.5-Turbo: openai/gpt-3.5-turbo
   o1: openai/o1
   o1-pro: openai/o1-pro
   o3: openai/o3
-  o3-pro: openai/o3-pro
-  o3-mini: openai/o3-mini
   o3-deep-research: openai/o3-deep-research
+  o3-mini: openai/o3-mini
+  o3-pro: openai/o3-pro
   o4-mini: openai/o4-mini
   o4-mini-deep-research: openai/o4-mini-deep-research
   GPT-OSS-120B: openai/text-embedding-3-large
   GPT-OSS-20B: openai/text-embedding-3-small
-
-  # Anthropic Models
-  Claude-Sonnet-4.5: anthropic/claude-sonnet-4-5
-  Claude-Sonnet-4: anthropic/claude-sonnet-4-20250514
-  Claude-Haiku-4.5: anthropic/claude-haiku-4-5
-  Claude-Opus-4.1: anthropic/claude-opus-4-1
-  Claude-Opus-4: anthropic/claude-opus-4-20250514
-  Claude-Sonnet-3.7: anthropic/claude-3-7-sonnet-latest
-  Claude-Sonnet-3.5: anthropic/claude-3-5-sonnet-20241022
-  Claude-Sonnet-3.5-June: anthropic/claude-3-5-sonnet-20240620
-  Claude-Haiku-3.5: anthropic/claude-3-5-haiku-latest
-  Claude-Opus-3: anthropic/claude-3-opus-20240229
-  Claude-Haiku-3: anthropic/claude-3-haiku-20240307
-
-  # Google Models
-  Nano-Banana: google/gemini-2.5-flash-image
-  Gemini-2.5-Pro: google/gemini-2.5-pro
-  Gemini-2.5-Flash: google/gemini-2.5-flash
-  Gemini-2.5-Flash-Lite: google/gemini-2.5-flash-lite
-  Gemini-2.0-Flash: google/gemini-2.0-flash
-  Gemini-2.0-Flash-Lite: google/gemini-2.0-flash-lite
-  Gemini-2.5-Pro-TTS: google/gemini-2.5-pro-preview-tts
-  Gemini-2.5-Flash-TTS: google/gemini-2.5-flash-preview-tts
-
-  # Mistral Models
-  Mistral-Large-2: mistral/mistral-large-latest
-  Mistral-Medium-3.1: mistral/mistral-medium-2508
-  Mistral-Medium-3: mistral/mistral-medium-2505
-  Mistral-Medium: mistral/mistral-medium-latest
-  Claude-Haiku-3.5-Search: anthropic/claude-3-5-haiku-latest
-  Claude-Opus-4-Reasoning: anthropic/claude-opus-4-20250514
-  Claude-Opus-4-Search: anthropic/claude-opus-4-0
-  Claude-Sonnet-3.7-Reasoning: anthropic/claude-3-7-sonnet-latest
-  Claude-Sonnet-3.7-Search: anthropic/claude-3-7-sonnet-latest
-  Claude-Sonnet-4-Reasoning: anthropic/claude-sonnet-4-0
-  Claude-Sonnet-4-Search: anthropic/claude-sonnet-4-0
-  Gemini-2.0-Flash-Preview: google/gemini-2.5-flash-preview-05-20
