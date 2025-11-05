@@ -3,12 +3,13 @@ providers:
     - models.dev
     - openrouter
 exclusions:
-  ids:
-    - assistant
-    - web-search
-    - python
-  owned_by:
-    - poe
+  - assistant
+  - id: web-search
+    reason: not relevant
+  - owner: poe
+    reason: we are not model providers
+  - owner: opentools
+    reason: just tools, not models
 overrides:
   ChatGPT-4o-Latest:
     metadata:

@@ -33,23 +33,9 @@ jobs:
 
       - name: Check for model changes
         id: release_check
-        run: |
-          if [ ! -f dist/models.json ]; then
-            echo "models.json missing after generation" >&2
-            exit 1
-          fi
-          if [ ! -f dist/models_previous.json ]; then
-            echo "release=true" >> "$GITHUB_OUTPUT"
-            echo "No previous snapshot detected; release will be created."
-            exit 0
-          fi
-          if cmp -s dist/models.json dist/models_previous.json; then
-            echo "release=false" >> "$GITHUB_OUTPUT"
-            echo "models.json unchanged; skipping release."
-          else
-            echo "release=true" >> "$GITHUB_OUTPUT"
-            echo "models.json changed; release will be created."
-          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python scripts/check_release_needed.py
 
       - name: Prepare release metadata
         if: steps.release_check.outputs.release == 'true'
@@ -81,6 +67,12 @@ jobs:
           asset_path: dist/models.json
           asset_name: models.json
           asset_content_type: application/json
+
+      - name: Refresh changelog artifacts
+        if: steps.release_check.outputs.release == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python scripts/build_changelog.py
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

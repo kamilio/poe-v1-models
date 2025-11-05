@@ -60,8 +60,13 @@ def run_pipeline() -> PipelineResult:
         if not isinstance(model_id, str):
             continue
 
-        if config.exclusions.should_exclude(model):
-            excluded[model_id] = model
+        exclusion_rule = config.exclusions.rule_for(model)
+        if exclusion_rule:
+            excluded_payload = copy.deepcopy(model)
+            excluded_payload["_config_exclusion_rule"] = exclusion_rule.kind
+            if exclusion_rule.reason:
+                excluded_payload["_config_exclusion_reason"] = exclusion_rule.reason
+            excluded[model_id] = excluded_payload
             continue
 
         model = copy.deepcopy(model)

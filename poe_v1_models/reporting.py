@@ -74,13 +74,17 @@ def build_checks_report(result: PipelineResult) -> Dict[str, Any]:
 
     excluded: List[Dict[str, Any]] = []
     for model_id, model_data in result.excluded_models.items():
-        excluded.append(
-            {
-                "id": model_id,
-                "owned_by": model_data.get("owned_by"),
-                "reason": "config_exclusion",
-            }
-        )
+        reason = model_data.get("_config_exclusion_reason") if isinstance(model_data, Mapping) else None
+        rule_type = model_data.get("_config_exclusion_rule") if isinstance(model_data, Mapping) else None
+
+        payload: Dict[str, Any] = {
+            "id": model_id,
+            "owned_by": model_data.get("owned_by") if isinstance(model_data, Mapping) else None,
+            "reason": reason or "config_exclusion",
+        }
+        if rule_type:
+            payload["rule_type"] = rule_type
+        excluded.append(payload)
 
     return {
         "generated_at": datetime.now(timezone.utc).isoformat(),

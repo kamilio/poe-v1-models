@@ -342,13 +342,22 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         console.print("[yellow]No overlapping providers found between Poe models and the existing mapping.[/yellow]")
         return 0
 
-    # Track which models have mappings for which providers
-    existing_mappings: Dict[str, set] = {}
+    # Track which models have mappings in models.dev for which actual providers
+    # e.g., if models.dev: "openai/gpt-4o", track that this model has "openai" mapped
+    existing_mappings: Dict[str, set[str]] = {}
     for poe_id, provider_dict in mapping.items():
         if isinstance(provider_dict, dict):
-            existing_mappings[poe_id] = set(provider_dict.keys())
-        else:
-            existing_mappings[poe_id] = {"models.dev"}
+            providers_for_model: set[str] = set()
+            for provider_key, value in provider_dict.items():
+                if provider_key == "models.dev" and isinstance(value, str):
+                    if value != "auto" and "/" in value:
+                        # Extract actual provider from "provider/model"
+                        actual_provider = value.split("/", 1)[0]
+                        providers_for_model.add(actual_provider)
+                    elif value == "auto":
+                        # For auto, we consider it mapped (we'll skip it)
+                        providers_for_model.add("auto")
+            existing_mappings[poe_id] = providers_for_model
     
     # Create a table for matched providers
     table = Table(title="Matched Providers", show_header=True, header_style="bold magenta")
@@ -361,7 +370,10 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         owners = sorted({model.owned_by for model in provider_models})
         mapped_count = sum(
             1 for model in provider_models
-            if model.id in existing_mappings and provider in existing_mappings.get(model.id, set())
+            if model.id in existing_mappings and (
+                provider in existing_mappings.get(model.id, set()) or
+                "auto" in existing_mappings.get(model.id, set())
+            )
         )
         table.add_row(
             provider,
@@ -378,7 +390,10 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         candidates = sorted(
             (
                 model for model in provider_models
-                if model.id not in existing_mappings or provider not in existing_mappings.get(model.id, set())
+                if model.id not in existing_mappings or (
+                    provider not in existing_mappings.get(model.id, set()) and
+                    "auto" not in existing_mappings.get(model.id, set())
+                )
             ),
             key=lambda model: model.id.lower(),
         )
@@ -392,9 +407,11 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
                 continue
 
             # Check if this specific provider mapping already exists
-            if candidate.id in existing_mappings and provider in existing_mappings.get(candidate.id, set()):
-                console.print(f"  [yellow]This model already has a {provider} mapping; skipping duplicate.[/yellow]")
-                continue
+            if candidate.id in existing_mappings:
+                existing = existing_mappings.get(candidate.id, set())
+                if provider in existing or "auto" in existing:
+                    console.print(f"  [yellow]This model already has a {provider} mapping; skipping duplicate.[/yellow]")
+                    continue
 
             # Validate provider if not using 'auto'
             if choice != "auto" and "/" in choice:
@@ -420,7 +437,11 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             # Update existing_mappings to prevent duplicates in the same session
             if candidate.id not in existing_mappings:
                 existing_mappings[candidate.id] = set()
-            existing_mappings[candidate.id].add(provider)
+            if choice == "auto":
+                existing_mappings[candidate.id].add("auto")
+            elif "/" in choice:
+                actual_provider = choice.split("/", 1)[0]
+                existing_mappings[candidate.id].add(actual_provider)
             additions_count += 1
 
     if additions_count == 0:

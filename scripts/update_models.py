@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+from datetime import datetime, timezone
 import json
 import os
 import subprocess
@@ -27,7 +28,6 @@ from poe_v1_models.reporting import (
 
 
 MODELS_OUTPUT_PATH = Path("dist/models.json")
-PREVIOUS_MODELS_PATH = Path("dist/models_previous.json")
 CHECKS_JSON_PATH = Path("dist/checks.json")
 CHECKS_HTML_PATH = Path("dist/checks.html")
 CHANGELOG_JSON_PATH = Path("dist/changelog.json")
@@ -39,16 +39,24 @@ RELEASE_FETCH_LIMIT = 30
 
 def main() -> None:
     release_snapshots = fetch_release_snapshots(limit=RELEASE_FETCH_LIMIT)
-    previous_payload = (
-        release_snapshots[-1]["payload"] if release_snapshots else None
-    )
     result = run_pipeline()
-    write_previous_snapshot(previous_payload)
     write_models(result)
     write_checks(result)
     write_checks_html()
     write_index_html()
-    changelog_entries = build_changelog_from_snapshots(release_snapshots)
+    local_snapshot = {
+        "payload": result.payload,
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "metadata": {
+            "release_tag": None,
+            "release_name": "Local snapshot",
+            "release_url": None,
+            "source": "local",
+        },
+    }
+    changelog_entries = build_changelog_from_snapshots(
+        [*release_snapshots, local_snapshot]
+    )
     write_changelog_json(changelog_entries)
     write_changelog_html()
 
@@ -89,16 +97,6 @@ def write_changelog_json(entries: Sequence[Mapping[str, Any]]) -> None:
     CHANGELOG_JSON_PATH.parent.mkdir(parents=True, exist_ok=True)
     CHANGELOG_JSON_PATH.write_text(
         json.dumps(list(entries), indent=2) + "\n",
-        encoding="utf-8",
-    )
-
-
-def write_previous_snapshot(previous_payload: Optional[Dict[str, Any]]) -> None:
-    if previous_payload is None:
-        return
-    PREVIOUS_MODELS_PATH.parent.mkdir(parents=True, exist_ok=True)
-    PREVIOUS_MODELS_PATH.write_text(
-        json.dumps(previous_payload, indent=2) + "\n",
         encoding="utf-8",
     )
 
