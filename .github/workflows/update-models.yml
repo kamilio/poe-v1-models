@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -30,6 +30,57 @@ jobs:
 
       - name: Generate models.json
         run: python scripts/update_models.py
+
+      - name: Check for model changes
+        id: release_check
+        run: |
+          if [ ! -f dist/models.json ]; then
+            echo "models.json missing after generation" >&2
+            exit 1
+          fi
+          if [ ! -f dist/models_previous.json ]; then
+            echo "release=true" >> "$GITHUB_OUTPUT"
+            echo "No previous snapshot detected; release will be created."
+            exit 0
+          fi
+          if cmp -s dist/models.json dist/models_previous.json; then
+            echo "release=false" >> "$GITHUB_OUTPUT"
+            echo "models.json unchanged; skipping release."
+          else
+            echo "release=true" >> "$GITHUB_OUTPUT"
+            echo "models.json changed; release will be created."
+          fi
+
+      - name: Prepare release metadata
+        if: steps.release_check.outputs.release == 'true'
+        id: release_meta
+        run: |
+          timestamp="$(date -u +"%Y%m%d-%H%M%S")"
+          echo "tag=models-${timestamp}" >> "$GITHUB_OUTPUT"
+          echo "name=Models Snapshot ${timestamp}" >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub release
+        if: steps.release_check.outputs.release == 'true'
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.release_meta.outputs.tag }}
+          release_name: ${{ steps.release_meta.outputs.name }}
+          draft: false
+          prerelease: false
+
+      - name: Upload models.json asset
+        if: steps.release_check.outputs.release == 'true'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: dist/models.json
+          asset_name: models.json
+          asset_content_type: application/json
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
