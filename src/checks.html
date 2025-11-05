@@ -18,6 +18,12 @@
     };
   </script>
   <style>
+    :root,
+    body,
+    html {
+      height: 100%;
+    }
+
     @media (max-width: 1024px) {
       .table-container {
         overflow-x: auto;
@@ -26,10 +32,26 @@
         min-width: 960px;
       }
     }
+
+    .column-highlight {
+      background-color: rgba(93, 92, 222, 0.08) !important;
+    }
+
+    .dark .column-highlight {
+      background-color: rgba(93, 92, 222, 0.32) !important;
+    }
+
+    .column-highlight-header {
+      color: #5D5CDE !important;
+    }
+
+    .dark .column-highlight-header {
+      color: #8d8cff !important;
+    }
   </style>
 </head>
 <body class="bg-white dark:bg-[#181818] text-gray-900 dark:text-gray-100 transition-colors min-h-screen">
-  <div class="container mx-auto px-4 py-8 max-w-7xl">
+  <div class="w-full mx-auto px-4 md:px-8 lg:px-12 py-8">
     <div class="mb-8">
       <h1 class="text-3xl md:text-4xl font-bold mb-2">Model Pricing Checks</h1>
       <p class="text-gray-600 dark:text-gray-400">Audit pricing consistency across providers and Poe overrides</p>
@@ -138,6 +160,8 @@
       primaryRow.className = 'bg-gray-50 dark:bg-gray-900';
       const secondaryRow = document.createElement('tr');
       secondaryRow.className = 'bg-gray-100 dark:bg-gray-900/80';
+      let columnIndex = 0;
+      const providerColumnLookup = {};
 
       BASE_COLUMNS.forEach(column => {
         const th = document.createElement('th');
@@ -145,7 +169,9 @@
         th.textContent = column.label;
         th.rowSpan = column.rowSpan || 1;
         if (column.numeric) th.classList.add('text-right');
+        th.dataset.column = columnIndex;
         primaryRow.appendChild(th);
+        columnIndex += 1;
       });
 
       providers.forEach(provider => {
@@ -156,6 +182,7 @@
         th.textContent = provider.label || provider.name;
         th.colSpan = provider.columns.length;
         th.className = 'px-6 py-3 text-center text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-gray-300';
+        th.dataset.providerGroup = provider.name;
         primaryRow.appendChild(th);
 
         provider.columns.forEach(column => {
@@ -163,7 +190,14 @@
           subTh.textContent = column.label;
           subTh.className = 'px-4 py-2 text-left text-xs font-semibold text-gray-600 dark:text-gray-300';
           if (column.numeric) subTh.classList.add('text-right');
+          subTh.dataset.column = columnIndex;
+          subTh.dataset.provider = provider.name;
           secondaryRow.appendChild(subTh);
+          if (!providerColumnLookup[provider.name]) {
+            providerColumnLookup[provider.name] = [];
+          }
+          providerColumnLookup[provider.name].push(String(columnIndex));
+          columnIndex += 1;
         });
       });
 
@@ -171,12 +205,16 @@
       if (secondaryRow.children.length) {
         thead.appendChild(secondaryRow);
       }
+      return {
+        totalColumns: columnIndex,
+        providerColumnLookup
+      };
     }
 
     function buildModelRow(model, providersMeta) {
       const row = document.createElement('tr');
       row.className = 'hover:bg-gray-50 dark:hover:bg-gray-700/40 transition-colors';
-
+      const cells = [];
       const modelCell = document.createElement('td');
       modelCell.className = 'px-6 py-4 text-sm';
       const link = document.createElement('a');
@@ -186,7 +224,7 @@
       link.textContent = model.id;
       link.className = 'font-medium text-primary hover:text-primary/80 hover:underline transition-colors';
       modelCell.appendChild(link);
-      row.appendChild(modelCell);
+      cells.push({ element: modelCell });
 
       const selectedCell = document.createElement('td');
       selectedCell.className = 'px-6 py-4 text-sm text-gray-700 dark:text-gray-200';
@@ -195,23 +233,27 @@
       } else {
         selectedCell.textContent = '—';
       }
-      row.appendChild(selectedCell);
+      cells.push({ element: selectedCell });
 
-      row.appendChild(
-        createCell({
+      cells.push({
+        element: createCell({
           text: model.overrides_applied ? 'yes' : 'no',
           classes: ['text-center', 'capitalize']
         })
-      );
+      });
 
       const poePrompt = sanitizeValue(model.poe_pricing?.prompt_mtok);
       const poeCompletion = sanitizeValue(model.poe_pricing?.completion_mtok);
-      row.appendChild(createCell({ text: poePrompt, numeric: true }));
-      row.appendChild(createCell({ text: poeCompletion, numeric: true }));
+      cells.push({ element: createCell({ text: poePrompt, numeric: true }) });
+      cells.push({ element: createCell({ text: poeCompletion, numeric: true }) });
 
       providersMeta.forEach(provider => {
+        const columns = provider.columns || [];
+        if (!columns.length) {
+          return;
+        }
         const providerData = model.providers?.[provider.name];
-        provider.columns.forEach(column => {
+        columns.forEach(column => {
           const classes = ['bg-white', 'dark:bg-gray-800'];
           if (providerData) {
             if (providerData.severity && providerData.severity !== 'ok') {
@@ -221,28 +263,89 @@
               classes.push(...providerSelectedClasses);
             }
             const value = providerData.values?.[column.key];
-            row.appendChild(
-              createCell({
+            cells.push({
+              element: createCell({
                 text: value?.text ?? '—',
                 html: value?.html ?? null,
                 numeric: value?.numeric || column.numeric || false,
                 classes
-              })
-            );
+              }),
+              provider: provider.name
+            });
           } else {
             classes.push(...providerSeverityClasses.muted);
-            row.appendChild(
-              createCell({
+            cells.push({
+              element: createCell({
                 text: '—',
                 numeric: column.numeric || false,
                 classes
-              })
-            );
+              }),
+              provider: provider.name
+            });
           }
         });
       });
 
+      cells.forEach((cell, index) => {
+        cell.element.dataset.column = String(index);
+        if (cell.provider) {
+          cell.element.dataset.provider = cell.provider;
+        }
+        row.appendChild(cell.element);
+      });
+
       return row;
+    }
+
+    function setupColumnHighlighting(table, providerColumnLookup = {}) {
+      const highlightColumn = columnIndex => {
+        table.querySelectorAll(`[data-column="${columnIndex}"]`).forEach(cell => {
+          if (cell.tagName === 'TH') {
+            cell.classList.add('column-highlight-header');
+          } else {
+            cell.classList.add('column-highlight');
+          }
+        });
+      };
+
+      const clearColumn = columnIndex => {
+        table.querySelectorAll(`[data-column="${columnIndex}"]`).forEach(cell => {
+          if (cell.tagName === 'TH') {
+            cell.classList.remove('column-highlight-header');
+          } else {
+            cell.classList.remove('column-highlight');
+          }
+        });
+      };
+
+      table.querySelectorAll('[data-column]').forEach(cell => {
+        if (cell.tagName === 'TD') {
+          cell.tabIndex = 0;
+        }
+        const columnIndex = cell.dataset.column;
+        cell.addEventListener('mouseenter', () => highlightColumn(columnIndex));
+        cell.addEventListener('mouseleave', () => clearColumn(columnIndex));
+        cell.addEventListener('focus', () => highlightColumn(columnIndex));
+        cell.addEventListener('blur', () => clearColumn(columnIndex));
+      });
+
+      Object.entries(providerColumnLookup).forEach(([provider, columns]) => {
+        const header = table.querySelector(`th[data-provider-group="${provider}"]`);
+        if (!header) return;
+        header.tabIndex = 0;
+        const handleEnter = () => {
+          header.classList.add('column-highlight-header');
+          columns.forEach(highlightColumn);
+        };
+        const handleLeave = () => {
+          header.classList.remove('column-highlight-header');
+          columns.forEach(clearColumn);
+        };
+        header.addEventListener('mouseenter', handleEnter);
+        header.addEventListener('mouseleave', handleLeave);
+        header.addEventListener('focus', handleEnter);
+        header.addEventListener('blur', handleLeave);
+      });
     }
 
     async function loadChecks() {
@@ -269,7 +372,7 @@
         document.getElementById('timestamp').textContent = `Generated at ${new Date(data.generated_at).toLocaleString()}`;
 
         const providersMeta = data.providers || [];
-        buildHeaders(thead, providersMeta);
+        const { providerColumnLookup } = buildHeaders(thead, providersMeta);
 
         const totalColumns =
           BASE_COLUMNS.length +
@@ -316,6 +419,7 @@
 
         loadingState.classList.add('hidden');
         tableContainer.classList.remove('hidden');
+        setupColumnHighlighting(table, providerColumnLookup);
       } catch (error) {
         console.error('Failed to load checks:', error);
         errorMessage.textContent = `Failed to load pricing checks: ${error.message}`;
