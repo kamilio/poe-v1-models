@@ -87,6 +87,9 @@
     }
 
     function appendStatus(container, label, items) {
+      if (!Array.isArray(items) || items.length === 0) {
+        return;
+      }
       const wrapper = document.createElement('div');
       wrapper.className = 'mt-3 text-sm text-gray-700 dark:text-gray-200';
 
