@@ -4,9 +4,12 @@
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 import sys
 from typing import Any, Dict, Optional
+from urllib.error import URLError
+from urllib.request import urlopen
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
@@ -27,10 +30,11 @@ CHECKS_JSON_PATH = Path("dist/checks.json")
 CHECKS_HTML_PATH = Path("dist/checks.html")
 CHANGELOG_JSON_PATH = Path("dist/changelog.json")
 CHANGELOG_HTML_PATH = Path("dist/changelog.html")
+REMOTE_TIMEOUT = 10
 
 
 def main() -> None:
-    previous_payload = load_dict_if_exists(MODELS_OUTPUT_PATH)
+    previous_payload = load_previous_payload()
     result = run_pipeline()
     write_previous_snapshot(previous_payload)
     write_models(result)
@@ -115,6 +119,48 @@ def _load_json_if_exists(path: Path) -> Optional[Any]:
             return json.load(handle)
     except json.JSONDecodeError as exc:
         raise RuntimeError(f"Failed to parse JSON from {path}") from exc
+
+
+def load_previous_payload() -> Optional[Dict[str, Any]]:
+    local_payload = load_dict_if_exists(MODELS_OUTPUT_PATH)
+    if local_payload is not None:
+        return local_payload
+
+    url = resolve_previous_models_url()
+    if not url:
+        return None
+
+    remote_payload = fetch_remote_json(url)
+    if remote_payload is None:
+        return None
+    if not isinstance(remote_payload, dict):
+        raise RuntimeError(f"Unexpected payload type from {url}; expected JSON object")
+    return remote_payload
+
+
+def resolve_previous_models_url() -> Optional[str]:
+    explicit = os.getenv("POE_MODELS_PREVIOUS_URL") or os.getenv("MODELS_PREVIOUS_URL")
+    if explicit:
+        return explicit
+    base = os.getenv("POE_MODELS_BASE_URL")
+    if base:
+        return base.rstrip("/") + "/models.json"
+    repository = os.getenv("GITHUB_REPOSITORY")
+    if repository and "/" in repository:
+        owner, repo = repository.split("/", 1)
+        if owner and repo:
+            return f"https://{owner}.github.io/{repo}/models.json"
+    return None
+
+
+def fetch_remote_json(url: str) -> Optional[Any]:
+    try:
+        with urlopen(url, timeout=REMOTE_TIMEOUT) as response:  # nosec: B310 - controlled URL
+            if response.status != 200:
+                return None
+            return json.load(response)
+    except (URLError, TimeoutError):
+        return None
 
 
 if __name__ == "__main__":

@@ -17,9 +17,7 @@ class ProviderSettings:
 
 @dataclass(frozen=True)
 class ExclusionSettings:
-    id_contains: List[str] = field(default_factory=list)
-    id_suffixes: List[str] = field(default_factory=list)
-    id_prefixes: List[str] = field(default_factory=list)
+    ids: List[str] = field(default_factory=list)
     owned_by: List[str] = field(default_factory=list)
 
     def should_exclude(self, poe_model: Mapping[str, Any]) -> bool:
@@ -29,18 +27,10 @@ class ExclusionSettings:
         lowered_id = model_id.lower()
         lowered_owned = owned_by.lower()
 
-        for prefix in self.id_prefixes:
-            if lowered_id.startswith(prefix.lower()):
-                return True
-        for suffix in self.id_suffixes:
-            if lowered_id.endswith(suffix.lower()):
-                return True
-        for fragment in self.id_contains:
-            if fragment.lower() in lowered_id:
-                return True
-        for owner in self.owned_by:
-            if lowered_owned == owner.lower():
-                return True
+        if any(lowered_id == candidate.lower() for candidate in self.ids):
+            return True
+        if any(lowered_owned == owner.lower() for owner in self.owned_by):
+            return True
         return False
 
 
@@ -72,9 +62,7 @@ def load_general_config(path: Path = CONFIG_PATH) -> GeneralConfig:
         raise ValueError("exclusions section must be a mapping")
 
     exclusions = ExclusionSettings(
-        id_contains=_as_list(exclusions_block.get("id_contains")),
-        id_suffixes=_as_list(exclusions_block.get("id_suffixes")),
-        id_prefixes=_as_list(exclusions_block.get("id_prefixes")),
+        ids=_as_list(exclusions_block.get("ids")),
         owned_by=_as_list(exclusions_block.get("owned_by")),
     )
 

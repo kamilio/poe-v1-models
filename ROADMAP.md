@@ -14,6 +14,9 @@
         - [x] `checks.html` visualises the JSON (yellow for blocked prices, red where Poe exceeds MSRP).
 - [x] GH Pages publishing
     - Outputs generated on CI only; `dist/` is no longer tracked on `main`.
+- [ ] add ability to run the script locally, maybe via make
+    - make install 
+    - make start (or something better) - it should execute and run mini webserver with direct links to open the pages
 
 ## Changelog
 - [x] Generate changelog json, keep reading and appending to it
