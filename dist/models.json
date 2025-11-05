@@ -21,7 +21,18 @@
         ],
         "modality": "text,image,video->text"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "GPT-5-Chat",
@@ -44,11 +55,15 @@
       },
       "pricing": {
         "prompt": "0.0000011",
-        "completion": "0.0000090",
+        "completion": "0.000009",
         "image": null,
         "request": null,
         "prompt_mtok": "1.1",
-        "completion_mtok": "9"
+        "completion_mtok": "9",
+        "msrp_prompt": "0.00000125",
+        "msrp_completion": "0.00001",
+        "msrp_prompt_mtok": "1.25",
+        "msrp_completion_mtok": "10"
       }
     },
     {
@@ -76,7 +91,11 @@
         "image": null,
         "request": null,
         "prompt_mtok": "2.6",
-        "completion_mtok": "13"
+        "completion_mtok": "13",
+        "msrp_prompt": "0.000003",
+        "msrp_completion": "0.000015",
+        "msrp_prompt_mtok": "3",
+        "msrp_completion_mtok": "15"
       }
     },
     {
@@ -102,11 +121,15 @@
       },
       "pricing": {
         "prompt": "0.00000087",
-        "completion": "0.0000070",
+        "completion": "0.000007",
         "image": null,
         "request": null,
         "prompt_mtok": "0.87",
-        "completion_mtok": "7"
+        "completion_mtok": "7",
+        "msrp_prompt": "0.00000125",
+        "msrp_completion": "0.00001",
+        "msrp_prompt_mtok": "1.25",
+        "msrp_completion_mtok": "10"
       }
     },
     {
@@ -130,11 +153,15 @@
       },
       "pricing": {
         "prompt": "0.0000011",
-        "completion": "0.0000090",
+        "completion": "0.000009",
         "image": null,
         "request": null,
         "prompt_mtok": "1.1",
-        "completion_mtok": "9"
+        "completion_mtok": "9",
+        "msrp_prompt": "0.00000125",
+        "msrp_completion": "0.00001",
+        "msrp_prompt_mtok": "1.25",
+        "msrp_completion_mtok": "10"
       }
     },
     {
@@ -162,7 +189,11 @@
         "image": null,
         "request": null,
         "prompt_mtok": "13",
-        "completion_mtok": "110"
+        "completion_mtok": "110",
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -186,11 +217,15 @@
       },
       "pricing": {
         "prompt": "0.0000011",
-        "completion": "0.0000090",
+        "completion": "0.000009",
         "image": null,
         "request": null,
         "prompt_mtok": "1.1",
-        "completion_mtok": "9"
+        "completion_mtok": "9",
+        "msrp_prompt": "0.00000125",
+        "msrp_completion": "0.00001",
+        "msrp_prompt_mtok": "1.25",
+        "msrp_completion_mtok": "10"
       }
     },
     {
@@ -212,7 +247,18 @@
         ],
         "modality": "text,image->text"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": "0.0000025",
+        "msrp_completion": "0.00001",
+        "msrp_prompt_mtok": "2.5",
+        "msrp_completion_mtok": "10"
+      }
     },
     {
       "id": "Claude-Haiku-4.5",
@@ -239,7 +285,11 @@
         "image": null,
         "request": null,
         "prompt_mtok": "0.85",
-        "completion_mtok": "4.2"
+        "completion_mtok": "4.2",
+        "msrp_prompt": "0.000001",
+        "msrp_completion": "0.000005",
+        "msrp_prompt_mtok": "1",
+        "msrp_completion_mtok": "5"
       }
     },
     {
@@ -267,7 +317,11 @@
         "image": null,
         "request": null,
         "prompt_mtok": "13",
-        "completion_mtok": "64"
+        "completion_mtok": "64",
+        "msrp_prompt": "0.000015",
+        "msrp_completion": "0.000075",
+        "msrp_prompt_mtok": "15",
+        "msrp_completion_mtok": "75"
       }
     },
     {
@@ -296,7 +350,11 @@
         "image": "0.000021",
         "request": null,
         "prompt_mtok": "0.21",
-        "completion_mtok": "1.7"
+        "completion_mtok": "1.7",
+        "msrp_prompt": "0.0000003",
+        "msrp_completion": "0.00003",
+        "msrp_prompt_mtok": "0.3",
+        "msrp_completion_mtok": "30"
       }
     },
     {
@@ -318,12 +376,16 @@
         "modality": "text->text"
       },
       "pricing": {
-        "prompt": "0.0000030",
+        "prompt": "0.000003",
         "completion": "0.000015",
         "image": null,
         "request": null,
         "prompt_mtok": "3",
-        "completion_mtok": "15"
+        "completion_mtok": "15",
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -351,7 +413,11 @@
         "image": null,
         "request": null,
         "prompt_mtok": "0.22",
-        "completion_mtok": "1.8"
+        "completion_mtok": "1.8",
+        "msrp_prompt": "0.00000025",
+        "msrp_completion": "0.000002",
+        "msrp_prompt_mtok": "0.25",
+        "msrp_completion_mtok": "2"
       }
     },
     {
@@ -373,12 +439,16 @@
         "modality": "text->text"
       },
       "pricing": {
-        "prompt": "0.00000020",
-        "completion": "0.00000050",
+        "prompt": "0.0000002",
+        "completion": "0.0000005",
         "image": null,
         "request": null,
         "prompt_mtok": "0.2",
-        "completion_mtok": "0.5"
+        "completion_mtok": "0.5",
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -400,12 +470,16 @@
         "modality": "text->text"
       },
       "pricing": {
-        "prompt": "0.00000020",
-        "completion": "0.00000050",
+        "prompt": "0.0000002",
+        "completion": "0.0000005",
         "image": null,
         "request": null,
         "prompt_mtok": "0.2",
-        "completion_mtok": "0.5"
+        "completion_mtok": "0.5",
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -433,7 +507,11 @@
         "image": null,
         "request": null,
         "prompt_mtok": "0.045",
-        "completion_mtok": "0.36"
+        "completion_mtok": "0.36",
+        "msrp_prompt": "0.00000005",
+        "msrp_completion": "0.0000004",
+        "msrp_prompt_mtok": "0.05",
+        "msrp_completion_mtok": "0.4"
       }
     },
     {
@@ -461,7 +539,11 @@
         "image": null,
         "request": null,
         "prompt_mtok": "18",
-        "completion_mtok": "72"
+        "completion_mtok": "72",
+        "msrp_prompt": "0.00002",
+        "msrp_completion": "0.00008",
+        "msrp_prompt_mtok": "20",
+        "msrp_completion_mtok": "80"
       }
     },
     {
@@ -491,7 +573,11 @@
         "image": null,
         "request": null,
         "prompt_mtok": "0.21",
-        "completion_mtok": "1.7"
+        "completion_mtok": "1.7",
+        "msrp_prompt": "0.0000003",
+        "msrp_completion": "0.0000025",
+        "msrp_prompt_mtok": "0.3",
+        "msrp_completion_mtok": "2.5"
       }
     },
     {
@@ -516,12 +602,16 @@
         "modality": "text,image,video,audio->text"
       },
       "pricing": {
-        "prompt": "0.000000070",
+        "prompt": "0.00000007",
         "completion": "0.00000028",
         "image": null,
         "request": null,
         "prompt_mtok": "0.07",
-        "completion_mtok": "0.28"
+        "completion_mtok": "0.28",
+        "msrp_prompt": "0.0000001",
+        "msrp_completion": "0.0000004",
+        "msrp_prompt_mtok": "0.1",
+        "msrp_completion_mtok": "0.4"
       }
     },
     {
@@ -546,7 +636,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0030"
+        "request": "0.0030",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -571,7 +667,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0024"
+        "request": "0.0024",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -594,12 +696,16 @@
         "modality": "text,image->text"
       },
       "pricing": {
-        "prompt": "0.00000020",
+        "prompt": "0.0000002",
         "completion": "0.0000015",
         "image": null,
         "request": null,
         "prompt_mtok": "0.2",
-        "completion_mtok": "1.5"
+        "completion_mtok": "1.5",
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -624,7 +730,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0039"
+        "request": "0.0039",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -650,7 +762,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.018"
+        "request": "0.018",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -671,7 +789,18 @@
         ],
         "modality": "text->text"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Nova-Premier-1.0",
@@ -691,7 +820,18 @@
         ],
         "modality": "text->text"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Nova-Micro-1.0",
@@ -711,7 +851,18 @@
         ],
         "modality": "text->text"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Nova-Lite-1.0",
@@ -731,7 +882,18 @@
         ],
         "modality": "text->text"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Mistral-Medium-3.1",
@@ -751,7 +913,18 @@
         ],
         "modality": "text->text"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": "0.0000004",
+        "msrp_completion": "0.000002",
+        "msrp_prompt_mtok": "0.4",
+        "msrp_completion_mtok": "2"
+      }
     },
     {
       "id": "GPT-OSS-120B-T",
@@ -776,7 +949,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0015"
+        "request": "0.0015",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -802,7 +981,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.00045"
+        "request": "0.00045",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -823,7 +1008,18 @@
         ],
         "modality": "text->video"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Amazon-Nova-Canvas",
@@ -843,7 +1039,18 @@
         ],
         "modality": "text->image"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Kimi-K2",
@@ -867,7 +1074,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0063"
+        "request": "0.0063",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -892,7 +1105,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.011"
+        "request": "0.011",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -917,7 +1136,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.011"
+        "request": "0.011",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -942,7 +1167,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0060"
+        "request": "0.0060",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -967,7 +1198,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0078"
+        "request": "0.0078",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -992,7 +1229,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0057"
+        "request": "0.0057",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -1017,7 +1260,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0066"
+        "request": "0.0066",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -1042,7 +1291,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0057"
+        "request": "0.0057",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -1067,7 +1322,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0054"
+        "request": "0.0054",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -1092,7 +1353,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0024"
+        "request": "0.0024",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -1117,7 +1384,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0090"
+        "request": "0.0090",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -1145,7 +1418,11 @@
         "image": null,
         "request": null,
         "prompt_mtok": "2.6",
-        "completion_mtok": "13"
+        "completion_mtok": "13",
+        "msrp_prompt": "0.000003",
+        "msrp_completion": "0.000015",
+        "msrp_prompt_mtok": "3",
+        "msrp_completion_mtok": "15"
       }
     },
     {
@@ -1173,7 +1450,11 @@
         "image": null,
         "request": null,
         "prompt_mtok": "13",
-        "completion_mtok": "64"
+        "completion_mtok": "64",
+        "msrp_prompt": "0.000015",
+        "msrp_completion": "0.000075",
+        "msrp_prompt_mtok": "15",
+        "msrp_completion_mtok": "75"
       }
     },
     {
@@ -1201,7 +1482,11 @@
         "image": null,
         "request": null,
         "prompt_mtok": "13",
-        "completion_mtok": "64"
+        "completion_mtok": "64",
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -1229,7 +1514,11 @@
         "image": null,
         "request": null,
         "prompt_mtok": "2.6",
-        "completion_mtok": "13"
+        "completion_mtok": "13",
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -1253,11 +1542,15 @@
       },
       "pricing": {
         "prompt": "0.00000099",
-        "completion": "0.0000040",
+        "completion": "0.000004",
         "image": null,
         "request": null,
         "prompt_mtok": "0.99",
-        "completion_mtok": "4"
+        "completion_mtok": "4",
+        "msrp_prompt": "0.0000011",
+        "msrp_completion": "0.0000044",
+        "msrp_prompt_mtok": "1.1",
+        "msrp_completion_mtok": "4.4"
       }
     },
     {
@@ -1284,7 +1577,11 @@
         "image": null,
         "request": null,
         "prompt_mtok": "1.8",
-        "completion_mtok": "7.2"
+        "completion_mtok": "7.2",
+        "msrp_prompt": "0.000002",
+        "msrp_completion": "0.000008",
+        "msrp_prompt_mtok": "2",
+        "msrp_completion_mtok": "8"
       }
     },
     {
@@ -1307,12 +1604,16 @@
         "modality": "text,image->text"
       },
       "pricing": {
-        "prompt": "0.0000030",
+        "prompt": "0.000003",
         "completion": "0.000015",
         "image": null,
         "request": null,
         "prompt_mtok": "3",
-        "completion_mtok": "15"
+        "completion_mtok": "15",
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -1334,12 +1635,16 @@
         "modality": "text->text"
       },
       "pricing": {
-        "prompt": "0.00000030",
-        "completion": "0.00000050",
+        "prompt": "0.0000003",
+        "completion": "0.0000005",
         "image": null,
         "request": null,
         "prompt_mtok": "0.3",
-        "completion_mtok": "0.5"
+        "completion_mtok": "0.5",
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -1367,7 +1672,11 @@
         "image": null,
         "request": null,
         "prompt_mtok": "1.8",
-        "completion_mtok": "7.2"
+        "completion_mtok": "7.2",
+        "msrp_prompt": "0.000002",
+        "msrp_completion": "0.000008",
+        "msrp_prompt_mtok": "2",
+        "msrp_completion_mtok": "8"
       }
     },
     {
@@ -1389,12 +1698,16 @@
         "modality": "text->text"
       },
       "pricing": {
-        "prompt": "0.0000090",
+        "prompt": "0.000009",
         "completion": "0.000036",
         "image": null,
         "request": null,
         "prompt_mtok": "9",
-        "completion_mtok": "36"
+        "completion_mtok": "36",
+        "msrp_prompt": "0.00001",
+        "msrp_completion": "0.00004",
+        "msrp_prompt_mtok": "10",
+        "msrp_completion_mtok": "40"
       }
     },
     {
@@ -1419,7 +1732,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0015"
+        "request": "0.0015",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -1440,7 +1759,18 @@
         ],
         "modality": "text->audio"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "DeepSeek-V3",
@@ -1464,7 +1794,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.012"
+        "request": "0.012",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -1489,7 +1825,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0090"
+        "request": "0.0090",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -1514,7 +1856,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0057"
+        "request": "0.0057",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -1542,7 +1890,11 @@
         "image": null,
         "request": null,
         "prompt_mtok": "1.8",
-        "completion_mtok": "7.2"
+        "completion_mtok": "7.2",
+        "msrp_prompt": "0.000002",
+        "msrp_completion": "0.000008",
+        "msrp_prompt_mtok": "2",
+        "msrp_completion_mtok": "8"
       }
     },
     {
@@ -1570,7 +1922,11 @@
         "image": null,
         "request": null,
         "prompt_mtok": "0.36",
-        "completion_mtok": "1.4"
+        "completion_mtok": "1.4",
+        "msrp_prompt": "0.0000004",
+        "msrp_completion": "0.0000016",
+        "msrp_prompt_mtok": "0.4",
+        "msrp_completion_mtok": "1.6"
       }
     },
     {
@@ -1593,12 +1949,16 @@
         "modality": "text,image->text"
       },
       "pricing": {
-        "prompt": "0.000000090",
+        "prompt": "0.00000009",
         "completion": "0.00000036",
         "image": null,
         "request": null,
         "prompt_mtok": "0.09",
-        "completion_mtok": "0.36"
+        "completion_mtok": "0.36",
+        "msrp_prompt": "0.0000001",
+        "msrp_completion": "0.0000004",
+        "msrp_prompt_mtok": "0.1",
+        "msrp_completion_mtok": "0.4"
       }
     },
     {
@@ -1623,7 +1983,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0010"
+        "request": "0.0010",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -1648,7 +2014,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0060"
+        "request": "0.0060",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -1676,7 +2048,11 @@
         "image": null,
         "request": null,
         "prompt_mtok": "13",
-        "completion_mtok": "64"
+        "completion_mtok": "64",
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -1704,7 +2080,11 @@
         "image": null,
         "request": null,
         "prompt_mtok": "2.6",
-        "completion_mtok": "13"
+        "completion_mtok": "13",
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -1732,7 +2112,11 @@
         "image": null,
         "request": null,
         "prompt_mtok": "2.6",
-        "completion_mtok": "13"
+        "completion_mtok": "13",
+        "msrp_prompt": "0.000003",
+        "msrp_completion": "0.000015",
+        "msrp_prompt_mtok": "3",
+        "msrp_completion_mtok": "15"
       }
     },
     {
@@ -1760,7 +2144,11 @@
         "image": null,
         "request": null,
         "prompt_mtok": "2.6",
-        "completion_mtok": "13"
+        "completion_mtok": "13",
+        "msrp_prompt": "0.000003",
+        "msrp_completion": "0.000015",
+        "msrp_prompt_mtok": "3",
+        "msrp_completion_mtok": "15"
       }
     },
     {
@@ -1788,7 +2176,11 @@
         "image": null,
         "request": null,
         "prompt_mtok": "0.68",
-        "completion_mtok": "3.4"
+        "completion_mtok": "3.4",
+        "msrp_prompt": "0.0000008",
+        "msrp_completion": "0.000004",
+        "msrp_prompt_mtok": "0.8",
+        "msrp_completion_mtok": "4"
       }
     },
     {
@@ -1813,12 +2205,16 @@
         "modality": "text,image,video,audio->text"
       },
       "pricing": {
-        "prompt": "0.00000010",
+        "prompt": "0.0000001",
         "completion": "0.00000042",
         "image": null,
         "request": null,
         "prompt_mtok": "0.1",
-        "completion_mtok": "0.42"
+        "completion_mtok": "0.42",
+        "msrp_prompt": "0.0000001",
+        "msrp_completion": "0.0000004",
+        "msrp_prompt_mtok": "0.1",
+        "msrp_completion_mtok": "0.4"
       }
     },
     {
@@ -1848,7 +2244,11 @@
         "image": null,
         "request": null,
         "prompt_mtok": "0.052",
-        "completion_mtok": "0.21"
+        "completion_mtok": "0.21",
+        "msrp_prompt": "0.000000075",
+        "msrp_completion": "0.0000003",
+        "msrp_prompt_mtok": "0.075",
+        "msrp_completion_mtok": "0.3"
       }
     },
     {
@@ -1873,12 +2273,16 @@
         "modality": "text,image,video,audio->text"
       },
       "pricing": {
-        "prompt": "0.00000010",
+        "prompt": "0.0000001",
         "completion": "0.00000042",
         "image": null,
         "request": null,
         "prompt_mtok": "0.1",
-        "completion_mtok": "0.42"
+        "completion_mtok": "0.42",
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -1906,7 +2310,11 @@
         "image": null,
         "request": null,
         "prompt_mtok": "2.6",
-        "completion_mtok": "13"
+        "completion_mtok": "13",
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -1934,7 +2342,11 @@
         "image": null,
         "request": null,
         "prompt_mtok": "0.68",
-        "completion_mtok": "3.4"
+        "completion_mtok": "3.4",
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -1955,7 +2367,18 @@
         ],
         "modality": "text->text"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "GPT-OSS-120B",
@@ -1980,7 +2403,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0012"
+        "request": "0.0012",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": "0.00000013",
+        "msrp_completion": "0",
+        "msrp_prompt_mtok": "0.13",
+        "msrp_completion_mtok": "0"
       }
     },
     {
@@ -2006,7 +2435,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.00045"
+        "request": "0.00045",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": "0.00000002",
+        "msrp_completion": "0",
+        "msrp_prompt_mtok": "0.02",
+        "msrp_completion_mtok": "0"
       }
     },
     {
@@ -2032,7 +2467,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0032"
+        "request": "0.0032",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -2058,7 +2499,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0015"
+        "request": "0.0015",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -2084,7 +2531,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.00075"
+        "request": "0.00075",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -2109,7 +2562,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0024"
+        "request": "0.0024",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -2134,7 +2593,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0030"
+        "request": "0.0030",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -2159,7 +2624,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0048"
+        "request": "0.0048",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -2184,7 +2655,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0036"
+        "request": "0.0036",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -2210,7 +2687,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0019"
+        "request": "0.0019",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -2235,7 +2718,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0027"
+        "request": "0.0027",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -2260,7 +2749,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0060"
+        "request": "0.0060",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -2285,7 +2780,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.017"
+        "request": "0.017",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -2310,7 +2811,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0072"
+        "request": "0.0072",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -2335,7 +2842,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.017"
+        "request": "0.017",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -2360,7 +2873,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0019"
+        "request": "0.0019",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -2385,7 +2904,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0018"
+        "request": "0.0018",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -2410,7 +2935,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0075"
+        "request": "0.0075",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -2432,7 +2963,18 @@
         ],
         "modality": "text,image->text"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "QwQ-32B-T",
@@ -2456,7 +2998,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0075"
+        "request": "0.0075",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -2477,7 +3025,18 @@
         ],
         "modality": "text->text"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "o1",
@@ -2504,7 +3063,11 @@
         "image": null,
         "request": null,
         "prompt_mtok": "13",
-        "completion_mtok": "54"
+        "completion_mtok": "54",
+        "msrp_prompt": "0.000015",
+        "msrp_completion": "0.00006",
+        "msrp_prompt_mtok": "15",
+        "msrp_completion_mtok": "60"
       }
     },
     {
@@ -2532,7 +3095,11 @@
         "image": null,
         "request": null,
         "prompt_mtok": "140",
-        "completion_mtok": "540"
+        "completion_mtok": "540",
+        "msrp_prompt": "0.00015",
+        "msrp_completion": "0.0006",
+        "msrp_prompt_mtok": "150",
+        "msrp_completion_mtok": "600"
       }
     },
     {
@@ -2553,7 +3120,18 @@
         ],
         "modality": "text->text"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "ChatGPT-4o-Latest",
@@ -2580,7 +3158,11 @@
         "image": null,
         "request": null,
         "prompt_mtok": "4.5",
-        "completion_mtok": "13"
+        "completion_mtok": "13",
+        "msrp_prompt": "0.0000025",
+        "msrp_completion": "0.00001",
+        "msrp_prompt_mtok": "2.5",
+        "msrp_completion_mtok": "10"
       }
     },
     {
@@ -2603,12 +3185,16 @@
         "modality": "text,image->text"
       },
       "pricing": {
-        "prompt": "0.00000090",
-        "completion": "0.00000090",
+        "prompt": "0.0000009",
+        "completion": "0.0000009",
         "image": null,
         "request": null,
         "prompt_mtok": "0.9",
-        "completion_mtok": "0.9"
+        "completion_mtok": "0.9",
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -2636,7 +3222,11 @@
         "image": null,
         "request": null,
         "prompt_mtok": "0.14",
-        "completion_mtok": "0.54"
+        "completion_mtok": "0.54",
+        "msrp_prompt": "0.00000015",
+        "msrp_completion": "0.0000006",
+        "msrp_prompt_mtok": "0.15",
+        "msrp_completion_mtok": "0.6"
       }
     },
     {
@@ -2660,11 +3250,15 @@
       },
       "pricing": {
         "prompt": "0.00000099",
-        "completion": "0.0000040",
+        "completion": "0.000004",
         "image": null,
         "request": null,
         "prompt_mtok": "0.99",
-        "completion_mtok": "4"
+        "completion_mtok": "4",
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -2688,11 +3282,15 @@
       },
       "pricing": {
         "prompt": "0.00000099",
-        "completion": "0.0000040",
+        "completion": "0.000004",
         "image": null,
         "request": null,
         "prompt_mtok": "0.99",
-        "completion_mtok": "4"
+        "completion_mtok": "4",
+        "msrp_prompt": "0.0000011",
+        "msrp_completion": "0.0000044",
+        "msrp_prompt_mtok": "1.1",
+        "msrp_completion_mtok": "4.4"
       }
     },
     {
@@ -2717,7 +3315,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.00030"
+        "request": "0.00030",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -2745,7 +3349,11 @@
         "image": null,
         "request": null,
         "prompt_mtok": "2.6",
-        "completion_mtok": "13"
+        "completion_mtok": "13",
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -2766,7 +3374,18 @@
         ],
         "modality": "text->text"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Inception-Mercury-Coder",
@@ -2786,7 +3405,18 @@
         ],
         "modality": "text->text"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Mistral-Medium-3",
@@ -2806,7 +3436,18 @@
         ],
         "modality": "text->text"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": "0.0000004",
+        "msrp_completion": "0.000002",
+        "msrp_prompt_mtok": "0.4",
+        "msrp_completion_mtok": "2"
+      }
     },
     {
       "id": "Mistral-Medium",
@@ -2833,7 +3474,11 @@
         "image": null,
         "request": null,
         "prompt_mtok": "2.7",
-        "completion_mtok": "8.1"
+        "completion_mtok": "8.1",
+        "msrp_prompt": "0.0000004",
+        "msrp_completion": "0.000002",
+        "msrp_prompt_mtok": "0.4",
+        "msrp_completion_mtok": "2"
       }
     },
     {
@@ -2858,7 +3503,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.00090"
+        "request": "0.00090",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -2883,7 +3534,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0016"
+        "request": "0.0016",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -2908,7 +3565,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0042"
+        "request": "0.0042",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -2933,7 +3596,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0039"
+        "request": "0.0039",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -2954,7 +3623,18 @@
         ],
         "modality": "text->text"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "DeepSeek-R1-FW",
@@ -2979,7 +3659,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.018"
+        "request": "0.018",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -3004,7 +3690,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0060"
+        "request": "0.0060",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -3030,7 +3722,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0060"
+        "request": "0.0060",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -3055,7 +3753,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0014"
+        "request": "0.0014",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -3080,7 +3784,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0078"
+        "request": "0.0078",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -3105,7 +3815,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.012"
+        "request": "0.012",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -3130,7 +3846,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.014"
+        "request": "0.014",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -3155,7 +3877,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0015"
+        "request": "0.0015",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -3178,12 +3906,16 @@
         "modality": "text,image->text"
       },
       "pricing": {
-        "prompt": "0.00000020",
-        "completion": "0.00000020",
+        "prompt": "0.0000002",
+        "completion": "0.0000002",
         "image": null,
         "request": null,
         "prompt_mtok": "0.2",
-        "completion_mtok": "0.2"
+        "completion_mtok": "0.2",
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -3208,7 +3940,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.00090"
+        "request": "0.00090",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -3229,7 +3967,18 @@
         ],
         "modality": "text->text"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Web-Search",
@@ -3249,7 +3998,18 @@
         ],
         "modality": "text->text"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Bagoodex-Web-Search",
@@ -3270,7 +4030,18 @@
         ],
         "modality": "text,image->text"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "GPT-4o-Search",
@@ -3292,11 +4063,15 @@
       },
       "pricing": {
         "prompt": "0.0000023",
-        "completion": "0.0000090",
+        "completion": "0.000009",
         "image": null,
         "request": null,
         "prompt_mtok": "2.3",
-        "completion_mtok": "9"
+        "completion_mtok": "9",
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -3323,7 +4098,11 @@
         "image": null,
         "request": null,
         "prompt_mtok": "0.14",
-        "completion_mtok": "0.54"
+        "completion_mtok": "0.54",
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -3344,7 +4123,18 @@
         ],
         "modality": "text->text"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Perplexity-Sonar",
@@ -3364,7 +4154,18 @@
         ],
         "modality": "text->text"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Linkup-Deep-Search",
@@ -3385,7 +4186,18 @@
         ],
         "modality": "text,image->text"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Linkup-Standard",
@@ -3406,7 +4218,18 @@
         ],
         "modality": "text,image->text"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Perplexity-Sonar-Pro",
@@ -3426,7 +4249,18 @@
         ],
         "modality": "text->text"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Perplexity-Sonar-Rsn-Pro",
@@ -3446,7 +4280,18 @@
         ],
         "modality": "text->text"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Perplexity-Sonar-Rsn",
@@ -3466,7 +4311,18 @@
         ],
         "modality": "text->text"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Perplexity-Deep-Research",
@@ -3486,7 +4342,18 @@
         ],
         "modality": "text->text"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "FLUX-pro-1.1-ultra",
@@ -3506,7 +4373,18 @@
         ],
         "modality": "text->image"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Mistral-Small-3.1",
@@ -3526,7 +4404,18 @@
         ],
         "modality": "text->text"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Claude-Opus-3",
@@ -3553,7 +4442,11 @@
         "image": null,
         "request": null,
         "prompt_mtok": "13",
-        "completion_mtok": "64"
+        "completion_mtok": "64",
+        "msrp_prompt": "0.000015",
+        "msrp_completion": "0.000075",
+        "msrp_prompt_mtok": "15",
+        "msrp_completion_mtok": "75"
       }
     },
     {
@@ -3578,7 +4471,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0060"
+        "request": "0.0060",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -3603,7 +4502,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0033"
+        "request": "0.0033",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -3624,7 +4529,18 @@
         ],
         "modality": "text->audio"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "ElevenLabs-Music",
@@ -3648,7 +4564,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.90"
+        "request": "0.90",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -3674,7 +4596,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0030"
+        "request": "0.0030",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -3696,7 +4624,18 @@
         ],
         "modality": "text,audio->audio"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Stable-Audio-2.0",
@@ -3717,7 +4656,18 @@
         ],
         "modality": "text,audio->audio"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Hailuo-Speech-02",
@@ -3737,7 +4687,18 @@
         ],
         "modality": "text->audio"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "ElevenLabs-v2.5-Turbo",
@@ -3757,7 +4718,18 @@
         ],
         "modality": "text->audio"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Cartesia-Sonic-2.0",
@@ -3777,7 +4749,18 @@
         ],
         "modality": "text->audio"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Gemini-2.5-Flash-TTS",
@@ -3797,7 +4780,18 @@
         ],
         "modality": "text->audio"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": "0.0000005",
+        "msrp_completion": "0.00001",
+        "msrp_prompt_mtok": "0.5",
+        "msrp_completion_mtok": "10"
+      }
     },
     {
       "id": "Gemini-2.5-Pro-TTS",
@@ -3817,7 +4811,18 @@
         ],
         "modality": "text->audio"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": "0.000001",
+        "msrp_completion": "0.00002",
+        "msrp_prompt_mtok": "1",
+        "msrp_completion_mtok": "20"
+      }
     },
     {
       "id": "Orpheus-TTS",
@@ -3837,7 +4842,18 @@
         ],
         "modality": "text->audio"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "PlayAI-Dialog",
@@ -3857,7 +4873,18 @@
         ],
         "modality": "text->audio"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Deepgram-Nova-3",
@@ -3877,7 +4904,18 @@
         ],
         "modality": "text->text"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "PlayAI-TTS",
@@ -3897,7 +4935,18 @@
         ],
         "modality": "text->audio"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Unreal-Speech-TTS",
@@ -3917,7 +4966,18 @@
         ],
         "modality": "text->audio"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Imagen-4-Ultra",
@@ -3941,7 +5001,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.042"
+        "request": "0.042",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -3966,7 +5032,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.014"
+        "request": "0.014",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -3991,7 +5063,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.028"
+        "request": "0.028",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -4016,7 +5094,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.017"
+        "request": "0.017",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -4037,7 +5121,18 @@
         ],
         "modality": "text->image"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Qwen-Image",
@@ -4061,7 +5156,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.020"
+        "request": "0.020",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -4082,7 +5183,18 @@
         ],
         "modality": "text->image"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Hunyuan-Image-2.1",
@@ -4102,7 +5214,18 @@
         ],
         "modality": "text->image"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Flux-Kontext-Max",
@@ -4123,7 +5246,18 @@
         ],
         "modality": "text,image->image"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Flux-Kontext-Pro",
@@ -4144,7 +5278,18 @@
         ],
         "modality": "text,image->image"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "FLUX-Krea",
@@ -4165,7 +5310,18 @@
         ],
         "modality": "text,image->image"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Imagen-3",
@@ -4189,7 +5345,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.028"
+        "request": "0.028",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -4210,7 +5372,18 @@
         ],
         "modality": "text->video"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Imagen-3-Fast",
@@ -4234,7 +5407,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.014"
+        "request": "0.014",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -4255,7 +5434,18 @@
         ],
         "modality": "text->image"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Seedance-1.0-Pro",
@@ -4275,7 +5465,18 @@
         ],
         "modality": "text->video"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Seedance-1.0-Lite",
@@ -4295,7 +5496,18 @@
         ],
         "modality": "text->video"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Ideogram-v3",
@@ -4315,7 +5527,18 @@
         ],
         "modality": "text->image"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Ideogram-v2",
@@ -4340,7 +5563,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.057"
+        "request": "0.057",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -4365,7 +5594,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0050"
+        "request": "0.0050",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -4390,7 +5625,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.00099"
+        "request": "0.00099",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -4411,7 +5652,18 @@
         ],
         "modality": "text->image"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Luma-Photon",
@@ -4431,7 +5683,18 @@
         ],
         "modality": "text->image"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Luma-Photon-Flash",
@@ -4451,7 +5714,18 @@
         ],
         "modality": "text->image"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Hidream-I1-full",
@@ -4471,7 +5745,18 @@
         ],
         "modality": "text->image"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Retro-Diffusion-Core",
@@ -4491,7 +5776,18 @@
         ],
         "modality": "text->image"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "StableDiffusion3.5-L",
@@ -4511,7 +5807,18 @@
         ],
         "modality": "text->image"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "FLUX-pro",
@@ -4531,7 +5838,18 @@
         ],
         "modality": "text->image"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "FLUX-schnell",
@@ -4552,7 +5870,18 @@
         ],
         "modality": "text,image->image"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "GPT-Image-1",
@@ -4573,7 +5902,18 @@
         ],
         "modality": "text,image->image"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "GPT-Image-1-Mini",
@@ -4594,7 +5934,18 @@
         ],
         "modality": "text,image->image"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Veo-3.1",
@@ -4614,7 +5965,18 @@
         ],
         "modality": "text->video"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Veo-3.1-Fast",
@@ -4634,7 +5996,18 @@
         ],
         "modality": "text->video"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Sora-2-Pro",
@@ -4655,7 +6028,18 @@
         ],
         "modality": "text,image->video"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Sora-2",
@@ -4676,7 +6060,18 @@
         ],
         "modality": "text,image->video"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Kling-2.5-Turbo-Std",
@@ -4697,7 +6092,18 @@
         ],
         "modality": "text,image->video"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Wan-2.5",
@@ -4718,7 +6124,18 @@
         ],
         "modality": "text,image->video"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Seedream-4.0",
@@ -4738,7 +6155,18 @@
         ],
         "modality": "text->image"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Kling-2.5-Turbo-Pro",
@@ -4758,7 +6186,18 @@
         ],
         "modality": "text->video"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Kling-2.1-Master",
@@ -4778,7 +6217,18 @@
         ],
         "modality": "text->video"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Hailuo-02",
@@ -4798,7 +6248,18 @@
         ],
         "modality": "text->video"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Hailuo-02-Standard",
@@ -4818,7 +6279,18 @@
         ],
         "modality": "text->video"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Hailuo-02-Pro",
@@ -4838,7 +6310,18 @@
         ],
         "modality": "text->video"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Hailuo-Director-01",
@@ -4858,7 +6341,18 @@
         ],
         "modality": "text->video"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Pixverse-v5",
@@ -4878,7 +6372,18 @@
         ],
         "modality": "text->video"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Pixverse-v4.5",
@@ -4898,7 +6403,18 @@
         ],
         "modality": "text->video"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "FLUX-dev",
@@ -4918,7 +6434,18 @@
         ],
         "modality": "text->image"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Lyria",
@@ -4938,7 +6465,18 @@
         ],
         "modality": "text->audio"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Kling-1.6-Pro",
@@ -4958,7 +6496,18 @@
         ],
         "modality": "text->video"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Ideogram",
@@ -4983,7 +6532,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.045"
+        "request": "0.045",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -5004,7 +6559,18 @@
         ],
         "modality": "text->image"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "TopazLabs",
@@ -5028,7 +6594,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.000030"
+        "request": "0.000030",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -5049,7 +6621,18 @@
         ],
         "modality": "text->video"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Veo-v3.1-Fast",
@@ -5069,7 +6652,18 @@
         ],
         "modality": "text->video"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Wan-2.2",
@@ -5089,7 +6683,18 @@
         ],
         "modality": "text->video"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Veo-3",
@@ -5109,7 +6714,18 @@
         ],
         "modality": "text->video"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Veo-3-vFast",
@@ -5129,7 +6745,18 @@
         ],
         "modality": "text->video"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Vidu",
@@ -5150,7 +6777,18 @@
         ],
         "modality": "text,image->video"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Vidu-Q1",
@@ -5171,7 +6809,18 @@
         ],
         "modality": "text,image->video"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Veo-3-Fast",
@@ -5191,7 +6840,18 @@
         ],
         "modality": "text->video"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Sora",
@@ -5211,7 +6871,18 @@
         ],
         "modality": "text->video"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "OmniHuman",
@@ -5231,7 +6902,18 @@
         ],
         "modality": "text->video"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "KAT-Dev",
@@ -5255,7 +6937,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0015"
+        "request": "0.0015",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -5276,7 +6964,18 @@
         ],
         "modality": "text->video"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Kling-2.1-Std",
@@ -5296,7 +6995,18 @@
         ],
         "modality": "text->video"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Runway-Gen-4-Turbo",
@@ -5317,7 +7027,18 @@
         ],
         "modality": "text,image->video"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Runway",
@@ -5338,7 +7059,18 @@
         ],
         "modality": "text,image->video"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Veo-2",
@@ -5358,7 +7090,18 @@
         ],
         "modality": "text->video"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Dream-Machine",
@@ -5383,7 +7126,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.36"
+        "request": "0.36",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -5404,7 +7153,18 @@
         ],
         "modality": "text->video"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Qwen-Edit",
@@ -5425,7 +7185,18 @@
         ],
         "modality": "text,image->image"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "SeedEdit-3.0",
@@ -5446,7 +7217,18 @@
         ],
         "modality": "text,image->image"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Kling-Pro-Effects",
@@ -5466,7 +7248,18 @@
         ],
         "modality": "text->video"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "TwelveLabs",
@@ -5486,7 +7279,18 @@
         ],
         "modality": "text->text"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Hailuo-Live",
@@ -5507,7 +7311,18 @@
         ],
         "modality": "text,image->video"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Hailuo-AI",
@@ -5527,7 +7342,18 @@
         ],
         "modality": "text->video"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Ray2",
@@ -5548,7 +7374,18 @@
         ],
         "modality": "text,image->video"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Veo-2-Video",
@@ -5568,7 +7405,18 @@
         ],
         "modality": "text->video"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Wan-2.1",
@@ -5588,7 +7436,18 @@
         ],
         "modality": "text->video"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Ideogram-v2a-Turbo",
@@ -5612,7 +7471,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.024"
+        "request": "0.024",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -5637,7 +7502,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.039"
+        "request": "0.039",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -5658,7 +7529,18 @@
         ],
         "modality": "text->image"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "FLUX-dev-finetuner",
@@ -5678,7 +7560,18 @@
         ],
         "modality": "text->image"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "FLUX-Inpaint",
@@ -5698,7 +7591,18 @@
         ],
         "modality": "text->text"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "FLUX-Fill",
@@ -5718,7 +7622,18 @@
         ],
         "modality": "text->text"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Bria-Eraser",
@@ -5738,7 +7653,18 @@
         ],
         "modality": "text->text"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Aya-Vision",
@@ -5762,7 +7688,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.00"
+        "request": "0.00",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -5784,7 +7716,18 @@
         ],
         "modality": "text,image->video"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "DeepReasoning",
@@ -5804,7 +7747,18 @@
         ],
         "modality": "text->text"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Gemma-3-27B",
@@ -5824,7 +7778,18 @@
         ],
         "modality": "text->text"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Qwen3-32B-CS",
@@ -5848,7 +7813,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0036"
+        "request": "0.0036",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -5873,7 +7844,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0066"
+        "request": "0.0066",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -5898,7 +7875,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0087"
+        "request": "0.0087",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -5921,12 +7904,16 @@
         "modality": "text,image->text"
       },
       "pricing": {
-        "prompt": "0.00000010",
-        "completion": "0.00000030",
+        "prompt": "0.0000001",
+        "completion": "0.0000003",
         "image": null,
         "request": null,
         "prompt_mtok": "0.1",
-        "completion_mtok": "0.3"
+        "completion_mtok": "0.3",
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -5951,7 +7938,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0043"
+        "request": "0.0043",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -5973,12 +7966,16 @@
         "modality": "text->text"
       },
       "pricing": {
-        "prompt": "0.0000020",
-        "completion": "0.000010",
+        "prompt": "0.000002",
+        "completion": "0.00001",
         "image": null,
         "request": null,
         "prompt_mtok": "2",
-        "completion_mtok": "10"
+        "completion_mtok": "10",
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -6001,12 +7998,16 @@
         "modality": "text,image->text"
       },
       "pricing": {
-        "prompt": "0.0000030",
-        "completion": "0.0000030",
+        "prompt": "0.000003",
+        "completion": "0.000003",
         "image": null,
         "request": null,
         "prompt_mtok": "3",
-        "completion_mtok": "3"
+        "completion_mtok": "3",
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -6031,7 +8032,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.015"
+        "request": "0.015",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -6056,7 +8063,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0059"
+        "request": "0.0059",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -6081,7 +8094,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.00030"
+        "request": "0.00030",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -6106,7 +8125,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.00015"
+        "request": "0.00015",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -6131,7 +8156,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0051"
+        "request": "0.0051",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -6152,7 +8183,18 @@
         ],
         "modality": "text->video"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Llama-3.1-8B-T-128k",
@@ -6176,7 +8218,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0030"
+        "request": "0.0030",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -6204,7 +8252,11 @@
         "image": null,
         "request": null,
         "prompt_mtok": "0.21",
-        "completion_mtok": "1.1"
+        "completion_mtok": "1.1",
+        "msrp_prompt": "0.00000025",
+        "msrp_completion": "0.00000125",
+        "msrp_prompt_mtok": "0.25",
+        "msrp_completion_mtok": "1.25"
       }
     },
     {
@@ -6225,7 +8277,18 @@
         ],
         "modality": "text->image"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Mixtral8x22b-Inst-FW",
@@ -6249,7 +8312,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0036"
+        "request": "0.0036",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -6274,7 +8343,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0051"
+        "request": "0.0051",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -6297,12 +8372,16 @@
         "modality": "text,image->text"
       },
       "pricing": {
-        "prompt": "0.0000030",
-        "completion": "0.0000090",
+        "prompt": "0.000003",
+        "completion": "0.000009",
         "image": null,
         "request": null,
         "prompt_mtok": "3",
-        "completion_mtok": "9"
+        "completion_mtok": "9",
+        "msrp_prompt": "0.000002",
+        "msrp_completion": "0.000006",
+        "msrp_prompt_mtok": "2",
+        "msrp_completion_mtok": "6"
       }
     },
     {
@@ -6327,7 +8406,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.045"
+        "request": "0.045",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -6348,7 +8433,18 @@
         ],
         "modality": "text->text"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Reka-Flash",
@@ -6368,7 +8464,18 @@
         ],
         "modality": "text->text"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Command-R-Plus",
@@ -6392,7 +8499,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0051"
+        "request": "0.0051",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -6420,7 +8533,11 @@
         "image": null,
         "request": null,
         "prompt_mtok": "2.6",
-        "completion_mtok": "13"
+        "completion_mtok": "13",
+        "msrp_prompt": "0.000003",
+        "msrp_completion": "0.000015",
+        "msrp_prompt_mtok": "3",
+        "msrp_completion_mtok": "15"
       }
     },
     {
@@ -6448,7 +8565,11 @@
         "image": null,
         "request": null,
         "prompt_mtok": "0.45",
-        "completion_mtok": "1.3"
+        "completion_mtok": "1.3",
+        "msrp_prompt": "0.0000005",
+        "msrp_completion": "0.0000015",
+        "msrp_prompt_mtok": "0.5",
+        "msrp_completion_mtok": "1.5"
       }
     },
     {
@@ -6470,7 +8591,18 @@
         ],
         "modality": "text,image->image"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Qwen2.5-Coder-32B",
@@ -6495,7 +8627,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0015"
+        "request": "0.0015",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -6516,7 +8654,18 @@
         ],
         "modality": "text->image"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "FLUX-pro-1-T",
@@ -6541,7 +8690,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.037"
+        "request": "0.037",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -6567,7 +8722,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.030"
+        "request": "0.030",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -6593,7 +8754,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0021"
+        "request": "0.0021",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -6614,7 +8781,18 @@
         ],
         "modality": "text->image"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Llama-3-70B-T",
@@ -6638,7 +8816,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0023"
+        "request": "0.0023",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -6662,11 +8846,15 @@
       },
       "pricing": {
         "prompt": "0.0000023",
-        "completion": "0.0000090",
+        "completion": "0.000009",
         "image": null,
         "request": null,
         "prompt_mtok": "2.3",
-        "completion_mtok": "9"
+        "completion_mtok": "9",
+        "msrp_prompt": "0.0000025",
+        "msrp_completion": "0.00001",
+        "msrp_prompt_mtok": "2.5",
+        "msrp_completion_mtok": "10"
       }
     },
     {
@@ -6694,7 +8882,11 @@
         "image": null,
         "request": null,
         "prompt_mtok": "27",
-        "completion_mtok": "54"
+        "completion_mtok": "54",
+        "msrp_prompt": "0.00003",
+        "msrp_completion": "0.00006",
+        "msrp_prompt_mtok": "30",
+        "msrp_completion_mtok": "60"
       }
     },
     {
@@ -6722,7 +8914,11 @@
         "image": null,
         "request": null,
         "prompt_mtok": "27",
-        "completion_mtok": "54"
+        "completion_mtok": "54",
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -6748,7 +8944,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0021"
+        "request": "0.0021",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -6769,7 +8971,18 @@
         ],
         "modality": "text->text"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Sana-T2I",
@@ -6789,7 +9002,18 @@
         ],
         "modality": "text->image"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "Mistral-7B-v0.3-T",
@@ -6813,7 +9037,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0014"
+        "request": "0.0014",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -6838,7 +9068,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.030"
+        "request": "0.030",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -6863,7 +9099,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.062"
+        "request": "0.062",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -6888,7 +9130,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0015"
+        "request": "0.0015",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -6913,7 +9161,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0060"
+        "request": "0.0060",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -6938,7 +9192,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0060"
+        "request": "0.0060",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -6959,7 +9219,18 @@
         ],
         "modality": "text->text"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "StableDiffusionXL",
@@ -6984,7 +9255,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0036"
+        "request": "0.0036",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -7009,7 +9286,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0023"
+        "request": "0.0023",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -7034,7 +9317,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0063"
+        "request": "0.0063",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -7059,7 +9348,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0096"
+        "request": "0.0096",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -7084,7 +9379,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0090"
+        "request": "0.0090",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -7109,7 +9410,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.000030"
+        "request": "0.000030",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -7130,7 +9437,18 @@
         ],
         "modality": "text->text"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "GPT-4-Turbo",
@@ -7152,12 +9470,16 @@
         "modality": "text,image->text"
       },
       "pricing": {
-        "prompt": "0.0000090",
+        "prompt": "0.000009",
         "completion": "0.000027",
         "image": null,
         "request": null,
         "prompt_mtok": "9",
-        "completion_mtok": "27"
+        "completion_mtok": "27",
+        "msrp_prompt": "0.00001",
+        "msrp_completion": "0.00003",
+        "msrp_prompt_mtok": "10",
+        "msrp_completion_mtok": "30"
       }
     },
     {
@@ -7182,7 +9504,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0010"
+        "request": "0.0010",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -7207,7 +9535,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.011"
+        "request": "0.011",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -7228,7 +9562,18 @@
         ],
         "modality": "text->video"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "GPT-3.5-Turbo-Instruct",
@@ -7255,7 +9600,11 @@
         "image": null,
         "request": null,
         "prompt_mtok": "1.3",
-        "completion_mtok": "1.8"
+        "completion_mtok": "1.8",
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -7283,7 +9632,11 @@
         "image": null,
         "request": null,
         "prompt_mtok": "0.45",
-        "completion_mtok": "1.3"
+        "completion_mtok": "1.3",
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     },
     {
@@ -7306,7 +9659,18 @@
         ],
         "modality": "text,image,audio->video"
       },
-      "pricing": null
+      "pricing": {
+        "prompt": null,
+        "completion": null,
+        "image": null,
+        "request": null,
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
+      }
     },
     {
       "id": "DeepSeek-V3.1-T",
@@ -7330,7 +9694,13 @@
         "prompt": null,
         "completion": null,
         "image": null,
-        "request": "0.0060"
+        "request": "0.0060",
+        "prompt_mtok": null,
+        "completion_mtok": null,
+        "msrp_prompt": null,
+        "msrp_completion": null,
+        "msrp_prompt_mtok": null,
+        "msrp_completion_mtok": null
       }
     }
   ]
