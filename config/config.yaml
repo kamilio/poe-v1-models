@@ -1,0 +1,22 @@
+providers:
+  priority:
+    - models.dev
+    - openrouter
+exclusions:
+  id_contains:
+    - -search
+    - -reasoning
+  id_prefixes:
+    - assistant
+    - web-search
+    - python
+  owned_by:
+    - poe
+overrides:
+  ChatGPT-4o-Latest:
+    metadata:
+      curated: true
+      tier: flagship
+    tags:
+      - openai
+      - flagship
