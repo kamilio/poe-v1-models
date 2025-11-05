@@ -2,6 +2,8 @@ from decimal import Decimal
 from pathlib import Path
 import sys
 
+import pytest
+
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
@@ -100,3 +102,22 @@ def test_models_dev_auto_mapping_populates_gpt5_pricing():
     assert decision.reasons == []
     assert decision.pricing.prompt is not None
     assert decision.pricing.completion is not None
+
+
+def test_boosts_prioritize_models():
+    result = run_pipeline()
+    boosts = result.config.boosts
+    if not boosts.rules:
+        pytest.skip("No boosts configured in config.yaml")
+
+    payload = result.payload.get("data", [])
+    assert payload, "Expected pipeline to produce models data"
+
+    sentinel = len(boosts.rules)
+    priorities = []
+    for model in payload:
+        position = boosts.position_for(model)
+        priorities.append(position if position is not None else sentinel)
+
+    assert priorities == sorted(priorities), "Expected models ordered by boost priority"
+    assert priorities[0] == 0, "First model should correspond to the highest priority boost rule"

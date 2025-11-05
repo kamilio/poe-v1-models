@@ -7,7 +7,7 @@ from typing import Any, Dict, Iterable, List, Mapping, Optional, Sequence
 from urllib.request import urlopen
 
 from poe_v1_models.checks import ProviderDecision, evaluate_provider_decisions
-from poe_v1_models.config import GeneralConfig, load_general_config
+from poe_v1_models.config import BoostSettings, GeneralConfig, load_general_config
 from poe_v1_models.mapping import ModelMappingEntry, load_model_mapping, mapping_index
 from poe_v1_models.pricing import (
     PricingSnapshot,
@@ -128,6 +128,8 @@ def run_pipeline() -> PipelineResult:
             overrides_applied=overrides_applied,
         )
 
+    enriched_models = _apply_boosts(enriched_models, config.boosts)
+
     payload = {
         "object": poe_payload.get("object"),
         "data": enriched_models,
@@ -197,3 +199,21 @@ def deep_merge(target: Dict[str, Any], override: Mapping[str, Any]) -> Dict[str,
         else:
             target[key] = copy.deepcopy(value)
     return target
+
+
+def _apply_boosts(models: List[Dict[str, Any]], boosts: BoostSettings) -> List[Dict[str, Any]]:
+    if not boosts or not getattr(boosts, "rules", None):
+        return models
+
+    indexed_models = list(enumerate(models))
+    total_rules = len(boosts.rules)
+
+    def sort_key(item: tuple[int, Dict[str, Any]]) -> tuple[int, int]:
+        index, model = item
+        position = boosts.position_for(model)
+        if position is None:
+            return (total_rules, index)
+        return (position, index)
+
+    indexed_models.sort(key=sort_key)
+    return [model for _, model in indexed_models]

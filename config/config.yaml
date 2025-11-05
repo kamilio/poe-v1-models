@@ -2,6 +2,10 @@ providers:
   priority:
     - models.dev
     - openrouter
+boosts:
+  - Claude-Sonnet-4.5
+  - Gemini-2.5-Pro
+  - GPT-5
 exclusions:
   - assistant
   - id: web-search
@@ -14,11 +18,3 @@ exclusions:
   - Claude-Sonnet-4-Search
   - Claude-Sonnet-3.7-Search
   - Claude-Haiku-3.5-Search
-overrides:
-  ChatGPT-4o-Latest:
-    metadata:
-      curated: true
-      tier: flagship
-    tags:
-      - openai
-      - flagship

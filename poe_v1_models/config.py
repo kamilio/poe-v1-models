@@ -49,9 +49,39 @@ class ExclusionSettings:
 
 
 @dataclass(frozen=True)
+class BoostRule:
+    kind: str
+    value: str
+
+    def matches(self, poe_model: Mapping[str, Any]) -> bool:
+        candidate: Optional[str] = None
+        if self.kind == "id":
+            candidate = str(poe_model.get("id", "") or "")
+        elif self.kind == "owner":
+            candidate = str(poe_model.get("owned_by", "") or "")
+
+        if candidate is None:
+            return False
+
+        return candidate.strip().lower() == self.value.strip().lower()
+
+
+@dataclass(frozen=True)
+class BoostSettings:
+    rules: List[BoostRule] = field(default_factory=list)
+
+    def position_for(self, poe_model: Mapping[str, Any]) -> Optional[int]:
+        for index, rule in enumerate(self.rules):
+            if rule.matches(poe_model):
+                return index
+        return None
+
+
+@dataclass(frozen=True)
 class GeneralConfig:
     providers: ProviderSettings = field(default_factory=ProviderSettings)
     exclusions: ExclusionSettings = field(default_factory=ExclusionSettings)
+    boosts: BoostSettings = field(default_factory=BoostSettings)
     overrides: Mapping[str, Mapping[str, Any]] = field(default_factory=dict)
 
 
@@ -76,6 +106,11 @@ def load_general_config(path: Path = CONFIG_PATH) -> GeneralConfig:
         raw_exclusions = data.get("exclusion")
     exclusions = ExclusionSettings(rules=_parse_exclusion_rules(raw_exclusions))
 
+    raw_boosts = data.get("boosts")
+    if raw_boosts is None and "boost" in data:
+        raw_boosts = data.get("boost")
+    boosts = BoostSettings(rules=_parse_boost_rules(raw_boosts))
+
     overrides_block = data.get("overrides") or {}
     if not isinstance(overrides_block, Mapping):
         raise ValueError("overrides section must be a mapping of poe_id -> override mapping")
@@ -87,7 +122,12 @@ def load_general_config(path: Path = CONFIG_PATH) -> GeneralConfig:
             raise ValueError(f"override for '{poe_id}' must be a mapping")
         overrides[poe_id] = _sanitize_mapping(override)
 
-    return GeneralConfig(providers=provider_settings, exclusions=exclusions, overrides=overrides)
+    return GeneralConfig(
+        providers=provider_settings,
+        exclusions=exclusions,
+        boosts=boosts,
+        overrides=overrides,
+    )
 
 
 def _as_list(value: Any) -> List[str]:
@@ -156,3 +196,41 @@ def _sanitize_reason(value: Any) -> Optional[str]:
         return None
     reason = str(value).strip()
     return reason or None
+
+
+def _parse_boost_rules(raw: Any) -> List[BoostRule]:
+    if raw is None:
+        return []
+
+    if isinstance(raw, list):
+        return [_parse_boost_rule(item) for item in raw]
+
+    if isinstance(raw, Mapping):
+        rules: List[BoostRule] = []
+        for model_id in _as_list(raw.get("ids")):
+            rules.append(BoostRule(kind="id", value=model_id))
+        owner_keys = raw.get("owners") or raw.get("owned_by")
+        for owner in _as_list(owner_keys):
+            rules.append(BoostRule(kind="owner", value=owner))
+        return rules
+
+    raise ValueError("boosts section must be a list or mapping")
+
+
+def _parse_boost_rule(item: Any) -> BoostRule:
+    if isinstance(item, str):
+        value = item.strip()
+        if not value:
+            raise ValueError("boost entries must not be empty strings")
+        return BoostRule(kind="id", value=value)
+
+    if isinstance(item, Mapping):
+        if "id" in item and item["id"]:
+            return BoostRule(kind="id", value=str(item["id"]))
+        if "owner" in item and item["owner"]:
+            return BoostRule(kind="owner", value=str(item["owner"]))
+        if "owned_by" in item and item["owned_by"]:
+            return BoostRule(kind="owner", value=str(item["owned_by"]))
+        raise ValueError("boost mapping must include 'id' or 'owner'")
+
+    raise ValueError("unsupported boost entry")
