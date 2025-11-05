@@ -189,3 +189,134 @@ def render_checks_html() -> str:
 </body>
 </html>
 """
+
+
+def render_changelog_html() -> str:
+    return """<!DOCTYPE html>
+<html lang=\"en\">
+<head>
+  <meta charset=\"utf-8\" />
+  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />
+  <title>Poe Models Changelog</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; margin: 2rem; background: #0f172a; color: #e2e8f0; }
+    h1 { margin-bottom: 0.5rem; }
+    .subtitle { color: #94a3b8; margin-bottom: 1.5rem; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 2rem; font-size: 0.9rem; }
+    th, td { border: 1px solid rgba(148, 163, 184, 0.3); padding: 0.5rem; text-align: left; vertical-align: top; }
+    th { background: rgba(30, 41, 59, 0.8); position: sticky; top: 0; }
+    tr:nth-child(even) { background: rgba(15, 23, 42, 0.4); }
+    .tag { display: inline-block; padding: 0.125rem 0.5rem; border-radius: 999px; font-size: 0.75rem; margin-right: 0.25rem; margin-bottom: 0.25rem; }
+    .tag.added { background: rgba(34, 197, 94, 0.2); color: #4ade80; }
+    .tag.removed { background: rgba(248, 113, 113, 0.2); color: #fca5a5; }
+    .tag.initial { background: rgba(96, 165, 250, 0.2); color: #93c5fd; }
+    .muted { color: #94a3b8; }
+    .empty { font-style: italic; color: #94a3b8; }
+  </style>
+</head>
+<body>
+  <h1>Poe Models Changelog</h1>
+  <div class=\"subtitle muted\">Latest changes to published Poe v1 model metadata</div>
+  <table id=\"changelog-table\">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Total Models</th>
+        <th>Added</th>
+        <th>Removed</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td colspan=\"4\" class=\"muted\">Loading…</td></tr>
+    </tbody>
+  </table>
+  <script>
+    function renderModelList(cell, items, cssClass) {
+      cell.innerHTML = '';
+      if (!Array.isArray(items) || !items.length) {
+        const empty = document.createElement('span');
+        empty.textContent = '—';
+        empty.classList.add('empty');
+        cell.appendChild(empty);
+        return;
+      }
+      items.forEach(item => {
+        const tag = document.createElement('span');
+        tag.className = `tag ${cssClass}`;
+        tag.textContent = item;
+        cell.appendChild(tag);
+      });
+    }
+
+    function appendTag(cell, text, cssClass) {
+      const tag = document.createElement('span');
+      tag.className = `tag ${cssClass}`;
+      tag.textContent = text;
+      cell.appendChild(document.createTextNode(' '));
+      cell.appendChild(tag);
+    }
+
+    async function loadChangelog() {
+      const tbody = document.querySelector('#changelog-table tbody');
+      try {
+        const response = await fetch('changelog.json');
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+        const data = await response.json();
+        const entries = Array.isArray(data) ? data.slice() : [];
+        if (!entries.length) {
+          tbody.innerHTML = '<tr><td colspan="4" class="muted">No changelog entries yet.</td></tr>';
+          return;
+        }
+        entries.sort((a, b) => {
+          const aDate = Date.parse(a.date || '');
+          const bDate = Date.parse(b.date || '');
+          return bDate - aDate;
+        });
+        tbody.innerHTML = '';
+        entries.forEach(entry => {
+          const row = document.createElement('tr');
+          const dateCell = document.createElement('td');
+          const totalCell = document.createElement('td');
+          const addedCell = document.createElement('td');
+          const removedCell = document.createElement('td');
+
+          const dateText = document.createElement('span');
+          if (entry.date) {
+            dateText.textContent = new Date(entry.date).toLocaleString();
+          } else {
+            dateText.textContent = '—';
+            dateText.classList.add('empty');
+          }
+          dateCell.appendChild(dateText);
+          if (entry.initial_snapshot) {
+            appendTag(dateCell, 'initial snapshot', 'initial');
+          }
+
+          if (typeof entry.total_models === 'number') {
+            totalCell.textContent = entry.total_models.toString();
+          } else {
+            totalCell.textContent = '—';
+            totalCell.classList.add('empty');
+          }
+
+          renderModelList(addedCell, entry.added, 'added');
+          renderModelList(removedCell, entry.removed, 'removed');
+
+          row.appendChild(dateCell);
+          row.appendChild(totalCell);
+          row.appendChild(addedCell);
+          row.appendChild(removedCell);
+          tbody.appendChild(row);
+        });
+      } catch (error) {
+        tbody.innerHTML = `<tr><td colspan="4" class="muted">Failed to load changelog: ${error}</td></tr>`;
+      }
+    }
+
+    loadChangelog();
+  </script>
+</body>
+</html>
+"""

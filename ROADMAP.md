@@ -14,3 +14,9 @@
         - [x] `checks.html` visualises the JSON (yellow for blocked prices, red where Poe exceeds MSRP).
 - [x] GH Pages publishing
     - Outputs generated on CI only; `dist/` is no longer tracked on `main`.
+
+## Changelog
+- [x] Generate changelog json, keep reading and appending to it
+    - [x] Store a single snapshot of the prior run in `dist/models_previous.json` for GH Pages publication.
+    - [x] Compare with the previous snapshot to append `{"date", "added", "removed", "total_models"}` entries in `dist/changelog.json`.
+    - [x] Publish `dist/changelog.html` to render the changelog feed.
