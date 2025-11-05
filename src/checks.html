@@ -9,18 +9,26 @@
     h1 { margin-bottom: 0.5rem; }
     .timestamp { color: #94a3b8; margin-bottom: 1.5rem; }
     table { width: 100%; border-collapse: collapse; margin-bottom: 2rem; font-size: 0.9rem; }
-    th, td { border: 1px solid rgba(148, 163, 184, 0.3); padding: 0.5rem; text-align: left; }
-    th { background: rgba(30, 41, 59, 0.8); position: sticky; top: 0; }
-    tr:nth-child(even) { background: rgba(15, 23, 42, 0.4); }
-    tr.status-accepted { background: rgba(34, 197, 94, 0.12); }
-    tr.status-missing { color: #94a3b8; }
-    tr.severity-yellow { background: rgba(234, 179, 8, 0.2); }
-    tr.severity-red { background: rgba(220, 38, 38, 0.3); }
-    .tag { display: inline-block; padding: 0.125rem 0.5rem; border-radius: 999px; font-size: 0.75rem; margin-right: 0.25rem; }
+    th, td { border: 1px solid rgba(148, 163, 184, 0.3); padding: 0.5rem; text-align: left; vertical-align: top; }
+    thead tr:first-child th { background: rgba(30, 41, 59, 0.85); position: sticky; top: 0; z-index: 3; }
+    thead tr:nth-child(2) th { background: rgba(22, 33, 55, 0.85); position: sticky; top: 2.5rem; z-index: 2; font-size: 0.8rem; }
+    tr:nth-child(even) { background: rgba(15, 23, 42, 0.35); }
+    .numeric { text-align: right; font-family: 'SFMono-Regular', SFMono, Menlo, Consolas, monospace; }
+    .center { text-align: center; }
+    .provider-header { text-align: center; font-weight: 600; letter-spacing: 0.02em; }
+    .provider-cell { background: rgba(15, 23, 42, 0.25); }
+    .provider-cell.severity-yellow { background: rgba(234, 179, 8, 0.22); }
+    .provider-cell.severity-red { background: rgba(220, 38, 38, 0.28); }
+    .provider-cell.severity-muted { color: #94a3b8; }
+    .provider-cell.selected-provider { box-shadow: inset 0 0 0 1px rgba(93, 92, 222, 0.6); }
+    .tag { display: inline-block; padding: 0.125rem 0.5rem; border-radius: 999px; font-size: 0.75rem; margin-right: 0.25rem; text-transform: lowercase; }
     .tag.accepted { background: rgba(34, 197, 94, 0.2); color: #4ade80; }
     .tag.rejected { background: rgba(248, 113, 113, 0.2); color: #fca5a5; }
     .tag.missing { background: rgba(148, 163, 184, 0.2); color: #cbd5f5; }
-    .warning { color: #fbbf24; }
+    .tag.ok { background: rgba(59, 130, 246, 0.15); color: #93c5fd; }
+    .model-link { color: #60a5fa; text-decoration: none; font-weight: 500; }
+    .model-link:hover { text-decoration: underline; }
+    .excluded td { color: #94a3b8; }
     .error { color: #f87171; }
   </style>
 </head>
@@ -28,77 +36,211 @@
   <h1>Poe Pricing Checks</h1>
   <div class="timestamp" id="timestamp">Loading…</div>
   <table id="checks-table">
-    <thead>
-      <tr>
-        <th>Model</th>
-        <th>Provider</th>
-        <th>Status</th>
-        <th>Reasons</th>
-        <th>Prompt / MTok</th>
-        <th>Completion / MTok</th>
-        <th>Poe Prompt / MTok</th>
-        <th>Poe Completion / MTok</th>
-      </tr>
-    </thead>
+    <thead></thead>
     <tbody></tbody>
   </table>
   <script>
+    const BASE_COLUMNS = [
+      { key: 'model', label: 'Model', rowSpan: 2 },
+      { key: 'selected', label: 'Selected Provider', rowSpan: 2 },
+      { key: 'overrides', label: 'Overrides', rowSpan: 2 },
+      { key: 'poe_prompt', label: 'Poe Prompt / MTok', rowSpan: 2, numeric: true },
+      { key: 'poe_completion', label: 'Poe Completion / MTok', rowSpan: 2, numeric: true }
+    ];
+
+    function sanitizeValue(value) {
+      if (value === null || value === undefined) return '—';
+      if (typeof value === 'string' && (value.trim() === '' || value.trim().toLowerCase() === 'null')) return '—';
+      return value;
+    }
+
+    function createCell({ text = '—', html = null, numeric = false, classes = [] }) {
+      const td = document.createElement('td');
+      if (numeric) td.classList.add('numeric');
+      classes.forEach(cls => td.classList.add(cls));
+      if (html) {
+        td.innerHTML = html;
+      } else {
+        td.textContent = text ?? '—';
+      }
+      return td;
+    }
+
+    function buildHeaders(thead, providers) {
+      const primaryRow = document.createElement('tr');
+      const secondaryRow = document.createElement('tr');
+
+      BASE_COLUMNS.forEach(column => {
+        const th = document.createElement('th');
+        th.textContent = column.label;
+        th.rowSpan = column.rowSpan || 1;
+        if (column.numeric) th.classList.add('numeric');
+        primaryRow.appendChild(th);
+      });
+
+      providers.forEach(provider => {
+        if (!provider.columns || provider.columns.length === 0) {
+          return;
+        }
+        const th = document.createElement('th');
+        th.textContent = provider.label || provider.name;
+        th.colSpan = provider.columns.length;
+        th.classList.add('provider-header');
+        primaryRow.appendChild(th);
+
+        provider.columns.forEach(column => {
+          const subTh = document.createElement('th');
+          subTh.textContent = column.label;
+          if (column.numeric) subTh.classList.add('numeric');
+          secondaryRow.appendChild(subTh);
+        });
+      });
+
+      thead.appendChild(primaryRow);
+      if (secondaryRow.children.length) {
+        thead.appendChild(secondaryRow);
+      }
+    }
+
+    function buildModelRow(model, providersMeta) {
+      const row = document.createElement('tr');
+
+      const modelCell = document.createElement('td');
+      const link = document.createElement('a');
+      link.href = `https://poe.com/${model.id}`;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      link.textContent = model.id;
+      link.className = 'model-link';
+      modelCell.appendChild(link);
+      row.appendChild(modelCell);
+
+      const selectedCell = document.createElement('td');
+      if (model.selected_provider) {
+        selectedCell.innerHTML = `<span class="tag accepted">${model.selected_provider}</span>`;
+      } else {
+        selectedCell.textContent = '—';
+      }
+      row.appendChild(selectedCell);
+
+      row.appendChild(
+        createCell({
+          text: model.overrides_applied ? 'yes' : 'no',
+          classes: ['center']
+        })
+      );
+
+      const poePrompt = sanitizeValue(model.poe_pricing?.prompt_mtok);
+      const poeCompletion = sanitizeValue(model.poe_pricing?.completion_mtok);
+      row.appendChild(createCell({ text: poePrompt, numeric: true }));
+      row.appendChild(createCell({ text: poeCompletion, numeric: true }));
+
+      providersMeta.forEach(provider => {
+        const providerData = model.providers?.[provider.name];
+        provider.columns.forEach(column => {
+          const classes = ['provider-cell'];
+          if (providerData) {
+            if (providerData.severity && providerData.severity !== 'ok') {
+              classes.push(`severity-${providerData.severity}`);
+            }
+            if (providerData.selected) {
+              classes.push('selected-provider');
+            }
+            const value = providerData.values?.[column.key];
+            row.appendChild(
+              createCell({
+                text: value?.text ?? '—',
+                html: value?.html ?? null,
+                numeric: value?.numeric || column.numeric || false,
+                classes
+              })
+            );
+          } else {
+            classes.push('severity-muted');
+            row.appendChild(
+              createCell({
+                text: '—',
+                numeric: column.numeric || false,
+                classes
+              })
+            );
+          }
+        });
+      });
+
+      return row;
+    }
+
     async function loadChecks() {
       const response = await fetch('checks.json');
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
       const data = await response.json();
-      const tbody = document.querySelector('#checks-table tbody');
+      const table = document.getElementById('checks-table');
+      const thead = table.querySelector('thead');
+      const tbody = table.querySelector('tbody');
+      thead.innerHTML = '';
       tbody.innerHTML = '';
-      document.getElementById('timestamp').textContent = `Generated at ${new Date(data.generated_at).toLocaleString()}`;
-      data.models
-        .filter(model => !model.excluded)
-        .forEach(model => {
-          const poePrompt = model.poe_pricing ? model.poe_pricing.prompt_mtok : null;
-          const poeCompletion = model.poe_pricing ? model.poe_pricing.completion_mtok : null;
-          model.providers.forEach(provider => {
-            const row = document.createElement('tr');
-            row.classList.add(`status-${provider.status}`);
-            if (provider.severity && provider.severity !== 'ok') {
-              row.classList.add(`severity-${provider.severity}`);
-            }
-            const prompt = provider.pricing ? provider.pricing.prompt_mtok || provider.pricing.prompt || '—' : '—';
-            const completion = provider.pricing ? provider.pricing.completion_mtok || provider.pricing.completion || '—' : '—';
-            row.innerHTML = `
-              <td>${model.id}${model.selected_provider === provider.name ? ' ★' : ''}</td>
-              <td>${provider.name}</td>
-              <td><span class="tag ${provider.status}">${provider.status}</span></td>
-              <td>${provider.reasons.length ? provider.reasons.join(', ') : '—'}</td>
-              <td>${prompt}</td>
-              <td>${completion}</td>
-              <td>${poePrompt ?? '—'}</td>
-              <td>${poeCompletion ?? '—'}</td>
-            `;
-            tbody.appendChild(row);
-          });
-        });
 
-      const excludedModels = data.models.filter(model => model.excluded);
-      if (excludedModels.length) {
+      document.getElementById('timestamp').textContent = `Generated at ${new Date(data.generated_at).toLocaleString()}`;
+
+      const providersMeta = data.providers || [];
+      buildHeaders(thead, providersMeta);
+
+      const totalColumns =
+        BASE_COLUMNS.length +
+        providersMeta.reduce((count, provider) => count + (provider.columns?.length || 0), 0);
+
+      (data.models || []).forEach(model => {
+        tbody.appendChild(buildModelRow(model, providersMeta));
+      });
+
+      const excluded = data.excluded_models || [];
+      if (excluded.length) {
         const separator = document.createElement('tr');
-        separator.innerHTML = '<td colspan="8"><strong>Excluded models</strong></td>';
+        const separatorCell = document.createElement('td');
+        separatorCell.colSpan = totalColumns;
+        separatorCell.innerHTML = '<strong>Excluded models</strong>';
+        separator.appendChild(separatorCell);
+        separator.classList.add('excluded');
         tbody.appendChild(separator);
-        excludedModels.forEach(model => {
+
+        excluded.forEach(entry => {
           const row = document.createElement('tr');
-          row.classList.add('status-missing');
-          row.innerHTML = `
-            <td>${model.id}</td>
-            <td>—</td>
-            <td><span class="tag missing">excluded</span></td>
-            <td>${model.exclusion_reason || 'config rule'}</td>
-            <td colspan="4">Owned by: ${model.owned_by || 'unknown'}</td>
-          `;
+          row.classList.add('excluded');
+
+          const idCell = document.createElement('td');
+          idCell.textContent = entry.id;
+          row.appendChild(idCell);
+
+          const statusCell = document.createElement('td');
+          statusCell.innerHTML = '<span class="tag missing">excluded</span>';
+          row.appendChild(statusCell);
+
+          const detailCell = document.createElement('td');
+          detailCell.colSpan = totalColumns - 2;
+          detailCell.textContent = `Owned by: ${entry.owned_by || 'unknown'} (${entry.reason || 'config rule'})`;
+          row.appendChild(detailCell);
+
           tbody.appendChild(row);
         });
       }
     }
 
     loadChecks().catch(error => {
-      const tbody = document.querySelector('#checks-table tbody');
-      tbody.innerHTML = `<tr><td colspan="8" class="error">Failed to load checks: ${error}</td></tr>`;
+      const table = document.getElementById('checks-table');
+      const tbody = table.querySelector('tbody');
+      const thead = table.querySelector('thead');
+      thead.innerHTML = '';
+      const errorRow = document.createElement('tr');
+      const cell = document.createElement('td');
+      cell.colSpan = BASE_COLUMNS.length;
+      cell.classList.add('error');
+      cell.textContent = `Failed to load checks: ${error.message}`;
+      errorRow.appendChild(cell);
+      tbody.innerHTML = '';
+      tbody.appendChild(errorRow);
     });
   </script>
 </body>

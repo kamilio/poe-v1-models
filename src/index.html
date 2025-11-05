@@ -44,10 +44,10 @@
         class="flex-1 px-4 py-2 text-base border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary transition-all"
       >
       <select
-        id="filterOwner"
+        id="filterModality"
         class="px-4 py-2 text-base border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary transition-all"
       >
-        <option value="">All Providers</option>
+        <option value="">All Output Modalities</option>
       </select>
     </div>
 
@@ -289,7 +289,7 @@
 
     function applyFilters() {
       const searchTerm = document.getElementById('searchInput').value.trim();
-      const ownerFilter = document.getElementById('filterOwner').value;
+      const modalityFilter = document.getElementById('filterModality').value;
 
       let results = allModels;
 
@@ -297,23 +297,37 @@
         results = fuse.search(searchTerm).map(entry => entry.item);
       }
 
-      if (ownerFilter) {
-        results = results.filter(model => model.owned_by === ownerFilter);
+      if (modalityFilter) {
+        results = results.filter(model => {
+          const outputs = model.architecture?.output_modalities;
+          if (!Array.isArray(outputs)) return false;
+          return outputs.includes(modalityFilter);
+        });
       }
 
       filteredModels = results;
       renderTable(filteredModels);
     }
 
-    function populateOwnerFilter() {
-      const select = document.getElementById('filterOwner');
-      const owners = [...new Set(allModels.map(model => model.owned_by))].sort((a, b) => a.localeCompare(b));
-      owners.forEach(owner => {
-        const option = document.createElement('option');
-        option.value = owner;
-        option.textContent = owner.charAt(0).toUpperCase() + owner.slice(1);
-        select.appendChild(option);
+    function populateModalityFilter() {
+      const select = document.getElementById('filterModality');
+      // Retain the default option
+      select.length = 1;
+      const modalities = new Set();
+      allModels.forEach(model => {
+        const outputs = model.architecture?.output_modalities;
+        if (Array.isArray(outputs)) {
+          outputs.forEach(modality => modalities.add(modality));
+        }
       });
+      Array.from(modalities)
+        .sort((a, b) => a.localeCompare(b))
+        .forEach(modality => {
+          const option = document.createElement('option');
+          option.value = modality;
+          option.textContent = modality;
+          select.appendChild(option);
+        });
     }
 
     async function loadData() {
@@ -336,13 +350,13 @@
         filteredModels = [...allModels];
 
         fuse = new Fuse(allModels, {
-          keys: ['id', 'owned_by'],
+          keys: ['id', 'owned_by', 'architecture.output_modalities'],
           threshold: 0.3,
           includeScore: true,
           minMatchCharLength: 2
         });
 
-        populateOwnerFilter();
+        populateModalityFilter();
         renderTable(filteredModels);
 
         loadingState.classList.add('hidden');
@@ -356,7 +370,7 @@
     }
 
     document.getElementById('searchInput').addEventListener('input', applyFilters);
-    document.getElementById('filterOwner').addEventListener('change', applyFilters);
+    document.getElementById('filterModality').addEventListener('change', applyFilters);
     loadData();
   </script>
 </body>
