@@ -233,7 +233,7 @@
           ? 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300'
           : 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary';
       ownerBadge.className = ownerClasses;
-      ownerBadge.textContent = ownerValue === '—' ? 'Owned by —' : `Owned by ${ownerValue}`;
+      ownerBadge.textContent = ownerValue;
       modelContent.appendChild(ownerBadge);
       modelCell.appendChild(modelContent);
       cells.push({ element: modelCell });
@@ -422,7 +422,7 @@
             const detailCell = document.createElement('td');
             detailCell.colSpan = totalColumns - 2;
             detailCell.className = 'px-6 py-4';
-            detailCell.textContent = `Owned by: ${entry.owned_by || 'unknown'} (${entry.reason || 'config rule'})`;
+            detailCell.textContent = `${entry.owned_by || 'unknown'} (${entry.reason || 'config rule'})`;
             row.appendChild(detailCell);
 
             tbody.appendChild(row);

@@ -112,3 +112,29 @@ model_mapping:
     models.dev: auto
   o4-mini-deep-research:
     models.dev: auto
+  Mistral-Small-3:
+    models.dev: mistral/mistral-small-latest
+  GPT-3.5-Turbo-Instruct:
+    models.dev: auto
+  GPT-3.5-Turbo-Raw:
+    models.dev: auto
+  GPT-4o-mini-Search:
+    models.dev: auto
+  GPT-4o-Search:
+    models.dev: auto
+  GPT-5-Pro:
+    models.dev: auto
+  Grok-2:
+    xai: auto
+  Grok-3:
+    xai: auto
+  Grok-3-Mini:
+    xai: auto
+  Grok-4:
+    xai: auto
+  Grok-4-Fast-Non-Reasoning:
+    xai: auto
+  Grok-4-Fast-Reasoning:
+    xai: xai/grok-4-fast
+  Grok-Code-Fast-1:
+    xai: auto

@@ -143,6 +143,48 @@ def suggest_models(provider: str, poe_model_id: str, catalog: Dict[str, Any]) ->
     return [norm_lookup[match] for match in matches]
 
 
+def find_cross_provider_suggestions(
+    poe_model_id: str,
+    catalog: Dict[str, Any],
+    exclude_provider: Optional[str] = None,
+) -> List[Tuple[str, str]]:
+    """Search the entire models.dev catalog for potential matches."""
+    normalized_id = normalize_model_name(poe_model_id)
+    exact_matches: List[Tuple[str, str]] = []
+    fuzzy_matches: List[Tuple[str, str]] = []
+
+    for provider_key, provider_block in catalog.items():
+        if exclude_provider and normalize_provider(provider_key) == normalize_provider(exclude_provider):
+            continue
+        if not isinstance(provider_block, dict):
+            continue
+        models = provider_block.get("models")
+        if not isinstance(models, dict):
+            continue
+
+        norm_lookup = {normalize_model_name(name): name for name in models.keys()}
+        if normalized_id in norm_lookup:
+            exact_matches.append((provider_key, norm_lookup[normalized_id]))
+            continue
+
+        matches = difflib.get_close_matches(normalized_id, norm_lookup.keys(), n=3, cutoff=0.7)
+        for match in matches:
+            fuzzy_matches.append((provider_key, norm_lookup[match]))
+
+    if exact_matches:
+        return exact_matches
+
+    # Deduplicate while preserving order for fuzzy matches
+    seen: set[Tuple[str, str]] = set()
+    deduped: List[Tuple[str, str]] = []
+    for entry in fuzzy_matches:
+        if entry in seen:
+            continue
+        seen.add(entry)
+        deduped.append(entry)
+    return deduped
+
+
 def should_use_auto(poe_model: PoeModel, provider_key: str) -> bool:
     """Determine if 'auto' should be used instead of explicit mapping."""
     if "/" not in provider_key:
@@ -174,6 +216,7 @@ def prompt_for_mapping(
     provider: str,
     poe_model: PoeModel,
     suggestions: Sequence[str],
+    cross_provider_suggestions: Sequence[Tuple[str, str]] = (),
 ) -> Optional[str]:
     """Interactively gather a mapping choice from the user."""
     console.print()
@@ -182,17 +225,35 @@ def prompt_for_mapping(
         first_line = poe_model.description.splitlines()[0]
         console.print(f"  [italic]{first_line}[/italic]")
 
+    option_index = 0
+    indexed_choices: List[str] = []
     if suggestions:
         console.print("  [bold]Suggested models.dev entries:[/bold]")
-        for index, suggestion in enumerate(suggestions, start=1):
+        for suggestion in suggestions:
+            option_index += 1
             full_key = f"{provider}/{suggestion}"
-            # Check if we should recommend 'auto'
+            indexed_choices.append(full_key)
             if should_use_auto(poe_model, full_key):
-                console.print(f"    [green][{index}][/green] [cyan]{full_key}[/cyan] [bold green](→ auto)[/bold green]")
+                console.print(f"    [green][{option_index}][/green] [cyan]{full_key}[/cyan] [bold green](→ auto)[/bold green]")
             else:
-                console.print(f"    [green][{index}][/green] [cyan]{full_key}[/cyan]")
+                console.print(f"    [green][{option_index}][/green] [cyan]{full_key}[/cyan]")
     else:
-        console.print("  [yellow]No models.dev suggestions were found.[/yellow]")
+        console.print("  [yellow]No models.dev suggestions were found for this provider.[/yellow]")
+
+    if cross_provider_suggestions:
+        console.print("  [bold]Other providers with matching entries:[/bold]")
+        seen_keys: set[str] = set()
+        for provider_key, model_name in cross_provider_suggestions:
+            full_key = f"{provider_key}/{model_name}"
+            if full_key in seen_keys:
+                continue
+            seen_keys.add(full_key)
+            option_index += 1
+            indexed_choices.append(full_key)
+            if should_use_auto(poe_model, full_key):
+                console.print(f"    [green][{option_index}][/green] [cyan]{full_key}[/cyan] [bold green](→ auto)[/bold green]")
+            else:
+                console.print(f"    [green][{option_index}][/green] [cyan]{full_key}[/cyan]")
 
     console.print("  [dim]Options: [1-9] select, [m] manual entry, [a] use 'auto', [Enter] skip[/dim]")
 
@@ -217,8 +278,8 @@ def prompt_for_mapping(
             return "auto"
         if raw.isdigit():
             index = int(raw)
-            if 1 <= index <= len(suggestions):
-                choice = f"{provider}/{suggestions[index - 1]}"
+            if 1 <= index <= len(indexed_choices):
+                choice = indexed_choices[index - 1]
                 # Automatically use 'auto' if it matches
                 if should_use_auto(poe_model, choice):
                     console.print(f"  [green]✓[/green] Selected [cyan]auto[/cyan] [dim](matches {choice})[/dim]")
@@ -313,33 +374,32 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         console.print(f"[bold red]Error:[/bold red] {exc}")
         return 1
 
-    # Extract all unique providers from models.dev values (e.g., "openai" from "openai/gpt-4o")
-    providers_in_mapping_set: set[str] = set()
-    for provider_dict in mapping.values():
-        if isinstance(provider_dict, dict):
-            for provider_key, value in provider_dict.items():
-                if provider_key == "models.dev" and isinstance(value, str) and "/" in value and value != "auto":
-                    # Extract provider from "provider/model" format
-                    provider = value.split("/", 1)[0]
-                    providers_in_mapping_set.add(provider)
-    providers_in_mapping: List[str] = sorted(providers_in_mapping_set)
+    # Extract provider keys directly from the models.dev catalog. This avoids relying on existing mappings.
+    providers_in_catalog_set: set[str] = set()
+    for provider_key, provider_block in catalog.items():
+        if not isinstance(provider_block, dict):
+            continue
+        models_block = provider_block.get("models")
+        if isinstance(models_block, dict) and models_block:
+            providers_in_catalog_set.add(provider_key)
+    providers_available: List[str] = sorted(providers_in_catalog_set)
 
     if args.providers:
         requested = {normalize_provider(provider) for provider in args.providers}
-        providers_in_mapping_filtered: List[str] = [
-            provider for provider in providers_in_mapping if normalize_provider(provider) in requested
+        providers_available_filtered: List[str] = [
+            provider for provider in providers_available if normalize_provider(provider) in requested
         ]
-        providers_in_mapping = providers_in_mapping_filtered
-        if not providers_in_mapping:
-            console.print("[yellow]No providers from the request are present in the mapping configuration.[/yellow]")
+        providers_available = providers_available_filtered
+        if not providers_available:
+            console.print("[yellow]No providers from the request are present in the models.dev catalog.[/yellow]")
             return 0
 
     owned_by_values = sorted({model.owned_by for model in models if model.owned_by})
-    owner_matches = match_providers(owned_by_values, providers_in_mapping)
+    owner_matches = match_providers(owned_by_values, providers_available)
     grouped_models = group_models_by_provider(models, owner_matches)
 
     if not grouped_models:
-        console.print("[yellow]No overlapping providers found between Poe models and the existing mapping.[/yellow]")
+        console.print("[yellow]No overlapping providers found between Poe models and the provider catalog.[/yellow]")
         return 0
 
     # Track which models have mappings in models.dev for which actual providers
@@ -402,7 +462,10 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
 
         for candidate in candidates:
             suggestions = suggest_models(provider, candidate.id, catalog)
-            choice = prompt_for_mapping(provider, candidate, suggestions)
+            cross_suggestions: Sequence[Tuple[str, str]] = ()
+            if not suggestions:
+                cross_suggestions = find_cross_provider_suggestions(candidate.id, catalog, exclude_provider=provider)
+            choice = prompt_for_mapping(provider, candidate, suggestions, cross_provider_suggestions=cross_suggestions)
             if not choice:
                 continue
 

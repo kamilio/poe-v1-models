@@ -86,3 +86,17 @@ def test_checks_report_includes_exclusions_and_providers():
     assert isinstance(sample_model.get("providers"), dict) and sample_model["providers"], "Expected provider data per model"
     provider_payload = next(iter(sample_model["providers"].values()))
     assert {"values", "severity", "status"}.issubset(provider_payload.keys())
+
+
+def test_models_dev_auto_mapping_populates_gpt5_pricing():
+    result = run_pipeline()
+    aggregate = result.aggregates.get("GPT-5")
+    assert aggregate is not None, "Expected GPT-5 aggregate from pipeline"
+
+    decision = aggregate.decisions.get("models.dev")
+    assert decision is not None, "models.dev decision missing for GPT-5"
+    assert decision.status == "accepted"
+    assert decision.pricing is not None, "models.dev should provide pricing for GPT-5"
+    assert decision.reasons == []
+    assert decision.pricing.prompt is not None
+    assert decision.pricing.completion is not None
