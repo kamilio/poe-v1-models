@@ -55,3 +55,11 @@ model_mapping:
   Mistral-Medium-3.1: mistral/mistral-medium-2508
   Mistral-Medium-3: mistral/mistral-medium-2505
   Mistral-Medium: mistral/mistral-medium-latest
+  Claude-Haiku-3.5-Search: anthropic/claude-3-5-haiku-latest
+  Claude-Opus-4-Reasoning: anthropic/claude-opus-4-20250514
+  Claude-Opus-4-Search: anthropic/claude-opus-4-0
+  Claude-Sonnet-3.7-Reasoning: anthropic/claude-3-7-sonnet-latest
+  Claude-Sonnet-3.7-Search: anthropic/claude-3-7-sonnet-latest
+  Claude-Sonnet-4-Reasoning: anthropic/claude-sonnet-4-0
+  Claude-Sonnet-4-Search: anthropic/claude-sonnet-4-0
+  Gemini-2.0-Flash-Preview: google/gemini-2.5-flash-preview-05-20
