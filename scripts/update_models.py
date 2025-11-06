@@ -67,6 +67,7 @@ def write_models(result: PipelineResult) -> None:
         json.dumps(result.payload, indent=2) + "\n",
         encoding="utf-8",
     )
+    print(f"Created: {MODELS_OUTPUT_PATH}")
 
 
 def write_checks(result: PipelineResult) -> None:
@@ -76,21 +77,25 @@ def write_checks(result: PipelineResult) -> None:
         json.dumps(report, indent=2) + "\n",
         encoding="utf-8",
     )
+    print(f"Created: {CHECKS_JSON_PATH}")
 
 
 def write_checks_html() -> None:
     CHECKS_HTML_PATH.parent.mkdir(parents=True, exist_ok=True)
     CHECKS_HTML_PATH.write_text(render_checks_html(), encoding="utf-8")
+    print(f"Created: {CHECKS_HTML_PATH}")
 
 
 def write_index_html() -> None:
     INDEX_HTML_PATH.parent.mkdir(parents=True, exist_ok=True)
     INDEX_HTML_PATH.write_text(render_index_html(), encoding="utf-8")
+    print(f"Created: {INDEX_HTML_PATH}")
 
 
 def write_changelog_html() -> None:
     CHANGELOG_HTML_PATH.parent.mkdir(parents=True, exist_ok=True)
     CHANGELOG_HTML_PATH.write_text(render_changelog_html(), encoding="utf-8")
+    print(f"Created: {CHANGELOG_HTML_PATH}")
 
 
 def write_changelog_json(entries: Sequence[Mapping[str, Any]]) -> None:
@@ -99,6 +104,7 @@ def write_changelog_json(entries: Sequence[Mapping[str, Any]]) -> None:
         json.dumps(list(entries), indent=2) + "\n",
         encoding="utf-8",
     )
+    print(f"Created: {CHANGELOG_JSON_PATH}")
 
 
 def fetch_release_snapshots(limit: int) -> List[Dict[str, Any]]:

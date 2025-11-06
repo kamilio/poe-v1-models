@@ -24,19 +24,19 @@ install:
 install-dev: install
 	@$(PIP) install -r requirements-dev.txt
 
-update: install
+update:
 	@$(PYTHON_BIN) scripts/update_models.py
 
-test-update-snapshots: install
+test-update-snapshots:
 	@$(PYTHON_BIN) scripts/update_provider_snapshots.py
 
-start: install
+start:
 	@$(PYTHON_BIN) scripts/start_local.py --host $(HOST) --port $(PORT) $(START_ARGS)
 
-changelog: install
+changelog:
 	@$(PYTHON_BIN) scripts/build_changelog.py
 
-test: install-dev
+test:
 	@$(PYTHON_BIN) -m pytest
 
 clean:
