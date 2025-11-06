@@ -101,8 +101,6 @@
 
     const BASE_COLUMNS = [
       { key: 'model', label: 'Model', rowSpan: 2 },
-      { key: 'selected', label: 'Selected Provider', rowSpan: 2 },
-      { key: 'overrides', label: 'Overrides', rowSpan: 2 },
       { key: 'poe_prompt', label: 'Poe Prompt / MTok', rowSpan: 2, numeric: true },
       { key: 'poe_completion', label: 'Poe Completion / MTok', rowSpan: 2, numeric: true },
       { key: 'poe_input_cache_read', label: 'Poe Cache Read / MTok', rowSpan: 2, numeric: true },
@@ -116,6 +114,51 @@
     };
 
     const providerSelectedClasses = ['font-semibold', 'text-primary'];
+
+    const BADGE_BASE_CLASS = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium';
+    const BADGE_VARIANTS = {
+      accepted: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300',
+      rejected: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300',
+      missing: 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300',
+      key: 'bg-primary/10 text-primary',
+      lookup: 'bg-primary/10 text-primary',
+      auto: 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300',
+      reason: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-200',
+      source: 'bg-primary text-white dark:bg-primary/90'
+    };
+
+    const BADGE_TITLES = {
+      accepted: text => text ? `Accepted provider: ${text}` : 'Provider pricing accepted',
+      rejected: () => 'Provider pricing rejected',
+      missing: () => 'No pricing data returned by this provider',
+      key: text => `Lookup key sent to provider: ${text}`,
+      lookup: text => `Lookup key sent to provider: ${text}`,
+      auto: () => 'Configured as auto in the mapping',
+      reason: text => `Reason: ${text.replace(/_/g, ' ')}`,
+      source: () => 'Using this provider as source of information'
+    };
+
+    function badgeClassName(variant) {
+      const variantClass = BADGE_VARIANTS[variant] || 'bg-primary/10 text-primary';
+      return `${BADGE_BASE_CLASS} ${variantClass}`;
+    }
+
+    function badgeTitle(variant, text) {
+      const resolver = BADGE_TITLES[variant];
+      if (!resolver) return null;
+      try {
+        return typeof resolver === 'function' ? resolver(text) : resolver;
+      } catch {
+        return null;
+      }
+    }
+
+    function renderBadgeHtml(text, variant, titleOverride) {
+      if (!text) return '';
+      const titleText = titleOverride ?? badgeTitle(variant, text);
+      const titleAttr = titleText ? ` title="${titleText}"` : '';
+      return `<span class="${badgeClassName(variant)}"${titleAttr}>${text}</span>`;
+    }
 
     function sanitizeValue(value) {
       if (value === null || value === undefined) return '—';
@@ -131,14 +174,7 @@
 
     function createBadge(text, variant) {
       const span = document.createElement('span');
-      const base = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium';
-      const variants = {
-        accepted: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300',
-        rejected: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300',
-        missing: 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300',
-        ok: 'bg-primary/10 text-primary'
-      };
-      span.className = `${base} ${variants[variant] || variants.ok}`;
+      span.className = badgeClassName(variant);
       span.textContent = text;
       return span;
     }
@@ -240,22 +276,6 @@
       modelCell.appendChild(modelContent);
       cells.push({ element: modelCell });
 
-      const selectedCell = document.createElement('td');
-      selectedCell.className = 'px-6 py-4 text-sm text-gray-700 dark:text-gray-200';
-      if (model.selected_provider) {
-        selectedCell.appendChild(createBadge(model.selected_provider, 'accepted'));
-      } else {
-        selectedCell.textContent = '—';
-      }
-      cells.push({ element: selectedCell });
-
-      cells.push({
-        element: createCell({
-          text: model.overrides_applied ? 'yes' : 'no',
-          classes: ['text-center', 'capitalize']
-        })
-      });
-
       const poePrompt = sanitizeValue(model.poe_pricing?.prompt_mtok);
       const poeCompletion = sanitizeValue(model.poe_pricing?.completion_mtok);
       const poeCacheRead = sanitizeValue(model.poe_pricing?.input_cache_read_mtok);
@@ -281,10 +301,42 @@
               classes.push(...providerSelectedClasses);
             }
             const value = providerData.values?.[column.key];
+            const lookup = providerData.lookup || {};
+            let cellText = value?.text ?? '—';
+            let cellHtml = value?.html ?? null;
+            if (column.key === 'status') {
+              const badges = [];
+              const statusText = (value?.text || providerData.status || 'missing').toString();
+              const statusVariant = statusText.toLowerCase();
+              const acceptedTitle = providerData.selected && model.selected_provider
+                ? `Accepted provider: ${model.selected_provider}`
+                : undefined;
+              badges.push(renderBadgeHtml(statusText, statusVariant, acceptedTitle));
+              const requested = lookup.requested ?? null;
+              const resolved = lookup.resolved ?? null;
+              const reasons = Array.isArray(providerData.reasons) ? providerData.reasons : [];
+              reasons
+                .filter(Boolean)
+                .forEach(reason => badges.push(renderBadgeHtml(reason, 'reason')));
+              if (requested) {
+                const variant = requested.toLowerCase() === 'auto' ? 'auto' : 'key';
+                badges.push(renderBadgeHtml(requested, variant));
+              }
+              if (resolved && (!requested || resolved !== requested)) {
+                badges.push(renderBadgeHtml(resolved, 'lookup'));
+              }
+              if (providerData.selected) {
+                badges.push(renderBadgeHtml('source', 'source'));
+              }
+              if (badges.length) {
+                cellHtml = `<div class="flex flex-wrap items-center gap-1">${badges.join('')}</div>`;
+                cellText = null;
+              }
+            }
             cells.push({
               element: createCell({
-                text: value?.text ?? '—',
-                html: value?.html ?? null,
+                text: cellHtml ? null : cellText,
+                html: cellHtml,
                 numeric: value?.numeric || column.numeric || false,
                 classes
               }),
