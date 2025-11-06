@@ -315,8 +315,8 @@ def prompt_for_mapping(
         console.print("  [red]Unrecognised input.[/red]")
 
 
-def append_single_mapping(poe_id: str, provider: str, target: str, path: Path = MAPPING_PATH) -> None:
-    """Append a single mapping entry to the YAML config immediately."""
+def append_single_mapping(poe_id: str, provider: str, target: str, path: Path = MAPPING_PATH) -> str:
+    """Append a single mapping entry to the YAML config and return the stored provider key."""
     # Load existing mapping to update properly
     if path.exists():
         data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
@@ -334,11 +334,13 @@ def append_single_mapping(poe_id: str, provider: str, target: str, path: Path = 
         # Convert legacy format
         old_value = data["model_mapping"][poe_id]
         data["model_mapping"][poe_id] = {"models.dev": old_value}
-    
-    data["model_mapping"][poe_id][provider] = target
+
+    canonical_provider = provider if provider in {"models.dev", "openrouter"} else "models.dev"
+    data["model_mapping"][poe_id][canonical_provider] = target
     
     # Write back the entire file
     path.write_text(yaml.dump(data, default_flow_style=False, sort_keys=False, allow_unicode=True), encoding="utf-8")
+    return canonical_provider
 
 
 def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
@@ -494,8 +496,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             if args.dry_run:
                 console.print(f"  [yellow][DRY RUN][/yellow] Would add: [cyan]{candidate.id}[/cyan] [{provider}] → [green]{choice}[/green]")
             else:
-                append_single_mapping(candidate.id, provider, choice)
-                console.print(f"  [bold green]✓ Saved:[/bold green] [cyan]{candidate.id}[/cyan] [{provider}] → [green]{choice}[/green]")
+                saved_provider = append_single_mapping(candidate.id, provider, choice)
+                console.print(f"  [bold green]✓ Saved:[/bold green] [cyan]{candidate.id}[/cyan] [{saved_provider}] → [green]{choice}[/green]")
             
             # Update existing_mappings to prevent duplicates in the same session
             if candidate.id not in existing_mappings:

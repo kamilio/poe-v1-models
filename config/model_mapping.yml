@@ -125,16 +125,16 @@ model_mapping:
   GPT-5-Pro:
     models.dev: auto
   Grok-2:
-    xai: auto
+    models.dev: auto
   Grok-3:
-    xai: auto
+    models.dev: auto
   Grok-3-Mini:
-    xai: auto
+    models.dev: auto
   Grok-4:
-    xai: auto
+    models.dev: auto
   Grok-4-Fast-Non-Reasoning:
-    xai: auto
+    models.dev: auto
   Grok-4-Fast-Reasoning:
-    xai: xai/grok-4-fast
+    models.dev: xai/grok-4-fast
   Grok-Code-Fast-1:
-    xai: auto
+    models.dev: auto
