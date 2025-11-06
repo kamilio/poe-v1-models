@@ -10,6 +10,7 @@ from poe_v1_models.changelog import (
     build_changelog_entry,
     build_changelog_from_snapshots,
 )
+from poe_v1_models.config import ExclusionRule, ExclusionSettings
 
 
 def parse_iso(timestamp: str) -> datetime:
@@ -187,12 +188,6 @@ def test_changelog_tracks_price_increases_and_decreases():
                     "direction": "increase",
                     "previous": "0.01",
                 },
-                {
-                    "field": "request",
-                    "current": "0.005",
-                    "direction": "increase",
-                    "previous": None,
-                },
             ],
         }
     ]
@@ -219,3 +214,53 @@ def test_changelog_ignores_non_numeric_pricing_changes():
     entry = build_changelog_entry(current_payload, previous_payload)
 
     assert "price_changes" not in entry
+
+
+def test_changelog_ignores_null_to_value_transitions():
+    previous_payload = {
+        "data": [
+            {
+                "id": "model-a",
+                "pricing": {"prompt": None},
+            }
+        ]
+    }
+    current_payload = {
+        "data": [
+            {
+                "id": "model-a",
+                "pricing": {"prompt": "0.010"},
+            }
+        ]
+    }
+
+    entry = build_changelog_entry(current_payload, previous_payload)
+
+    assert "price_changes" not in entry
+
+
+def test_changelog_respects_config_exclusions():
+    exclusions = ExclusionSettings(rules=[ExclusionRule(kind="id", value="model-b")])
+
+    previous_payload = {
+        "data": [
+            {"id": "model-a"},
+            {"id": "model-b"},
+        ]
+    }
+    current_payload = {
+        "data": [
+            {"id": "model-a"},
+            {"id": "model-b"},
+            {"id": "model-c"},
+        ]
+    }
+
+    entry = build_changelog_entry(
+        current_payload,
+        previous_payload,
+        exclusions=exclusions,
+    )
+
+    assert entry["added"] == ["model-c"]
+    assert "removed" not in entry

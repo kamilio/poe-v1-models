@@ -4,6 +4,7 @@ from datetime import datetime, timezone
 from decimal import Decimal
 from typing import Any, Dict, Iterable, List, Mapping, Optional, Sequence, Set, Union
 
+from poe_v1_models.config import ExclusionSettings, GeneralConfig, load_general_config
 from poe_v1_models.pricing import decimal_or_none, decimal_to_string
 
 
@@ -22,12 +23,16 @@ def build_changelog_entry(
     previous_payload: Optional[Mapping[str, Any]] = None,
     *,
     timestamp: Optional[Union[str, datetime]] = None,
+    exclusions: Optional[ExclusionSettings] = None,
 ) -> Dict[str, Any]:
     """Construct a changelog entry describing model additions/removals."""
-    current_ids = _model_ids(current_payload.get("data", []))
+    current_models = _payload_models(current_payload, exclusions)
+    current_ids = _model_ids(current_models)
     previous_ids: Set[str] = set()
+    previous_models: Sequence[Mapping[str, Any]] = []
     if previous_payload:
-        previous_ids = _model_ids(previous_payload.get("data", []))
+        previous_models = _payload_models(previous_payload, exclusions)
+        previous_ids = _model_ids(previous_models)
 
     added = sorted(current_ids - previous_ids)
     removed = sorted(previous_ids - current_ids)
@@ -41,7 +46,7 @@ def build_changelog_entry(
     if removed:
         entry["removed"] = removed
     if previous_payload:
-        price_changes = _build_price_changes(current_payload, previous_payload)
+        price_changes = _build_price_changes(current_models, previous_models)
         if price_changes:
             entry["price_changes"] = price_changes
     if previous_payload is None:
@@ -72,9 +77,13 @@ def _resolve_timestamp(value: Optional[Union[str, datetime]]) -> str:
 
 
 def build_changelog_from_snapshots(
-    snapshots: Sequence[Mapping[str, Any]]
+    snapshots: Sequence[Mapping[str, Any]],
+    *,
+    config: Optional[GeneralConfig] = None,
 ) -> List[Dict[str, Any]]:
     """Return changelog entries from ordered release snapshots."""
+    resolved_config = config or load_general_config()
+    exclusions = resolved_config.exclusions if resolved_config else None
     entries: List[Dict[str, Any]] = []
     previous_payload: Optional[Mapping[str, Any]] = None
 
@@ -87,6 +96,7 @@ def build_changelog_from_snapshots(
             payload,
             previous_payload,
             timestamp=snapshot.get("timestamp"),
+            exclusions=exclusions,
         )
 
         metadata = snapshot.get("metadata")
@@ -108,19 +118,35 @@ def build_changelog_from_snapshots(
     return entries
 
 
-def _build_price_changes(
-    current_payload: Mapping[str, Any],
-    previous_payload: Mapping[str, Any],
-) -> List[Dict[str, Any]]:
-    current_models = _models_by_id(current_payload.get("data", []))
-    previous_models = _models_by_id(previous_payload.get("data", []))
+def _payload_models(
+    payload: Optional[Mapping[str, Any]],
+    exclusions: Optional[ExclusionSettings],
+) -> List[Mapping[str, Any]]:
+    models: List[Mapping[str, Any]] = []
+    if not isinstance(payload, Mapping):
+        return models
+    for model in payload.get("data", []):
+        if not isinstance(model, Mapping):
+            continue
+        if exclusions and exclusions.should_exclude(model):
+            continue
+        models.append(model)
+    return models
 
-    shared_ids = sorted(set(current_models.keys()) & set(previous_models.keys()))
+
+def _build_price_changes(
+    current_models: Iterable[Mapping[str, Any]],
+    previous_models: Iterable[Mapping[str, Any]],
+) -> List[Dict[str, Any]]:
+    current_index = _models_by_id(current_models)
+    previous_index = _models_by_id(previous_models)
+
+    shared_ids = sorted(set(current_index.keys()) & set(previous_index.keys()))
     price_changes: List[Dict[str, Any]] = []
 
     for model_id in shared_ids:
-        current_model = current_models[model_id]
-        previous_model = previous_models[model_id]
+        current_model = current_index[model_id]
+        previous_model = previous_index[model_id]
         field_changes = _diff_pricing_fields(current_model, previous_model)
         if field_changes:
             price_changes.append(
@@ -160,6 +186,10 @@ def _diff_pricing_fields(
         previous_value = decimal_or_none(previous_pricing.get(field)) if previous_pricing else None
 
         if current_value == previous_value:
+            continue
+
+        # Ignore transitions from no price to a populated value; they are represented as additions.
+        if previous_value is None and current_value is not None:
             continue
 
         change: Dict[str, Any] = {

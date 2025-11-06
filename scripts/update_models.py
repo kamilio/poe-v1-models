@@ -57,7 +57,8 @@ def main() -> None:
         },
     }
     changelog_entries = build_changelog_from_snapshots(
-        [*release_snapshots, local_snapshot]
+        [*release_snapshots, local_snapshot],
+        config=result.config,
     )
     write_changelog_json(changelog_entries)
     write_changelog_html()
