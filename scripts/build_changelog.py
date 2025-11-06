@@ -19,6 +19,7 @@ from scripts.update_models import (
     fetch_release_snapshots,
     write_changelog_html,
     write_changelog_json,
+    write_changelog_rss,
 )
 
 
@@ -31,6 +32,7 @@ def main() -> None:
     entries = build_changelog_from_snapshots(snapshots)
     write_changelog_json(entries)
     write_changelog_html()
+    write_changelog_rss(entries)
 
 
 def _load_local_snapshot() -> dict | None:

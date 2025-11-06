@@ -22,6 +22,7 @@ from poe_v1_models.pipeline import PipelineResult, run_pipeline
 from poe_v1_models.reporting import (
     build_checks_report,
     render_changelog_html,
+    render_changelog_rss,
     render_index_html,
     render_checks_html,
 )
@@ -32,6 +33,7 @@ CHECKS_JSON_PATH = Path("dist/checks.json")
 CHECKS_HTML_PATH = Path("dist/checks.html")
 CHANGELOG_JSON_PATH = Path("dist/changelog.json")
 CHANGELOG_HTML_PATH = Path("dist/changelog.html")
+CHANGELOG_RSS_PATH = Path("dist/changelog.xml")
 INDEX_HTML_PATH = Path("dist/index.html")
 REMOTE_TIMEOUT = 10
 RELEASE_FETCH_LIMIT = 30
@@ -59,6 +61,7 @@ def main() -> None:
     )
     write_changelog_json(changelog_entries)
     write_changelog_html()
+    write_changelog_rss(changelog_entries)
 
 
 def write_models(result: PipelineResult) -> None:
@@ -105,6 +108,20 @@ def write_changelog_json(entries: Sequence[Mapping[str, Any]]) -> None:
         encoding="utf-8",
     )
     print(f"Created: {CHANGELOG_JSON_PATH}")
+
+
+def write_changelog_rss(entries: Sequence[Mapping[str, Any]]) -> None:
+    CHANGELOG_RSS_PATH.parent.mkdir(parents=True, exist_ok=True)
+    base_url = (
+        os.getenv("POE_MODELS_PUBLIC_BASE_URL")
+        or os.getenv("POE_MODELS_SITE_URL")
+        or os.getenv("PUBLIC_BASE_URL")
+    )
+    CHANGELOG_RSS_PATH.write_text(
+        render_changelog_rss(entries, base_url=base_url),
+        encoding="utf-8",
+    )
+    print(f"Created: {CHANGELOG_RSS_PATH}")
 
 
 def fetch_release_snapshots(limit: int) -> List[Dict[str, Any]]:

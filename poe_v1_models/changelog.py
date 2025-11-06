@@ -1,7 +1,20 @@
 from __future__ import annotations
 
 from datetime import datetime, timezone
+from decimal import Decimal
 from typing import Any, Dict, Iterable, List, Mapping, Optional, Sequence, Set, Union
+
+from poe_v1_models.pricing import decimal_or_none, decimal_to_string
+
+
+PRICING_FIELDS = (
+    "prompt",
+    "completion",
+    "request",
+    "image",
+    "input_cache_read",
+    "input_cache_write",
+)
 
 
 def build_changelog_entry(
@@ -27,6 +40,10 @@ def build_changelog_entry(
         entry["added"] = added
     if removed:
         entry["removed"] = removed
+    if previous_payload:
+        price_changes = _build_price_changes(current_payload, previous_payload)
+        if price_changes:
+            entry["price_changes"] = price_changes
     if previous_payload is None:
         entry["initial_snapshot"] = True
     return entry
@@ -89,3 +106,105 @@ def build_changelog_from_snapshots(
         previous_payload = payload
 
     return entries
+
+
+def _build_price_changes(
+    current_payload: Mapping[str, Any],
+    previous_payload: Mapping[str, Any],
+) -> List[Dict[str, Any]]:
+    current_models = _models_by_id(current_payload.get("data", []))
+    previous_models = _models_by_id(previous_payload.get("data", []))
+
+    shared_ids = sorted(set(current_models.keys()) & set(previous_models.keys()))
+    price_changes: List[Dict[str, Any]] = []
+
+    for model_id in shared_ids:
+        current_model = current_models[model_id]
+        previous_model = previous_models[model_id]
+        field_changes = _diff_pricing_fields(current_model, previous_model)
+        if field_changes:
+            price_changes.append(
+                {
+                    "id": model_id,
+                    "fields": field_changes,
+                }
+            )
+
+    return price_changes
+
+
+def _models_by_id(models: Iterable[Any]) -> Dict[str, Mapping[str, Any]]:
+    index: Dict[str, Mapping[str, Any]] = {}
+    for model in models:
+        if not isinstance(model, Mapping):
+            continue
+        model_id = model.get("id")
+        if isinstance(model_id, str):
+            index[model_id] = model
+    return index
+
+
+def _diff_pricing_fields(
+    current_model: Mapping[str, Any],
+    previous_model: Mapping[str, Any],
+) -> List[Dict[str, Any]]:
+    current_pricing = _as_mapping(current_model.get("pricing"))
+    previous_pricing = _as_mapping(previous_model.get("pricing"))
+
+    if current_pricing is None and previous_pricing is None:
+        return []
+
+    changes: List[Dict[str, Any]] = []
+    for field in PRICING_FIELDS:
+        current_value = decimal_or_none(current_pricing.get(field)) if current_pricing else None
+        previous_value = decimal_or_none(previous_pricing.get(field)) if previous_pricing else None
+
+        if current_value == previous_value:
+            continue
+
+        change: Dict[str, Any] = {
+            "field": field,
+            "previous": _decimal_or_null(previous_value),
+            "current": _decimal_or_null(current_value),
+        }
+
+        direction = _direction(previous_value, current_value)
+        if direction:
+            change["direction"] = direction
+
+        if previous_value is not None and current_value is not None:
+            delta = current_value - previous_value
+            if delta != 0:
+                change["delta"] = decimal_to_string(delta)
+
+        changes.append(change)
+
+    return sorted(changes, key=lambda item: item["field"])
+
+
+def _as_mapping(value: Any) -> Optional[Mapping[str, Any]]:
+    if isinstance(value, Mapping):
+        return value
+    return None
+
+
+def _decimal_or_null(value: Optional[Decimal]) -> Optional[str]:
+    if value is None:
+        return None
+    return decimal_to_string(value)
+
+
+def _direction(previous: Optional[Decimal], current: Optional[Decimal]) -> Optional[str]:
+    if previous is None and current is None:
+        return None
+    if previous is None and current is not None:
+        return "increase"
+    if previous is not None and current is None:
+        return "decrease"
+    if previous is None or current is None:  # handled above, but keep defensive
+        return None
+    if current > previous:
+        return "increase"
+    if current < previous:
+        return "decrease"
+    return "unchanged"

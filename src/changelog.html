@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Model Metadata Changelog</title>
+  <link rel="alternate" type="application/rss+xml" title="Model Metadata Changelog RSS" href="changelog.xml">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -21,8 +22,19 @@
 <body class="bg-white dark:bg-[#181818] text-gray-900 dark:text-gray-100 transition-colors min-h-screen">
   <div class="container mx-auto px-4 py-8 max-w-3xl">
     <div class="mb-8">
-      <h1 class="text-3xl md:text-4xl font-bold mb-2">Model Metadata Changelog</h1>
-      <p class="text-gray-600 dark:text-gray-400">Latest updates to the Poe v1 model catalogue</p>
+      <div class="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 class="text-3xl md:text-4xl font-bold mb-2">Model Metadata Changelog</h1>
+          <p class="text-gray-600 dark:text-gray-400">Latest updates to the Poe v1 model catalogue</p>
+        </div>
+        <a
+          href="changelog.xml"
+          class="inline-flex items-center gap-2 text-sm font-medium text-primary hover:opacity-80 transition-opacity"
+        >
+          <span class="inline-flex h-2 w-2 rounded-full bg-primary"></span>
+          RSS feed
+        </a>
+      </div>
     </div>
 
     <div id="loadingState" class="text-center py-12">
@@ -49,6 +61,7 @@
   </div>
 
   <script>
+    // NOTE: Update poe_v1_models.reporting.render_changelog_rss alongside any structural changes here.
     // Respect system dark mode preference
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
       document.documentElement.classList.add('dark');
@@ -64,7 +77,8 @@
       return badge;
     }
 
-    function renderNames(items) {
+    function renderNames(items, options = {}) {
+      const { codeClass = '' } = options;
       const fragment = document.createDocumentFragment();
       if (!Array.isArray(items) || !items.length) {
         const span = document.createElement('span');
@@ -79,26 +93,98 @@
           fragment.appendChild(document.createTextNode(', '));
         }
         const code = document.createElement('code');
-        code.className = 'font-mono text-xs bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 px-1.5 py-0.5 rounded';
+        code.className = `font-mono text-xs bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 rounded ${codeClass}`.trim();
         code.textContent = item;
         fragment.appendChild(code);
       });
       return fragment;
     }
 
-    function appendStatus(container, label, items) {
+    function appendStatus(container, label, items, options = {}) {
+      const { codeClass = '', textClass = 'text-gray-700 dark:text-gray-200' } = options;
       if (!Array.isArray(items) || items.length === 0) {
         return;
       }
       const wrapper = document.createElement('div');
-      wrapper.className = 'mt-3 text-sm text-gray-700 dark:text-gray-200';
+      wrapper.className = `mt-3 text-sm ${textClass}`.trim();
 
       const heading = document.createElement('span');
       heading.className = 'font-semibold text-gray-900 dark:text-gray-100';
       heading.textContent = `${label}: `;
       wrapper.appendChild(heading);
 
-      wrapper.appendChild(renderNames(items));
+      wrapper.appendChild(renderNames(items, { codeClass }));
+      container.appendChild(wrapper);
+    }
+
+    function appendPriceChanges(container, priceChanges) {
+      if (!Array.isArray(priceChanges) || priceChanges.length === 0) {
+        return;
+      }
+
+      const wrapper = document.createElement('div');
+      wrapper.className = 'mt-4 text-sm text-gray-700 dark:text-gray-200 space-y-3';
+
+      const heading = document.createElement('div');
+      heading.className = 'font-semibold text-gray-900 dark:text-gray-100';
+      heading.textContent = 'Price changes';
+      wrapper.appendChild(heading);
+
+      priceChanges.forEach(change => {
+        const block = document.createElement('div');
+
+        const idRow = document.createElement('div');
+        idRow.className = 'flex flex-wrap items-center gap-2';
+        const idBadge = document.createElement('code');
+        idBadge.className = 'font-mono text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 px-1.5 py-0.5 rounded';
+        idBadge.textContent = change?.id ?? 'unknown-model';
+        idRow.appendChild(idBadge);
+        block.appendChild(idRow);
+
+        const list = document.createElement('ul');
+        list.className = 'mt-1 space-y-1';
+
+        (change?.fields || []).forEach(field => {
+          const item = document.createElement('li');
+          item.className = 'flex flex-wrap items-baseline gap-2';
+
+          const fieldLabel = document.createElement('span');
+          fieldLabel.className = 'font-medium text-gray-900 dark:text-gray-100';
+          fieldLabel.textContent = field?.field ?? 'pricing';
+          item.appendChild(fieldLabel);
+
+          const value = document.createElement('span');
+          value.className = 'font-mono text-xs';
+          const previous = field?.previous ?? '—';
+          const current = field?.current ?? '—';
+          let deltaText = '';
+          if (field?.delta) {
+            deltaText = field.delta.startsWith('-') ? field.delta : `+${field.delta}`;
+            deltaText = ` (${deltaText})`;
+          }
+          value.textContent = `${previous} → ${current}${deltaText}`;
+
+          if (field?.direction === 'decrease') {
+            value.classList.add('text-green-600', 'dark:text-green-400');
+          } else {
+            value.classList.add('text-gray-900', 'dark:text-gray-100');
+          }
+          item.appendChild(value);
+
+          if (field?.direction) {
+            const direction = document.createElement('span');
+            direction.className = 'text-[10px] uppercase tracking-wide text-gray-500 dark:text-gray-400';
+            direction.textContent = field.direction;
+            item.appendChild(direction);
+          }
+
+          list.appendChild(item);
+        });
+
+        block.appendChild(list);
+        wrapper.appendChild(block);
+      });
+
       container.appendChild(wrapper);
     }
 
@@ -165,8 +251,15 @@
             }
             item.appendChild(meta);
 
-            appendStatus(item, 'Added', entry.added);
-            appendStatus(item, 'Removed', entry.removed);
+            appendStatus(item, 'Added', entry.added, {
+              codeClass: 'text-green-600 dark:text-green-400',
+              textClass: 'text-green-700/90 dark:text-green-300/90'
+            });
+            appendStatus(item, 'Removed', entry.removed, {
+              codeClass: 'text-red-600 dark:text-red-400',
+              textClass: 'text-red-700/90 dark:text-red-300/90'
+            });
+            appendPriceChanges(item, entry.price_changes);
 
             list.appendChild(item);
           });

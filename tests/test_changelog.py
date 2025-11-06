@@ -130,3 +130,92 @@ def test_build_changelog_skips_entries_with_no_changes():
     assert entries[0]["initial_snapshot"] is True
     assert entries[1]["added"] == ["model-b"]
     assert "removed" not in entries[1]
+
+
+def test_changelog_tracks_price_increases_and_decreases():
+    previous_payload = {
+        "data": [
+            {
+                "id": "model-a",
+                "pricing": {
+                    "prompt": "0.010",
+                    "completion": "0.020",
+                    "image": None,
+                    "input_cache_read": "0.025",
+                },
+            },
+        ],
+    }
+    current_payload = {
+        "data": [
+            {
+                "id": "model-a",
+                "pricing": {
+                    "prompt": "0.012",
+                    "completion": "0.018",
+                    "request": "0.005",
+                    "input_cache_read": None,
+                },
+            },
+        ],
+    }
+
+    entry = build_changelog_entry(current_payload, previous_payload)
+
+    changes = entry["price_changes"]
+    assert changes == [
+        {
+            "id": "model-a",
+            "fields": [
+                {
+                    "field": "completion",
+                    "current": "0.018",
+                    "delta": "-0.002",
+                    "direction": "decrease",
+                    "previous": "0.02",
+                },
+                {
+                    "field": "input_cache_read",
+                    "current": None,
+                    "direction": "decrease",
+                    "previous": "0.025",
+                },
+                {
+                    "field": "prompt",
+                    "current": "0.012",
+                    "delta": "0.002",
+                    "direction": "increase",
+                    "previous": "0.01",
+                },
+                {
+                    "field": "request",
+                    "current": "0.005",
+                    "direction": "increase",
+                    "previous": None,
+                },
+            ],
+        }
+    ]
+
+
+def test_changelog_ignores_non_numeric_pricing_changes():
+    previous_payload = {
+        "data": [
+            {
+                "id": "model-a",
+                "pricing": {"prompt": "invalid"},
+            }
+        ]
+    }
+    current_payload = {
+        "data": [
+            {
+                "id": "model-a",
+                "pricing": {"prompt": "invalid"},
+            }
+        ]
+    }
+
+    entry = build_changelog_entry(current_payload, previous_payload)
+
+    assert "price_changes" not in entry

@@ -12,7 +12,7 @@ ifneq ($(SKIP_UPDATE),)
 START_ARGS += --skip-update
 endif
 
-.PHONY: install install-dev update test-update-snapshots start changelog test clean
+.PHONY: install install-dev update test-update-snapshots start changelog release test clean
 
 install:
 	@if [ ! -f "$(PYTHON_BIN)" ]; then \
@@ -35,6 +35,9 @@ start:
 
 changelog:
 	@$(PYTHON_BIN) scripts/build_changelog.py
+
+release: update
+	@$(PYTHON_BIN) scripts/publish_release.py
 
 test:
 	@$(PYTHON_BIN) -m pytest

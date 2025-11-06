@@ -29,7 +29,13 @@
     - [x] Store a single snapshot of the prior run in `dist/models_previous.json` for GH Pages publication.
     - [x] Compare with the previous snapshot to append `{"date", "added", "removed", "total_models"}` entries in `dist/changelog.json`.
     - [x] Publish `dist/changelog.html` to render the changelog feed.
-- [ ] Changelog inner workings
-    - every `models.json` is published to GitHub Releases (timestamped version) and becomes the single source of truth; tooling only reads the most recent 30 releases.
-    - the changelog generator consumes those releases via the GitHub REST API and diffs models added / removed for `dist/changelog.json`.
-    - local runs hit the GitHub API (unauthenticated for public repos, optional token support if needed) so the flow can be exercised outside CI.
+- [x] Changelog inner workings
+    - [x] Every `models.json` is published to GitHub Releases via `scripts/publish_release.py`, producing timestamped tags that act as the single source of truth for downstream consumers.
+    - [x] The changelog generator consumes those releases via the GitHub REST API and diffs models added / removed for `dist/changelog.json`.
+    - [x] Local runs hit the GitHub API (unauthenticated for public repos, optional token support if needed) so the flow can be exercised outside CI.
+- [x] Track price changes in the json file. Make sure this has test coverage, and the tests are working with mock data, not real data.
+    - [x] Store structured `price_changes` entries for all `PricingSnapshot` fields, including direction and deltas, with dedicated test coverage on synthetic fixtures.
+    - [x] Visualize the changes in the changelog website whenever they occur. Increases render in black, decreases in green with subtle textual cues.
+- [x] Color code the model additions and removal green and red.
+- [x] Generate rss feed for the changelog, pretty much the same html content as the changelog html. Duplication is probably ok for now, but make some comments in the code that updating web should update rss and vice versa
+    - [x] Link the RSS feed from `changelog.html`.
