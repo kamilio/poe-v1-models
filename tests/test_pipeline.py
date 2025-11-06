@@ -11,9 +11,10 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from poe_v1_models.config import load_general_config
+from poe_v1_models.checks import evaluate_provider_decisions
 from poe_v1_models.mapping import load_model_mapping
-from poe_v1_models.pipeline import run_pipeline
-from poe_v1_models.pricing import MTOK_MULTIPLIER
+from poe_v1_models.pipeline import run_pipeline, _msrp_fields_with_discount
+from poe_v1_models.pricing import MTOK_MULTIPLIER, PricingSnapshot
 from poe_v1_models.reporting import build_checks_report
 
 SNAPSHOT_ROOT = Path(__file__).resolve().parent / "snapshots"
@@ -86,6 +87,57 @@ def pipeline_snapshots(monkeypatch):
 def to_decimal(value):
     assert value is not None, "Expected numeric string"
     return Decimal(value)
+
+
+def make_pricing_snapshot(prompt=None, completion=None, input_cache_read=None, input_cache_write=None):
+    return PricingSnapshot(
+        prompt=Decimal(str(prompt)) if prompt is not None else None,
+        completion=Decimal(str(completion)) if completion is not None else None,
+        input_cache_read=Decimal(str(input_cache_read)) if input_cache_read is not None else None,
+        input_cache_write=Decimal(str(input_cache_write)) if input_cache_write is not None else None,
+    )
+
+
+def test_msrp_fields_cleared_when_pricing_equal():
+    provider_pricing = make_pricing_snapshot(prompt="0.003", completion="0.006")
+    poe_pricing = make_pricing_snapshot(prompt="0.003", completion="0.006").with_mtok()
+
+    msrp_fields = _msrp_fields_with_discount(provider_pricing, poe_pricing)
+
+    assert all(value is None for value in msrp_fields.values()), "Expected MSRP fields cleared when Poe pricing is higher or equal"
+
+
+def test_msrp_fields_retained_when_poe_pricing_lower():
+    provider_pricing = make_pricing_snapshot(prompt="0.005", completion="0.010")
+    poe_pricing = make_pricing_snapshot(prompt="0.004", completion="0.009").with_mtok()
+
+    msrp_fields = _msrp_fields_with_discount(provider_pricing, poe_pricing)
+
+    assert msrp_fields["msrp_prompt"] == "0.005"
+    assert msrp_fields["msrp_completion"] == "0.01"
+
+
+def test_equal_pricing_rejected_by_checks():
+    provider_pricing = {"models.dev": make_pricing_snapshot(prompt="0.003", completion="0.006")}
+    poe_pricing = make_pricing_snapshot(prompt="0.003", completion="0.006").with_mtok()
+
+    decisions, selected = evaluate_provider_decisions(["models.dev"], provider_pricing, poe_pricing)
+
+    decision = decisions["models.dev"]
+    assert decision.status == "rejected"
+    assert "price_equal" in decision.reasons
+    assert selected is None
+
+
+def test_pipeline_exposes_provider_lookup_metadata():
+    result = run_pipeline()
+    aggregate = result.aggregates.get("GPT-5")
+    assert aggregate is not None, "Expected GPT-5 aggregate from pipeline"
+
+    lookup = aggregate.provider_lookup.get("models.dev")
+    assert lookup is not None, "Expected models.dev lookup metadata"
+    assert lookup["requested"] == "auto"
+    assert lookup["resolved"] == "openai/gpt-5"
 
 
 def test_pipeline_populates_msrp_and_pricing_consistency():
@@ -165,7 +217,7 @@ def test_checks_report_includes_exclusions_and_providers():
     sample_model = report["models"][0]
     assert isinstance(sample_model.get("providers"), dict) and sample_model["providers"], "Expected provider data per model"
     provider_payload = next(iter(sample_model["providers"].values()))
-    assert {"values", "severity", "status"}.issubset(provider_payload.keys())
+    assert {"values", "severity", "status", "lookup", "reasons"}.issubset(provider_payload.keys())
 
 
 def test_models_dev_auto_mapping_populates_gpt5_pricing():
@@ -175,9 +227,9 @@ def test_models_dev_auto_mapping_populates_gpt5_pricing():
 
     decision = aggregate.decisions.get("models.dev")
     assert decision is not None, "models.dev decision missing for GPT-5"
-    assert decision.status == "accepted"
+    assert decision.status == "rejected"
+    assert "price_equal" in decision.reasons
     assert decision.pricing is not None, "models.dev should provide pricing for GPT-5"
-    assert decision.reasons == []
     assert decision.pricing.prompt is not None
     assert decision.pricing.completion is not None
 

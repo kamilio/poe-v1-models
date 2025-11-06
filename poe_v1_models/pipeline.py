@@ -30,6 +30,7 @@ class ModelAggregate:
     provider_pricing: Dict[str, Optional[PricingSnapshot]]
     decisions: Dict[str, ProviderDecision]
     selected_provider: Optional[str]
+    provider_lookup: Dict[str, Dict[str, Optional[str]]]
     overrides_applied: bool = False
 
 
@@ -84,6 +85,7 @@ def run_pipeline() -> PipelineResult:
         }
 
         provider_pricing: Dict[str, Optional[PricingSnapshot]] = {}
+        provider_lookup: Dict[str, Dict[str, Optional[str]]] = {}
         decisions: Dict[str, ProviderDecision] = {}
         selected_provider: Optional[str] = None
 
@@ -99,7 +101,12 @@ def run_pipeline() -> PipelineResult:
                 key = mapping_entry.key_for_provider(provider_name)
                 if key is None:
                     continue
-                pricing = provider.find(key, model)
+                lookup_info = _summarise_provider_lookup(provider, key, model)
+                provider_lookup[provider_name] = lookup_info
+                lookup_key = lookup_info.get("requested")
+                if lookup_key is None:
+                    lookup_key = key
+                pricing = provider.find(lookup_key, model)
                 provider_pricing[provider_name] = pricing
             decisions, selected_provider = evaluate_provider_decisions(
                 config.providers.priority,
@@ -110,7 +117,7 @@ def run_pipeline() -> PipelineResult:
             if selected_provider:
                 chosen_pricing = provider_pricing.get(selected_provider)
                 if chosen_pricing:
-                    msrp_fields.update(as_msrp_fields(chosen_pricing))
+                    msrp_fields.update(_msrp_fields_with_discount(chosen_pricing, normalized_pricing))
 
         pricing_dict.update(msrp_fields)
         model["pricing"] = pricing_dict
@@ -129,6 +136,7 @@ def run_pipeline() -> PipelineResult:
             provider_pricing=provider_pricing,
             decisions=decisions,
             selected_provider=selected_provider,
+            provider_lookup=provider_lookup,
             overrides_applied=overrides_applied,
         )
 
@@ -203,6 +211,76 @@ def deep_merge(target: Dict[str, Any], override: Mapping[str, Any]) -> Dict[str,
         else:
             target[key] = copy.deepcopy(value)
     return target
+
+
+def _summarise_provider_lookup(
+    provider: PricingProvider,
+    key: str,
+    poe_model: Mapping[str, Any],
+) -> Dict[str, Optional[str]]:
+    """Capture mapping metadata for reporting."""
+    requested = key.strip() if key is not None else None
+    if requested == "":
+        requested = None
+    resolved = requested
+
+    normalised_key = requested.lower() if requested else None
+
+    if normalised_key in (None, "", "auto"):
+        resolved = provider.default_key(poe_model)
+    elif provider.name == "models.dev" and "/" not in (requested or ""):
+        fallback = provider.default_key(poe_model)
+        if fallback:
+            resolved = fallback
+
+    return {
+        "requested": requested,
+        "resolved": resolved,
+    }
+
+
+def _msrp_fields_with_discount(
+    provider_pricing: PricingSnapshot,
+    poe_pricing: PricingWithMtok,
+) -> Dict[str, Optional[str]]:
+    """Return MSRP fields only when provider pricing exceeds Poe pricing."""
+    msrp_payload = as_msrp_fields(provider_pricing)
+    has_discount = False
+
+    comparisons = (
+        ("prompt", "msrp_prompt"),
+        ("completion", "msrp_completion"),
+        ("input_cache_read", "msrp_input_cache_read"),
+        ("input_cache_write", "msrp_input_cache_write"),
+    )
+
+    for attr, base_key in comparisons:
+        provider_value = getattr(provider_pricing, attr, None)
+        mtok_key = f"{base_key}_mtok"
+
+        if provider_value is None:
+            msrp_payload[base_key] = None
+            if mtok_key in msrp_payload:
+                msrp_payload[mtok_key] = None
+            continue
+
+        poe_value = getattr(poe_pricing, attr, None)
+        if poe_value is None:
+            has_discount = True
+            continue
+
+        if poe_value >= provider_value:
+            msrp_payload[base_key] = None
+            if mtok_key in msrp_payload:
+                msrp_payload[mtok_key] = None
+        else:
+            has_discount = True
+
+    if not has_discount:
+        for key in msrp_payload.keys():
+            msrp_payload[key] = None
+
+    return msrp_payload
 
 
 def _apply_boosts(models: List[Dict[str, Any]], boosts: BoostSettings) -> List[Dict[str, Any]]:

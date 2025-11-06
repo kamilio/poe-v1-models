@@ -55,10 +55,12 @@ def build_checks_report(result: PipelineResult) -> Dict[str, Any]:
             decision = aggregate.decisions.get(provider_name)
             if decision is None:
                 continue
+            lookup_metadata = aggregate.provider_lookup.get(provider_name)
             providers_payload[provider_name] = _serialize_provider_decision(
                 decision,
                 columns,
                 selected=aggregate.selected_provider == provider_name,
+                lookup=lookup_metadata,
             )
 
         models.append(
@@ -126,6 +128,7 @@ def _serialize_provider_decision(
     columns: Sequence[ProviderReportColumn],
     *,
     selected: bool,
+    lookup: Optional[Mapping[str, Optional[str]]] = None,
 ) -> Dict[str, Any]:
     pricing_payload: Dict[str, Any] = {}
     if decision.pricing:
@@ -142,11 +145,18 @@ def _serialize_provider_decision(
         raw_value = _extract_path(payload, column.path)
         values[column.key] = _render_column_value(column, raw_value)
 
+    lookup_payload: Dict[str, Optional[str]] = {"requested": None, "resolved": None}
+    if lookup:
+        lookup_payload["requested"] = lookup.get("requested")
+        lookup_payload["resolved"] = lookup.get("resolved")
+
     return {
         "status": decision.status,
         "severity": _decision_severity(decision),
         "selected": selected,
         "values": values,
+        "lookup": lookup_payload,
+        "reasons": list(decision.reasons),
     }
 
 
@@ -167,7 +177,6 @@ def _render_column_value(column: ProviderReportColumn, raw_value: Any) -> Dict[s
     if column.key == "status":
         status_text = str(raw_value or "missing")
         display = status_text
-        html = f'<span class="tag {status_text}">{status_text}</span>'
     elif column.key == "reasons":
         if isinstance(raw_value, (list, tuple)):
             display = ", ".join(str(reason) for reason in raw_value) if raw_value else "—"

@@ -16,7 +16,6 @@ OPENROUTER_MODELS_URL = "https://openrouter.ai/api/v1/models"
 
 OPENROUTER_REPORT_COLUMNS = (
     ProviderReportColumn(key="status", label="Status", path="status"),
-    ProviderReportColumn(key="reasons", label="Reasons", path="reasons"),
     ProviderReportColumn(
         key="prompt_mtok",
         label="Prompt / MTok",

@@ -19,7 +19,6 @@ class ProviderReportColumn:
 
 DEFAULT_REPORT_COLUMNS: Sequence[ProviderReportColumn] = (
     ProviderReportColumn(key="status", label="Status", path="status"),
-    ProviderReportColumn(key="reasons", label="Reasons", path="reasons"),
     ProviderReportColumn(
         key="prompt_mtok",
         label="Prompt / MTok",

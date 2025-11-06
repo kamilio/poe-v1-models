@@ -54,6 +54,14 @@ def evaluate_provider_decisions(
         if snapshot.completion is not None and poe_pricing.completion is not None and snapshot.completion < poe_pricing.completion:
             reasons.append("lower_than_poe_completion")
 
+        price_equal = False
+        if snapshot.prompt is not None and poe_pricing.prompt is not None and snapshot.prompt == poe_pricing.prompt:
+            price_equal = True
+        if snapshot.completion is not None and poe_pricing.completion is not None and snapshot.completion == poe_pricing.completion:
+            price_equal = True
+        if price_equal:
+            reasons.append("price_equal")
+
         status = "accepted" if not reasons else "rejected"
         decisions[provider] = ProviderDecision(provider=provider, status=status, pricing=snapshot, reasons=reasons)
 

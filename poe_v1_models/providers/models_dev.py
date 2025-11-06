@@ -16,7 +16,6 @@ MODELS_DEV_API_URL = "https://models.dev/api.json"
 
 MODELS_DEV_REPORT_COLUMNS = (
     ProviderReportColumn(key="status", label="Status", path="status"),
-    ProviderReportColumn(key="reasons", label="Reasons", path="reasons"),
     ProviderReportColumn(
         key="prompt_mtok",
         label="Prompt / MTok",
