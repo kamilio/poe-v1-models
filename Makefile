@@ -12,7 +12,7 @@ ifneq ($(SKIP_UPDATE),)
 START_ARGS += --skip-update
 endif
 
-.PHONY: install install-dev update start changelog test clean
+.PHONY: install install-dev update test-update-snapshots start changelog test clean
 
 install:
 	@if [ ! -f "$(PYTHON_BIN)" ]; then \
@@ -26,6 +26,9 @@ install-dev: install
 
 update: install
 	@$(PYTHON_BIN) scripts/update_models.py
+
+test-update-snapshots: install
+	@$(PYTHON_BIN) scripts/update_provider_snapshots.py
 
 start: install
 	@$(PYTHON_BIN) scripts/start_local.py --host $(HOST) --port $(PORT) $(START_ARGS)

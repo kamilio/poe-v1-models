@@ -1,0 +1,80 @@
+{
+  "generated_at": "2025-11-06T16:11:05.491617+00:00",
+  "snapshots": [
+    {
+      "id": "openai/gpt-5",
+      "normalized": {
+        "completion": "0.00001",
+        "completion_mtok": "10",
+        "image": "0",
+        "input_cache_read": "0.000000125",
+        "input_cache_read_mtok": "0.125",
+        "prompt": "0.00000125",
+        "prompt_mtok": "1.25",
+        "request": "0"
+      },
+      "raw": {
+        "id": "openai/gpt-5",
+        "pricing": {
+          "completion": "0.00001",
+          "image": "0",
+          "input_cache_read": "0.000000125",
+          "internal_reasoning": "0",
+          "prompt": "0.00000125",
+          "request": "0",
+          "web_search": "0.01"
+        }
+      }
+    },
+    {
+      "id": "anthropic/claude-sonnet-4.5",
+      "normalized": {
+        "completion": "0.000015",
+        "completion_mtok": "15",
+        "image": "0",
+        "prompt": "0.000003",
+        "prompt_mtok": "3",
+        "request": "0"
+      },
+      "raw": {
+        "id": "anthropic/claude-sonnet-4.5",
+        "pricing": {
+          "completion": "0.000015",
+          "image": "0",
+          "internal_reasoning": "0",
+          "prompt": "0.000003",
+          "request": "0",
+          "web_search": "0"
+        }
+      }
+    },
+    {
+      "id": "google/gemini-2.5-pro",
+      "normalized": {
+        "completion": "0.00001",
+        "completion_mtok": "10",
+        "image": "0.00516",
+        "input_cache_read": "0.000000125",
+        "input_cache_read_mtok": "0.125",
+        "input_cache_write": "0.000001625",
+        "input_cache_write_mtok": "1.625",
+        "prompt": "0.00000125",
+        "prompt_mtok": "1.25",
+        "request": "0"
+      },
+      "raw": {
+        "id": "google/gemini-2.5-pro",
+        "pricing": {
+          "completion": "0.00001",
+          "image": "0.00516",
+          "input_cache_read": "0.000000125",
+          "input_cache_write": "0.000001625",
+          "internal_reasoning": "0",
+          "prompt": "0.00000125",
+          "request": "0",
+          "web_search": "0"
+        }
+      }
+    }
+  ]
+}

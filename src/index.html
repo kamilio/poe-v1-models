@@ -95,6 +95,16 @@
                 <span class="ml-1 text-gray-400">↕</span>
                 <div class="text-xs font-normal text-gray-500 dark:text-gray-400">per 1M tokens</div>
               </th>
+              <th class="px-6 py-4 text-right text-sm font-semibold text-gray-900 dark:text-gray-100 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" onclick="sortTable('input_cache_read')">
+                Cache Read
+                <span class="ml-1 text-gray-400">↕</span>
+                <div class="text-xs font-normal text-gray-500 dark:text-gray-400">per 1M tokens</div>
+              </th>
+              <th class="px-6 py-4 text-right text-sm font-semibold text-gray-900 dark:text-gray-100 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" onclick="sortTable('input_cache_write')">
+                Cache Write
+                <span class="ml-1 text-gray-400">↕</span>
+                <div class="text-xs font-normal text-gray-500 dark:text-gray-400">per 1M tokens</div>
+              </th>
             </tr>
           </thead>
           <tbody id="tableBody" class="divide-y divide-gray-200 dark:divide-gray-700"></tbody>
@@ -186,7 +196,7 @@
       if (models.length === 0) {
         tbody.innerHTML = `
           <tr>
-            <td colspan=\"6\" class=\"px-6 py-12 text-center text-gray-500 dark:text-gray-400\">
+            <td colspan=\"8\" class=\"px-6 py-12 text-center text-gray-500 dark:text-gray-400\">
               No models found matching your criteria
             </td>
           </tr>
@@ -226,6 +236,12 @@
           </td>
           <td class=\"px-6 py-4 text-right font-mono text-sm\">
             ${formatPriceWithMSRP(model.pricing, 'completion')}
+          </td>
+          <td class=\"px-6 py-4 text-right font-mono text-sm\">
+            ${formatPriceWithMSRP(model.pricing, 'input_cache_read')}
+          </td>
+          <td class=\"px-6 py-4 text-right font-mono text-sm\">
+            ${formatPriceWithMSRP(model.pricing, 'input_cache_write')}
           </td>
         `;
         fragment.appendChild(row);
@@ -277,6 +293,16 @@
           case 'completion': {
             const aVal = getPricingPair(a.pricing, 'completion').price;
             const bVal = getPricingPair(b.pricing, 'completion').price;
+            return numericSort(aVal, bVal, sortConfig.direction);
+          }
+          case 'input_cache_read': {
+            const aVal = getPricingPair(a.pricing, 'input_cache_read').price;
+            const bVal = getPricingPair(b.pricing, 'input_cache_read').price;
+            return numericSort(aVal, bVal, sortConfig.direction);
+          }
+          case 'input_cache_write': {
+            const aVal = getPricingPair(a.pricing, 'input_cache_write').price;
+            const bVal = getPricingPair(b.pricing, 'input_cache_write').price;
             return numericSort(aVal, bVal, sortConfig.direction);
           }
           default:

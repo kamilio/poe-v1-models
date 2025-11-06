@@ -4,7 +4,11 @@ from typing import Any, Dict, Mapping, Optional
 from urllib.request import urlopen
 
 from poe_v1_models.pricing import PricingSnapshot, decimal_or_none
-from poe_v1_models.providers.base import PricingProvider, ProviderReportColumn
+from poe_v1_models.providers.base import (
+    PricingProvider,
+    ProviderPricingPayload,
+    ProviderReportColumn,
+)
 
 
 MODELS_DEV_API_URL = "https://models.dev/api.json"
@@ -23,6 +27,18 @@ MODELS_DEV_REPORT_COLUMNS = (
         key="completion_mtok",
         label="Completion / MTok",
         path="pricing.completion_mtok",
+        numeric=True,
+    ),
+    ProviderReportColumn(
+        key="input_cache_read_mtok",
+        label="Input Cache Read / MTok",
+        path="pricing.input_cache_read_mtok",
+        numeric=True,
+    ),
+    ProviderReportColumn(
+        key="input_cache_write_mtok",
+        label="Input Cache Write / MTok",
+        path="pricing.input_cache_write_mtok",
         numeric=True,
     ),
 )
@@ -66,12 +82,8 @@ class ModelsDevProvider(PricingProvider):
                     break
         if not model_data:
             return None
-        cost = model_data.get("cost") or {}
-        prompt = decimal_or_none(cost.get("input"))
-        completion = decimal_or_none(cost.get("output"))
-        request = decimal_or_none(cost.get("request") or cost.get("cache_read"))
-        image = decimal_or_none(cost.get("image"))
-        return self.build_snapshot(prompt=prompt, completion=completion, request=request, image=image)
+        payload = self.transform(model_data)
+        return self.build_snapshot_from_payload(payload)
 
     def default_key(self, poe_model: Mapping[str, object]) -> Optional[str]:
         owned_by = poe_model.get("owned_by")
@@ -108,6 +120,19 @@ class ModelsDevProvider(PricingProvider):
         if len(prefix_matches) == 1:
             return f"{provider_slug}/{prefix_matches[0]}"
         return None
+
+    def transform(self, payload: Mapping[str, Any]) -> ProviderPricingPayload:
+        cost = payload.get("cost") if isinstance(payload, Mapping) else None
+        cost_mapping: Mapping[str, Any] = cost if isinstance(cost, Mapping) else {}
+        payload_normalized: ProviderPricingPayload = {
+            "prompt": decimal_or_none(cost_mapping.get("input")),
+            "completion": decimal_or_none(cost_mapping.get("output")),
+            "request": decimal_or_none(cost_mapping.get("request")),
+            "image": decimal_or_none(cost_mapping.get("image")),
+            "input_cache_read": decimal_or_none(cost_mapping.get("cache_read")),
+            "input_cache_write": decimal_or_none(cost_mapping.get("cache_write")),
+        }
+        return payload_normalized
 
 
 def json_load(response) -> Dict[str, Any]:

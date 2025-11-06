@@ -1,3 +1,5 @@
+import copy
+import json
 from decimal import Decimal
 from pathlib import Path
 import sys
@@ -13,6 +15,72 @@ from poe_v1_models.mapping import load_model_mapping
 from poe_v1_models.pipeline import run_pipeline
 from poe_v1_models.pricing import MTOK_MULTIPLIER
 from poe_v1_models.reporting import build_checks_report
+
+SNAPSHOT_ROOT = Path(__file__).resolve().parent / "snapshots"
+PIPELINE_SNAPSHOTS = SNAPSHOT_ROOT / "pipeline"
+PROVIDER_SNAPSHOTS = SNAPSHOT_ROOT / "providers"
+
+
+@pytest.fixture(autouse=True)
+def pipeline_snapshots(monkeypatch):
+    from poe_v1_models import config as config_module
+    from poe_v1_models import mapping as mapping_module
+    from poe_v1_models.providers.models_dev import ModelsDevProvider
+    from poe_v1_models.providers.openrouter import OpenRouterProvider
+
+    poe_payload = json.loads((PIPELINE_SNAPSHOTS / "poe_models.json").read_text(encoding="utf-8"))
+    openrouter_payload = json.loads((PROVIDER_SNAPSHOTS / "openrouter.json").read_text(encoding="utf-8"))
+    models_dev_payload = json.loads((PROVIDER_SNAPSHOTS / "models_dev.json").read_text(encoding="utf-8"))
+    config_path = PIPELINE_SNAPSHOTS / "config.yaml"
+    mapping_path = PIPELINE_SNAPSHOTS / "model_mapping.yml"
+
+    def fake_fetch_json(url: str):
+        return copy.deepcopy(poe_payload)
+
+    monkeypatch.setattr("poe_v1_models.pipeline.fetch_json", fake_fetch_json)
+
+    real_load_config = config_module.load_general_config
+
+    def load_config_override(path=config_path):
+        return real_load_config(config_path)
+
+    monkeypatch.setattr(config_module, "load_general_config", load_config_override)
+    monkeypatch.setattr("poe_v1_models.pipeline.load_general_config", load_config_override)
+    monkeypatch.setattr(sys.modules[__name__], "load_general_config", load_config_override)
+
+    real_load_mapping = mapping_module.load_model_mapping
+
+    def load_mapping_override(path=mapping_path):
+        return real_load_mapping(mapping_path)
+
+    monkeypatch.setattr(mapping_module, "load_model_mapping", load_mapping_override)
+    monkeypatch.setattr("poe_v1_models.pipeline.load_model_mapping", load_mapping_override)
+    monkeypatch.setattr(sys.modules[__name__], "load_model_mapping", load_mapping_override)
+
+    def openrouter_load(self):
+        index = {}
+        for record in openrouter_payload.get("snapshots", []):
+            raw = record.get("raw", {})
+            model_id = raw.get("id")
+            if model_id:
+                index[model_id] = raw
+        self._index = index
+
+    def models_dev_load(self):
+        catalog = {}
+        for record in models_dev_payload.get("snapshots", []):
+            provider = record.get("provider")
+            raw = record.get("raw", {})
+            model_id = raw.get("id")
+            cost = raw.get("cost")
+            if not provider or not model_id or not isinstance(cost, dict):
+                continue
+            provider_entry = catalog.setdefault(provider, {"models": {}})
+            provider_entry["models"][model_id] = {"cost": cost}
+        self._catalog = catalog
+
+    monkeypatch.setattr(OpenRouterProvider, "load", openrouter_load, raising=False)
+    monkeypatch.setattr(ModelsDevProvider, "load", models_dev_load, raising=False)
 
 
 def to_decimal(value):
@@ -31,18 +99,28 @@ def test_pipeline_populates_msrp_and_pricing_consistency():
             # Model filtered out by exclusions; skip assertions for it.
             continue
         pricing = model.get("pricing", {})
-        for field in ("msrp_prompt", "msrp_completion", "msrp_prompt_mtok", "msrp_completion_mtok"):
+        for field in (
+            "msrp_prompt",
+            "msrp_completion",
+            "msrp_prompt_mtok",
+            "msrp_completion_mtok",
+            "msrp_input_cache_read",
+            "msrp_input_cache_write",
+            "msrp_input_cache_read_mtok",
+            "msrp_input_cache_write_mtok",
+        ):
             assert field in pricing, f"Missing {field} for {entry.poe_id}"
 
-        prompt = pricing.get("msrp_prompt")
-        prompt_mtok = pricing.get("msrp_prompt_mtok")
-        if prompt is not None and prompt_mtok is not None:
-            assert to_decimal(prompt) == to_decimal(prompt_mtok) / MTOK_MULTIPLIER
-
-        completion = pricing.get("msrp_completion")
-        completion_mtok = pricing.get("msrp_completion_mtok")
-        if completion is not None and completion_mtok is not None:
-            assert to_decimal(completion) == to_decimal(completion_mtok) / MTOK_MULTIPLIER
+        for base_key, mtok_key in (
+            ("msrp_prompt", "msrp_prompt_mtok"),
+            ("msrp_completion", "msrp_completion_mtok"),
+            ("msrp_input_cache_read", "msrp_input_cache_read_mtok"),
+            ("msrp_input_cache_write", "msrp_input_cache_write_mtok"),
+        ):
+            base_value = pricing.get(base_key)
+            mtok_value = pricing.get(mtok_key)
+            if base_value is not None and mtok_value is not None:
+                assert to_decimal(base_value) == to_decimal(mtok_value) / MTOK_MULTIPLIER
 
 
 def test_overrides_applied_and_exclusions_respected():

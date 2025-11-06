@@ -4,7 +4,11 @@ from typing import Any, Dict, Iterable, Mapping, Optional
 from urllib.request import urlopen
 
 from poe_v1_models.pricing import PricingSnapshot, decimal_or_none
-from poe_v1_models.providers.base import PricingProvider, ProviderReportColumn
+from poe_v1_models.providers.base import (
+    PricingProvider,
+    ProviderPricingPayload,
+    ProviderReportColumn,
+)
 
 
 OPENROUTER_MODELS_URL = "https://openrouter.ai/api/v1/models"
@@ -23,6 +27,18 @@ OPENROUTER_REPORT_COLUMNS = (
         key="completion_mtok",
         label="Completion / MTok",
         path="pricing.completion_mtok",
+        numeric=True,
+    ),
+    ProviderReportColumn(
+        key="input_cache_read_mtok",
+        label="Input Cache Read / MTok",
+        path="pricing.input_cache_read_mtok",
+        numeric=True,
+    ),
+    ProviderReportColumn(
+        key="input_cache_write_mtok",
+        label="Input Cache Write / MTok",
+        path="pricing.input_cache_write_mtok",
         numeric=True,
     ),
     ProviderReportColumn(
@@ -80,12 +96,8 @@ class OpenRouterProvider(PricingProvider):
         if entry is None:
             return None
 
-        pricing = entry.get("pricing") or {}
-        prompt = decimal_or_none(pricing.get("prompt"))
-        completion = decimal_or_none(pricing.get("completion"))
-        request = decimal_or_none(pricing.get("request"))
-        image = decimal_or_none(pricing.get("image"))
-        return self.build_snapshot(prompt=prompt, completion=completion, request=request, image=image)
+        payload = self.transform(entry)
+        return self.build_snapshot_from_payload(payload)
 
     def default_key(self, poe_model: Mapping[str, object]) -> Optional[str]:
         owned_by = poe_model.get("owned_by")
@@ -108,6 +120,19 @@ class OpenRouterProvider(PricingProvider):
         if len(matches) == 1:
             return matches[0]
         return None
+
+    def transform(self, payload: Mapping[str, Any]) -> ProviderPricingPayload:
+        pricing = payload.get("pricing") if isinstance(payload, Mapping) else None
+        pricing_mapping: Mapping[str, Any] = pricing if isinstance(pricing, Mapping) else {}
+        payload_normalized: ProviderPricingPayload = {
+            "prompt": decimal_or_none(pricing_mapping.get("prompt")),
+            "completion": decimal_or_none(pricing_mapping.get("completion")),
+            "request": decimal_or_none(pricing_mapping.get("request")),
+            "image": decimal_or_none(pricing_mapping.get("image")),
+            "input_cache_read": decimal_or_none(pricing_mapping.get("input_cache_read")),
+            "input_cache_write": decimal_or_none(pricing_mapping.get("input_cache_write")),
+        }
+        return payload_normalized
 
 
 def slugify(value: str) -> str:

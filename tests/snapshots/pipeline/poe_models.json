@@ -1,0 +1,53 @@
+{
+  "object": "list",
+  "data": [
+    {
+      "id": "Assistant",
+      "owned_by": "poe",
+      "root": "assistant",
+      "tags": ["starter"],
+      "pricing": {
+        "prompt": "0.0000005",
+        "completion": "0.000002"
+      }
+    },
+    {
+      "id": "GPT-5",
+      "owned_by": "openai",
+      "root": "gpt-5",
+      "tags": [],
+      "pricing": {
+        "prompt": "0.00000125",
+        "completion": "0.00001",
+        "request": "0",
+        "input_cache_read": "0.00000012"
+      }
+    },
+    {
+      "id": "Claude-Sonnet-4.5",
+      "owned_by": "anthropic",
+      "root": "Claude-Sonnet-4.5",
+      "tags": [],
+      "pricing": {
+        "prompt": "0.0000035",
+        "completion": "0.000015",
+        "request": "0",
+        "input_cache_read": "0.0000003",
+        "input_cache_write": "0.000003"
+      }
+    },
+    {
+      "id": "Gemini-2.5-Pro",
+      "owned_by": "google",
+      "root": "Gemini-2.5-Pro",
+      "tags": ["beta"],
+      "pricing": {
+        "prompt": "0.0000015",
+        "completion": "0.00001",
+        "request": "0",
+        "input_cache_read": "0.0000003",
+        "input_cache_write": "0.000002"
+      }
+    }
+  ]
+}

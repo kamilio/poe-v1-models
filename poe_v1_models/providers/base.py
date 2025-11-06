@@ -3,7 +3,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from decimal import Decimal
-from typing import Mapping, Optional, Sequence
+from typing import Any, Mapping, Optional, Sequence, TypedDict
 
 from poe_v1_models.pricing import MTOK_MULTIPLIER, PricingSnapshot
 
@@ -32,7 +32,30 @@ DEFAULT_REPORT_COLUMNS: Sequence[ProviderReportColumn] = (
         path="pricing.completion_mtok",
         numeric=True,
     ),
+    ProviderReportColumn(
+        key="input_cache_read_mtok",
+        label="Input Cache Read / MTok",
+        path="pricing.input_cache_read_mtok",
+        numeric=True,
+    ),
+    ProviderReportColumn(
+        key="input_cache_write_mtok",
+        label="Input Cache Write / MTok",
+        path="pricing.input_cache_write_mtok",
+        numeric=True,
+    ),
 )
+
+
+class ProviderPricingPayload(TypedDict, total=False):
+    """Normalized pricing fields returned from provider transforms."""
+
+    prompt: Optional[Decimal]
+    completion: Optional[Decimal]
+    request: Optional[Decimal]
+    image: Optional[Decimal]
+    input_cache_read: Optional[Decimal]
+    input_cache_write: Optional[Decimal]
 
 
 @dataclass
@@ -72,6 +95,10 @@ class PricingProvider(ABC):
     def find(self, key: str, poe_model: Mapping[str, object]) -> Optional[PricingSnapshot]:
         """Return pricing information for the given provider-specific key."""
 
+    @abstractmethod
+    def transform(self, payload: Mapping[str, Any]) -> ProviderPricingPayload:
+        """Normalise provider metadata into a standard pricing payload."""
+
     def default_key(self, poe_model: Mapping[str, object]) -> Optional[str]:
         """Infer a provider key based on Poe metadata, used when mapping contains 'auto'."""
         return None
@@ -94,6 +121,8 @@ class PricingProvider(ABC):
         completion: Optional[Decimal] = None,
         request: Optional[Decimal] = None,
         image: Optional[Decimal] = None,
+        input_cache_read: Optional[Decimal] = None,
+        input_cache_write: Optional[Decimal] = None,
     ) -> PricingSnapshot:
         """Construct a pricing snapshot applying provider-specific scaling."""
         return PricingSnapshot(
@@ -101,4 +130,17 @@ class PricingProvider(ABC):
             completion=self._normalise_token_price(completion),
             request=request,
             image=image,
+            input_cache_read=self._normalise_token_price(input_cache_read),
+            input_cache_write=self._normalise_token_price(input_cache_write),
+        )
+
+    def build_snapshot_from_payload(self, payload: ProviderPricingPayload) -> PricingSnapshot:
+        """Construct a snapshot from a normalised provider payload."""
+        return self.build_snapshot(
+            prompt=payload.get("prompt"),
+            completion=payload.get("completion"),
+            request=payload.get("request"),
+            image=payload.get("image"),
+            input_cache_read=payload.get("input_cache_read"),
+            input_cache_write=payload.get("input_cache_write"),
         )

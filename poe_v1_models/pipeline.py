@@ -77,6 +77,10 @@ def run_pipeline() -> PipelineResult:
             "msrp_completion": None,
             "msrp_prompt_mtok": None,
             "msrp_completion_mtok": None,
+            "msrp_input_cache_read": None,
+            "msrp_input_cache_write": None,
+            "msrp_input_cache_read_mtok": None,
+            "msrp_input_cache_write_mtok": None,
         }
 
         provider_pricing: Dict[str, Optional[PricingSnapshot]] = {}

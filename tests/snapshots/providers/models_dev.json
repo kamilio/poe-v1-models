@@ -1,0 +1,71 @@
+{
+  "generated_at": "2025-11-06T16:11:05.732020+00:00",
+  "snapshots": [
+    {
+      "id": "gpt-5",
+      "normalized": {
+        "completion": "0.00001",
+        "completion_mtok": "10",
+        "input_cache_read": "0.00000013",
+        "input_cache_read_mtok": "0.13",
+        "prompt": "0.00000125",
+        "prompt_mtok": "1.25"
+      },
+      "provider": "openai",
+      "raw": {
+        "cost": {
+          "cache_read": 0.13,
+          "input": 1.25,
+          "output": 10
+        },
+        "id": "gpt-5",
+        "provider": "openai"
+      }
+    },
+    {
+      "id": "claude-sonnet-4-5",
+      "normalized": {
+        "completion": "0.000015",
+        "completion_mtok": "15",
+        "input_cache_read": "0.0000003",
+        "input_cache_read_mtok": "0.3",
+        "input_cache_write": "0.00000375",
+        "input_cache_write_mtok": "3.75",
+        "prompt": "0.000003",
+        "prompt_mtok": "3"
+      },
+      "provider": "anthropic",
+      "raw": {
+        "cost": {
+          "cache_read": 0.3,
+          "cache_write": 3.75,
+          "input": 3,
+          "output": 15
+        },
+        "id": "claude-sonnet-4-5",
+        "provider": "anthropic"
+      }
+    },
+    {
+      "id": "gemini-2.5-pro",
+      "normalized": {
+        "completion": "0.00001",
+        "completion_mtok": "10",
+        "input_cache_read": "0.00000031",
+        "input_cache_read_mtok": "0.31",
+        "prompt": "0.00000125",
+        "prompt_mtok": "1.25"
+      },
+      "provider": "google",
+      "raw": {
+        "cost": {
+          "cache_read": 0.31,
+          "input": 1.25,
+          "output": 10
+        },
+        "id": "gemini-2.5-pro",
+        "provider": "google"
+      }
+    }
+  ]
+}

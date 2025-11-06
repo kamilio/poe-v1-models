@@ -104,7 +104,9 @@
       { key: 'selected', label: 'Selected Provider', rowSpan: 2 },
       { key: 'overrides', label: 'Overrides', rowSpan: 2 },
       { key: 'poe_prompt', label: 'Poe Prompt / MTok', rowSpan: 2, numeric: true },
-      { key: 'poe_completion', label: 'Poe Completion / MTok', rowSpan: 2, numeric: true }
+      { key: 'poe_completion', label: 'Poe Completion / MTok', rowSpan: 2, numeric: true },
+      { key: 'poe_input_cache_read', label: 'Poe Cache Read / MTok', rowSpan: 2, numeric: true },
+      { key: 'poe_input_cache_write', label: 'Poe Cache Write / MTok', rowSpan: 2, numeric: true }
     ];
 
     const providerSeverityClasses = {
@@ -256,8 +258,12 @@
 
       const poePrompt = sanitizeValue(model.poe_pricing?.prompt_mtok);
       const poeCompletion = sanitizeValue(model.poe_pricing?.completion_mtok);
+      const poeCacheRead = sanitizeValue(model.poe_pricing?.input_cache_read_mtok);
+      const poeCacheWrite = sanitizeValue(model.poe_pricing?.input_cache_write_mtok);
       cells.push({ element: createCell({ text: poePrompt, numeric: true }) });
       cells.push({ element: createCell({ text: poeCompletion, numeric: true }) });
+      cells.push({ element: createCell({ text: poeCacheRead, numeric: true }) });
+      cells.push({ element: createCell({ text: poeCacheWrite, numeric: true }) });
 
       providersMeta.forEach(provider => {
         const columns = provider.columns || [];
