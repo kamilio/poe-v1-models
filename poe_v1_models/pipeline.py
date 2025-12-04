@@ -2,9 +2,12 @@ from __future__ import annotations
 
 import copy
 import json
+import random
+import time
 from dataclasses import dataclass
 from typing import Any, Dict, Iterable, List, Mapping, Optional, Sequence
-from urllib.request import urlopen
+from urllib.error import HTTPError, URLError
+from urllib.request import Request, urlopen
 
 from poe_v1_models.checks import ProviderDecision, evaluate_provider_decisions
 from poe_v1_models.config import BoostSettings, GeneralConfig, load_general_config
@@ -22,6 +25,16 @@ from poe_v1_models.providers.utils import AUTO_MAPPING_KEY, is_none_mapping
 
 
 POE_API_URL = "https://api.poe.com/v1/models"
+_HUMANISH_HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+    ),
+    "Accept": "application/json, text/plain, */*",
+    "Accept-Language": "en-US,en;q=0.9",
+    "Connection": "keep-alive",
+    "DNT": "1",
+}
 
 
 @dataclass
@@ -198,11 +211,33 @@ def load_poe_models(url: str = POE_API_URL) -> Dict[str, Any]:
     return fetch_json(url)
 
 
-def fetch_json(url: str) -> Dict[str, Any]:
-    with urlopen(url) as response:  # nosec: B310 - API is HTTPS and trusted
-        if response.status != 200:
-            raise RuntimeError(f"Failed to fetch {url}: {response.status}")
-        return json.load(response)
+def fetch_json(url: str, max_attempts: int = 3, base_backoff: float = 0.75) -> Dict[str, Any]:
+    last_error: Optional[Exception] = None
+    for attempt in range(1, max_attempts + 1):
+        request = Request(url, headers=_HUMANISH_HEADERS)
+        try:
+            with urlopen(request, timeout=15) as response:  # nosec: B310 - API is HTTPS and trusted
+                if response.status != 200:
+                    raise RuntimeError(f"Failed to fetch {url}: {response.status}")
+                return json.load(response)
+        except HTTPError as exc:
+            last_error = exc
+            if exc.code not in {403, 408, 425, 429, 500, 502, 503, 504} or attempt == max_attempts:
+                raise
+        except URLError as exc:
+            last_error = exc
+            if attempt == max_attempts:
+                raise RuntimeError(f"Failed to fetch {url}") from exc
+
+        _sleep_with_jitter(base_backoff, attempt)
+
+    raise RuntimeError(f"Failed to fetch {url}") from last_error
+
+
+def _sleep_with_jitter(base_backoff: float, attempt: int) -> None:
+    delay = base_backoff * (2 ** (attempt - 1))
+    jitter = random.uniform(0, base_backoff)
+    time.sleep(delay + jitter)
 
 
 def ordered_unique(values: Iterable[str]) -> List[str]:
