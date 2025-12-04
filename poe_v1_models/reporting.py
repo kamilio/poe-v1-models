@@ -200,7 +200,7 @@ def _render_column_value(column: ProviderReportColumn, raw_value: Any) -> Dict[s
 
 def _decision_severity(decision: ProviderDecision) -> str:
     severity = "ok"
-    if decision.status == "missing":
+    if decision.status in ("missing", "disabled"):
         severity = "muted"
     elif decision.status == "rejected":
         if any(reason.startswith("lower_than_poe") for reason in decision.reasons):

@@ -11,8 +11,6 @@ model_mapping:
     models.dev: anthropic/claude-haiku-4-5
   Claude-Opus-3:
     models.dev: anthropic/claude-3-opus-20240229
-  Claude-Opus-4:
-    models.dev: auto
   Claude-Opus-4-Reasoning:
     models.dev: anthropic/claude-opus-4-20250514
   Claude-Opus-4-Search:
@@ -29,61 +27,22 @@ model_mapping:
     models.dev: anthropic/claude-3-7-sonnet-latest
   Claude-Sonnet-3.7-Search:
     models.dev: anthropic/claude-3-7-sonnet-latest
-  Claude-Sonnet-4:
-    models.dev: auto
   Claude-Sonnet-4-Reasoning:
     models.dev: anthropic/claude-sonnet-4-0
   Claude-Sonnet-4-Search:
     models.dev: anthropic/claude-sonnet-4-0
-  Claude-Sonnet-4.5:
-    models.dev: anthropic/claude-sonnet-4-5
-  GPT-3.5-Turbo:
-    models.dev: auto
-  GPT-4-Classic:
-    models.dev: auto
-  GPT-4-Turbo:
-    models.dev: auto
-  GPT-4.1:
-    models.dev: auto
-  GPT-4.1-mini:
-    models.dev: auto
-  GPT-4.1-nano:
-    models.dev: auto
-  GPT-4o:
-    models.dev: auto
   GPT-4o-Aug:
     models.dev: openai/gpt-4o-2024-08-06
-  GPT-4o-mini:
-    models.dev: auto
-  GPT-5:
-    models.dev: auto
-    openrouter: auto
   GPT-5-Chat:
     models.dev: openai/gpt-5
-  GPT-5-Codex:
-    models.dev: auto
-  GPT-5-mini:
-    models.dev: auto
-  GPT-5-nano:
-    models.dev: auto
   GPT-OSS-120B:
     models.dev: openai/text-embedding-3-large
   GPT-OSS-20B:
     models.dev: openai/text-embedding-3-small
-  Gemini-2.0-Flash:
-    models.dev: auto
-  Gemini-2.0-Flash-Lite:
-    models.dev: auto
   Gemini-2.0-Flash-Preview:
     models.dev: google/gemini-2.5-flash-preview-05-20
-  Gemini-2.5-Flash:
-    models.dev: auto
-  Gemini-2.5-Flash-Lite:
-    models.dev: auto
   Gemini-2.5-Flash-TTS:
     models.dev: google/gemini-2.5-flash-preview-tts
-  Gemini-2.5-Pro:
-    models.dev: auto
   Gemini-2.5-Pro-TTS:
     models.dev: google/gemini-2.5-pro-preview-tts
   Mistral-Large-2:
@@ -96,45 +55,7 @@ model_mapping:
     models.dev: mistral/mistral-medium-2508
   Nano-Banana:
     models.dev: google/gemini-2.5-flash-image
-  o1:
-    models.dev: auto
-  o1-pro:
-    models.dev: auto
-  o3:
-    models.dev: auto
-  o3-deep-research:
-    models.dev: auto
-  o3-mini:
-    models.dev: auto
-  o3-pro:
-    models.dev: auto
-  o4-mini:
-    models.dev: auto
-  o4-mini-deep-research:
-    models.dev: auto
   Mistral-Small-3:
     models.dev: mistral/mistral-small-latest
-  GPT-3.5-Turbo-Instruct:
-    models.dev: auto
-  GPT-3.5-Turbo-Raw:
-    models.dev: auto
-  GPT-4o-mini-Search:
-    models.dev: auto
-  GPT-4o-Search:
-    models.dev: auto
-  GPT-5-Pro:
-    models.dev: auto
-  Grok-2:
-    models.dev: auto
-  Grok-3:
-    models.dev: auto
-  Grok-3-Mini:
-    models.dev: auto
-  Grok-4:
-    models.dev: auto
-  Grok-4-Fast-Non-Reasoning:
-    models.dev: auto
   Grok-4-Fast-Reasoning:
     models.dev: xai/grok-4-fast
-  Grok-Code-Fast-1:
-    models.dev: auto

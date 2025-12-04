@@ -18,6 +18,7 @@ from poe_v1_models.pricing import (
 from poe_v1_models.providers.base import PricingProvider
 from poe_v1_models.providers.models_dev import ModelsDevProvider
 from poe_v1_models.providers.openrouter import OpenRouterProvider
+from poe_v1_models.providers.utils import AUTO_MAPPING_KEY, is_none_mapping
 
 
 POE_API_URL = "https://api.poe.com/v1/models"
@@ -88,30 +89,45 @@ def run_pipeline() -> PipelineResult:
         provider_lookup: Dict[str, Dict[str, Optional[str]]] = {}
         decisions: Dict[str, ProviderDecision] = {}
         selected_provider: Optional[str] = None
+        disabled_providers: set[str] = set()
 
         mapping_entry = mapping_by_id.get(model_id)
-        if mapping_entry:
-            provider_names = ordered_unique(
-                list(config.providers.priority) + list(mapping_entry.providers())
-            )
-            for provider_name in provider_names:
-                provider = providers.get(provider_name)
-                if provider is None:
-                    continue
-                key = mapping_entry.key_for_provider(provider_name)
-                if key is None:
-                    continue
-                lookup_info = _summarise_provider_lookup(provider, key, model)
-                provider_lookup[provider_name] = lookup_info
-                lookup_key = lookup_info.get("requested")
-                if lookup_key is None:
-                    lookup_key = key
-                pricing = provider.find(lookup_key, model)
-                provider_pricing[provider_name] = pricing
+        provider_names = ordered_unique(
+            list(config.providers.priority)
+            + (list(mapping_entry.providers()) if mapping_entry else [])
+        )
+
+        for provider_name in provider_names:
+            provider = providers.get(provider_name)
+            if provider is None:
+                continue
+            key = mapping_entry.key_for_provider(provider_name) if mapping_entry else None
+            if key is None or key.strip() == "":
+                key = AUTO_MAPPING_KEY
+            requested_key = key.strip()
+            if requested_key == "":
+                requested_key = AUTO_MAPPING_KEY
+            if is_none_mapping(requested_key):
+                provider_lookup[provider_name] = {
+                    "requested": "none",
+                    "resolved": None,
+                }
+                disabled_providers.add(provider_name)
+                continue
+            lookup_info = _summarise_provider_lookup(provider, requested_key, model)
+            provider_lookup[provider_name] = lookup_info
+            lookup_key = lookup_info.get("requested")
+            if lookup_key is None:
+                lookup_key = requested_key
+            pricing = provider.find(lookup_key, model)
+            provider_pricing[provider_name] = pricing
+
+        if provider_pricing or disabled_providers:
             decisions, selected_provider = evaluate_provider_decisions(
                 config.providers.priority,
                 provider_pricing,
                 normalized_pricing,
+                disabled_providers=disabled_providers,
             )
 
             if selected_provider:
@@ -224,14 +240,10 @@ def _summarise_provider_lookup(
         requested = None
     resolved = requested
 
-    normalised_key = requested.lower() if requested else None
-
-    if normalised_key in (None, "", "auto"):
+    if requested is None or requested == "auto":
         resolved = provider.default_key(poe_model)
-    elif provider.name == "models.dev" and "/" not in (requested or ""):
-        fallback = provider.default_key(poe_model)
-        if fallback:
-            resolved = fallback
+    elif requested == "none":
+        resolved = None
 
     return {
         "requested": requested,

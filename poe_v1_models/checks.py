@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from decimal import Decimal
-from typing import Dict, Iterable, List, Mapping, Optional, Sequence, Tuple
+from typing import Dict, Iterable, List, Mapping, Optional, Sequence, Set, Tuple
 
 from poe_v1_models.pricing import PricingSnapshot, PricingWithMtok, has_values
 
@@ -33,11 +33,26 @@ def evaluate_provider_decisions(
     provider_priority: Sequence[str],
     provider_pricing: Mapping[str, Optional[PricingSnapshot]],
     poe_pricing: PricingWithMtok,
+    *,
+    disabled_providers: Optional[Iterable[str]] = None,
 ) -> Tuple[Dict[str, ProviderDecision], Optional[str]]:
-    all_providers = ordered_unique(list(provider_priority) + list(provider_pricing.keys()))
+    disabled: Set[str] = set(disabled_providers or [])
+    all_providers = ordered_unique(
+        list(provider_priority)
+        + list(provider_pricing.keys())
+        + list(disabled)
+    )
     decisions: Dict[str, ProviderDecision] = {}
 
     for provider in all_providers:
+        if provider in disabled:
+            decisions[provider] = ProviderDecision(
+                provider=provider,
+                status="disabled",
+                pricing=None,
+                reasons=["mapping_disabled"],
+            )
+            continue
         snapshot = provider_pricing.get(provider)
         if not has_values(snapshot):
             decisions[provider] = ProviderDecision(provider=provider, status="missing", pricing=snapshot, reasons=["no_pricing_data"])
@@ -76,7 +91,7 @@ def apply_conflict_checks(decisions: Dict[str, ProviderDecision]) -> None:
         values: Dict[str, Decimal] = {}
         for provider, decision in decisions.items():
             snapshot = decision.pricing
-            if decision.status == "missing" or snapshot is None:
+            if decision.status in ("missing", "disabled") or snapshot is None:
                 continue
             value = getattr(snapshot, field)
             if value is not None:

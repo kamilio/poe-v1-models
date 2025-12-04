@@ -16,10 +16,6 @@ def _load_snapshot(filename: str) -> Dict[str, object]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def _prune_none(payload: Dict[str, str | None]) -> Dict[str, str]:
-    return {key: value for key, value in payload.items() if value is not None}
-
-
 def test_openrouter_transform_matches_snapshots():
     provider = OpenRouterProvider()
     data = _load_snapshot("openrouter.json")
@@ -27,7 +23,7 @@ def test_openrouter_transform_matches_snapshots():
         raw = record["raw"]
         expected = record["normalized"]
         actual = provider.build_snapshot_from_payload(provider.transform(raw)).with_mtok().as_dict()
-        assert _prune_none(actual) == expected, f"Snapshot mismatch for {record.get('id')}"
+        assert actual == expected, f"Snapshot mismatch for {record.get('id')}"
 
 
 def test_models_dev_transform_matches_snapshots():
@@ -37,5 +33,4 @@ def test_models_dev_transform_matches_snapshots():
         raw = record["raw"]
         expected = record["normalized"]
         actual = provider.build_snapshot_from_payload(provider.transform(raw)).with_mtok().as_dict()
-        assert _prune_none(actual) == expected, f"Snapshot mismatch for {record.get('provider')}/{record.get('id')}"
-
+        assert actual == expected, f"Snapshot mismatch for {record.get('provider')}/{record.get('id')}"

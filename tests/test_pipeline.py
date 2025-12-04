@@ -140,6 +140,37 @@ def test_pipeline_exposes_provider_lookup_metadata():
     assert lookup["resolved"] == "openai/gpt-5"
 
 
+def test_pipeline_auto_lookup_covers_all_providers():
+    result = run_pipeline()
+    aggregate = result.aggregates.get("GPT-5")
+    assert aggregate is not None, "Expected GPT-5 aggregate from pipeline"
+
+    lookup = aggregate.provider_lookup.get("openrouter")
+    assert lookup is not None, "Expected openrouter lookup metadata"
+    assert lookup["requested"] == "auto"
+    assert lookup["resolved"] == "openai/gpt-5"
+
+    decision = aggregate.decisions.get("openrouter")
+    assert decision is not None, "Expected openrouter decision"
+    assert decision.pricing is not None, "Expected pricing data from openrouter auto lookup"
+
+
+def test_none_mapping_disables_provider():
+    result = run_pipeline()
+    aggregate = result.aggregates.get("Claude-Sonnet-4.5")
+    assert aggregate is not None, "Expected Claude-Sonnet-4.5 aggregate from pipeline"
+
+    lookup = aggregate.provider_lookup.get("openrouter")
+    assert lookup is not None, "Expected openrouter lookup metadata"
+    assert lookup["requested"] == "none"
+    assert lookup["resolved"] is None
+
+    decision = aggregate.decisions.get("openrouter")
+    assert decision is not None, "Expected openrouter decision for Claude-Sonnet-4.5"
+    assert decision.status == "disabled"
+    assert decision.reasons == ["mapping_disabled"]
+
+
 def test_pipeline_populates_msrp_and_pricing_consistency():
     result = run_pipeline()
     mapping = load_model_mapping()

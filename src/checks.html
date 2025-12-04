@@ -252,6 +252,17 @@
     function buildModelRow(model, providersMeta) {
       const row = document.createElement('tr');
       row.className = 'hover:bg-gray-50 dark:hover:bg-gray-700/40 transition-colors';
+      
+      const modelStatuses = [];
+      if (model.providers) {
+        Object.values(model.providers).forEach(provider => {
+          if (provider.status) {
+            modelStatuses.push(provider.status.toLowerCase());
+          }
+        });
+      }
+      row.dataset.statuses = modelStatuses.join(',');
+      
       const cells = [];
       const modelCell = document.createElement('td');
       modelCell.className = 'px-6 py-4 text-sm';

@@ -14,6 +14,8 @@ exclusions:
     reason: we are not model providers
   - owner: opentools
     reason: just tools, not models
+  - owner: poe_tools
+    reason: just tools
   - Claude-Opus-4-Search
   - Claude-Sonnet-4-Search
   - Claude-Sonnet-3.7-Search
