@@ -9,6 +9,12 @@ from poe_v1_models.providers.base import (
     ProviderPricingPayload,
     ProviderReportColumn,
 )
+from poe_v1_models.providers.utils import (
+    canonicalize_identifier,
+    is_none_mapping,
+    parse_lowercase_provider_key,
+    poe_identifier_candidates,
+)
 
 
 MODELS_DEV_API_URL = "https://models.dev/api.json"
@@ -62,23 +68,25 @@ class ModelsDevProvider(PricingProvider):
             self._catalog = json_load(response)
 
     def find(self, key: str, poe_model: Mapping[str, object]) -> Optional[PricingSnapshot]:
-        lookup_key = key
-        if not lookup_key or lookup_key == "auto" or "/" not in lookup_key:
-            lookup_key = self.default_key(poe_model)
-        if not lookup_key or "/" not in lookup_key:
+        lookup_key = (key or "").strip()
+        if not lookup_key:
             return None
-        provider, model = lookup_key.split("/", 1)
+        if is_none_mapping(lookup_key):
+            return None
+        if lookup_key == "auto":
+            lookup_key = self.default_key(poe_model) or ""
+        if not lookup_key:
+            return None
+
+        parsed = parse_lowercase_provider_key(lookup_key)
+        if not parsed:
+            return None
+        provider, model = parsed
         provider_block = self._catalog.get(provider)
         if not provider_block:
             return None
         models = provider_block.get("models", {})
         model_data = models.get(model)
-        if not model_data:
-            slug = slugify(model)
-            for candidate, candidate_data in models.items():
-                if slugify(candidate) == slug:
-                    model_data = candidate_data
-                    break
         if not model_data:
             return None
         payload = self.transform(model_data)
@@ -86,11 +94,15 @@ class ModelsDevProvider(PricingProvider):
 
     def default_key(self, poe_model: Mapping[str, object]) -> Optional[str]:
         owned_by = poe_model.get("owned_by")
-        root = poe_model.get("root") or poe_model.get("id")
-        if not isinstance(owned_by, str) or not isinstance(root, str):
+        identifier_candidates = poe_identifier_candidates(poe_model)
+        preferred_identifier = identifier_candidates[0] if identifier_candidates else None
+        if not isinstance(owned_by, str) or not preferred_identifier:
             return None
 
-        provider_slug = slugify(owned_by)
+        provider_slug = owned_by.strip().lower()
+        if not provider_slug:
+            return None
+
         provider_block = self._catalog.get(provider_slug)
         if not isinstance(provider_block, Mapping):
             return None
@@ -99,25 +111,20 @@ class ModelsDevProvider(PricingProvider):
         if not isinstance(models, Mapping):
             return None
 
-        root_slug = slugify(root)
-        if root_slug in models:
-            return f"{provider_slug}/{root_slug}"
+        for identifier in identifier_candidates:
+            if identifier in models:
+                return f"{provider_slug}/{identifier}"
 
-        exact_match = None
-        prefix_matches = []
-        for candidate in models.keys():
-            candidate_slug = slugify(candidate)
-            if candidate_slug == root_slug:
-                exact_match = candidate
-                break
-            if candidate_slug.startswith(root_slug) or root_slug.startswith(candidate_slug):
-                prefix_matches.append(candidate)
+        canonical_targets = {canonicalize_identifier(identifier) for identifier in identifier_candidates}
+        if not canonical_targets:
+            return None
 
-        if exact_match:
-            return f"{provider_slug}/{exact_match}"
-
-        if len(prefix_matches) == 1:
-            return f"{provider_slug}/{prefix_matches[0]}"
+        for model_name in models.keys():
+            if not isinstance(model_name, str):
+                continue
+            normalized_model = model_name.strip().lower()
+            if canonicalize_identifier(normalized_model) in canonical_targets:
+                return f"{provider_slug}/{normalized_model}"
         return None
 
     def transform(self, payload: Mapping[str, Any]) -> ProviderPricingPayload:
@@ -139,13 +146,3 @@ def json_load(response) -> Dict[str, Any]:
     import json
 
     return json.load(response)
-
-
-def slugify(value: str) -> str:
-    """Mirror OpenRouter slug normalisation to align catalogue identifiers."""
-    lowered = value.lower()
-    for ch in (" ", "_", ".", ":", "+"):
-        lowered = lowered.replace(ch, "-")
-    while "--" in lowered:
-        lowered = lowered.replace("--", "-")
-    return lowered

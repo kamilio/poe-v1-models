@@ -9,6 +9,12 @@ from poe_v1_models.providers.base import (
     ProviderPricingPayload,
     ProviderReportColumn,
 )
+from poe_v1_models.providers.utils import (
+    canonicalize_identifier,
+    is_none_mapping,
+    parse_lowercase_provider_key,
+    poe_identifier_candidates,
+)
 
 
 OPENROUTER_MODELS_URL = "https://openrouter.ai/api/v1/models"
@@ -72,26 +78,27 @@ class OpenRouterProvider(PricingProvider):
             if isinstance(entry, Mapping):
                 model_id = entry.get("id")
                 if isinstance(model_id, str):
-                    index[model_id] = entry
+                    normalized_id = model_id.strip().lower()
+                    if normalized_id:
+                        index[normalized_id] = entry
         self._index = index
 
     def find(self, key: str, poe_model: Mapping[str, object]) -> Optional[PricingSnapshot]:
-        model_id = key
-        if key == "auto":
-            model_id = self.default_key(poe_model)
-        if not model_id:
+        lookup_key = (key or "").strip()
+        if not lookup_key:
+            return None
+        if is_none_mapping(lookup_key):
+            return None
+        if lookup_key == "auto":
+            lookup_key = self.default_key(poe_model) or ""
+        if not lookup_key:
             return None
 
-        entry = self._index.get(model_id)
-        if entry is None:
-            # Attempt loose matching using canonical slug.
-            slug = slugify(model_id)
-            for candidate_id, candidate_entry in self._index.items():
-                candidate_slug = slugify(candidate_id)
-                if candidate_slug == slug:
-                    entry = candidate_entry
-                    break
+        parsed = parse_lowercase_provider_key(lookup_key)
+        if not parsed:
+            return None
 
+        entry = self._index.get(lookup_key)
         if entry is None:
             return None
 
@@ -100,24 +107,33 @@ class OpenRouterProvider(PricingProvider):
 
     def default_key(self, poe_model: Mapping[str, object]) -> Optional[str]:
         owned_by = poe_model.get("owned_by")
-        root = poe_model.get("root") or poe_model.get("id")
-        if not isinstance(owned_by, str) or not isinstance(root, str):
+        identifier_candidates = poe_identifier_candidates(poe_model)
+        preferred_identifier = identifier_candidates[0] if identifier_candidates else None
+        if not isinstance(owned_by, str) or not preferred_identifier:
             return None
 
-        owned_slug = slugify(owned_by)
-        root_slug = slugify(root)
-        candidate = f"{owned_slug}/{root_slug}"
-        if candidate in self._index:
-            return candidate
+        owned_slug = owned_by.strip().lower()
+        if not owned_slug:
+            return None
 
-        # Attempt to find a unique match by suffix.
-        matches = [
-            model_id
-            for model_id in self._index.keys()
-            if model_id.startswith(f"{owned_slug}/") and slugify(model_id.split("/", 1)[1]).startswith(root_slug)
-        ]
-        if len(matches) == 1:
-            return matches[0]
+        for identifier in identifier_candidates:
+            candidate = f"{owned_slug}/{identifier}"
+            if candidate in self._index:
+                return candidate
+
+        canonical_targets = {canonicalize_identifier(identifier) for identifier in identifier_candidates}
+        if not canonical_targets:
+            return None
+
+        for model_id in self._index.keys():
+            if not isinstance(model_id, str):
+                continue
+            normalized_id = model_id.strip().lower()
+            if not normalized_id.startswith(f"{owned_slug}/"):
+                continue
+            resolved_identifier = normalized_id.split("/", 1)[1]
+            if canonicalize_identifier(resolved_identifier) in canonical_targets:
+                return normalized_id
         return None
 
     def transform(self, payload: Mapping[str, Any]) -> ProviderPricingPayload:
@@ -132,16 +148,6 @@ class OpenRouterProvider(PricingProvider):
             "input_cache_write": decimal_or_none(pricing_mapping.get("input_cache_write")),
         }
         return payload_normalized
-
-
-def slugify(value: str) -> str:
-    """Simplistic normalisation to line up Poe identifiers with provider IDs."""
-    lowered = value.lower()
-    for ch in (" ", "_", ".", ":", "+"):
-        lowered = lowered.replace(ch, "-")
-    while "--" in lowered:
-        lowered = lowered.replace("--", "-")
-    return lowered
 
 
 def json_load(response) -> Dict[str, Any]:

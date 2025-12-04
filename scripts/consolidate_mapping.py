@@ -15,17 +15,14 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from poe_v1_models.pipeline import load_poe_models
+from poe_v1_models.providers.utils import (
+    canonicalize_identifier,
+    parse_lowercase_provider_key,
+    poe_identifier_candidates,
+)
 
 
 MAPPING_PATH = Path("config/model_mapping.yml")
-
-
-def extract_owner_and_name(models_dev_key: str) -> tuple[str, str]:
-    """Extract owner and model name from models.dev key format 'owner/model-name'."""
-    if "/" not in models_dev_key:
-        return "", ""
-    parts = models_dev_key.split("/", 1)
-    return parts[0], parts[1]
 
 
 def should_use_auto(poe_id: str, models_dev_key: str, poe_models: Dict[str, Any]) -> bool:
@@ -46,36 +43,34 @@ def should_use_auto(poe_id: str, models_dev_key: str, poe_models: Dict[str, Any]
         print(f"Warning: Poe model '{poe_id}' not found in API data", file=sys.stderr)
         return False
     
-    # Extract owner and name from models.dev key
-    owner, model_name = extract_owner_and_name(models_dev_key)
-    if not owner or not model_name:
+    stripped_value = models_dev_key.strip().lower()
+    if stripped_value in {"auto", "none"}:
         return False
+
+    parsed = parse_lowercase_provider_key(stripped_value)
+    if not parsed:
+        return False
+    owner, model_name = parsed
     
     # Get Poe model's owned_by field
-    poe_owned_by = str(poe_model.get("owned_by", "")).lower()
-    poe_model_id = str(poe_model.get("id", "")).lower()
-    
-    # Normalize for comparison
-    owner_lower = owner.lower()
-    model_name_lower = model_name.lower()
-    
-    # Check if owner matches
-    owner_matches = poe_owned_by == owner_lower
-    
-    # Check if model name matches (case-insensitive, allowing for variations)
-    # The Poe ID might have variations like "GPT-4o" vs "gpt-4o"
-    name_matches = (
-        poe_model_id == model_name_lower or
-        poe_model_id.replace("-", "") == model_name_lower.replace("-", "") or
-        model_name_lower in poe_model_id or
-        poe_model_id in model_name_lower
-    )
-    
+    poe_owned_by = str(poe_model.get("owned_by", "")).strip().lower()
+    identifier_candidates = poe_identifier_candidates(poe_model)
+    preferred_identifier = identifier_candidates[0] if identifier_candidates else None
+    if not preferred_identifier:
+        return False
+
+    owner_matches = poe_owned_by == owner
+    canonical_targets = {canonicalize_identifier(identifier) for identifier in identifier_candidates}
+    canonical_model = canonicalize_identifier(model_name)
+    name_matches = canonical_model in canonical_targets
+
     if owner_matches and name_matches:
-        print(f"✓ {poe_id}: owner='{owner}' matches owned_by='{poe_owned_by}', "
-              f"name='{model_name}' matches id='{poe_model_id}'")
+        print(
+            f"✓ {poe_id}: owner='{owner}' matches owned_by='{poe_owned_by}', "
+            f"identifier='{model_name}' matches preferred='{preferred_identifier}'"
+        )
         return True
-    
+
     return False
 
 
