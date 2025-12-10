@@ -20,6 +20,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Print public IP
+        run: curl ifconfig.io
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
